@@ -33,6 +33,10 @@ define([
 //            strokeColor: '#dddddd',
             strokeColor: '#FBFCFC',
 
+            images: {
+                wirePath: '/preview_assets/images/wire-cut.png'
+            },
+
             _attachEvents: function () {
 
                 var _self = this,
@@ -95,7 +99,7 @@ define([
                 if (!this.Pipeline.tempConnectionActive) {
 
                     var self = this,
-                        src = 'images/wire-cut.png',
+                        src = this.images.wirePath,
                         canvasOffset = this._getOffset(this.element[0]);
 
                     this.removeWire();
