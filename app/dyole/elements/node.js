@@ -621,6 +621,8 @@ define([
              */
             _showInfo: function () {
                 //show info node info
+
+                this.Pipeline.Event.trigger('node:showInfo', this.model);
             },
 
             /**
@@ -632,14 +634,6 @@ define([
                 var _self = this;
                 var nodeName = (this.model.softwareDescription && this.model.softwareDescription.name) ? this.model.id : this.model.name;
 
-                $rootScope.$broadcast('node:label:edit', nodeName, function check(name) {
-
-                    var test = _.filter(_self.Pipeline.nodes, function (n) {
-                        return n.model.softwareDescription && n.model.softwareDescription.repo_name === 'system' && n.model.id === name;
-                    });
-
-                    return test.length === 0;
-                }, this._changeNodeName, this);
             },
 
             _changeNodeName: function (name) {
@@ -831,8 +825,6 @@ define([
                 if (typeof this.glow !== 'undefined') {
                     this.glow.remove();
                 }
-
-                this._removeValues();
 
                 this.destroy();
 
