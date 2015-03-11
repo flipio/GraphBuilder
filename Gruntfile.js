@@ -32,7 +32,7 @@ module.exports = function(grunt) {
       dist: {
         src: '<%= concat.dist.dest %>',
         dest: 'dist/require.min.js'
-      },
+      }
     },
     qunit: {
       files: ['test/**/*.html']
@@ -55,7 +55,7 @@ module.exports = function(grunt) {
           jshintrc: 'test/.jshintrc'
         },
         src: ['test/**/*.js']
-      },
+      }
     },
     watch: {
       gruntfile: {
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
       test: {
         files: '<%= jshint.test.src %>',
         tasks: ['jshint:test', 'qunit']
-      },
+      }
     },
     requirejs: {
       compile: {
@@ -84,7 +84,7 @@ module.exports = function(grunt) {
     connect: {
       development: {
         options: {
-          keepalive: true,
+          keepalive: true
         }
       },
       production: {
