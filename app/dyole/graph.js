@@ -119,7 +119,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             });
 
             this.Event.subscribe('node:select', function (model) {
-                console.log('subscribeovo sam se jednom?');
 
                 if (!model.softwareDescription || model.softwareDescription.repo_name !== 'system') {
                     $rootScope.$broadcast('node:select', model, _self.exposed, _self.values);
@@ -334,7 +333,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             end = function endDragging(/*x, y, event*/) {
 
                 // clone translation object
-                var can, canvasTranslation = angular.copy(canvas.getTranslation());
+                var can, canvasTranslation = _.clone(canvas.getTranslation(), true);
 
                 // add zoom level
                 canvasTranslation.zoom = currentZoomLevel.x;
@@ -447,47 +446,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 connection.id]);
             _self.nodes[connection.end_node].addConnection(_self.connections[
                 connection.id]);
-        },
-
-        /**
-         * Creates inputs and outputs
-         * Generates models for system nodes
-         *
-         * @param isInput
-         * @param x
-         * @param y
-         * @param terminal
-         * @private
-         */
-        _createSystemNode: function (isInput, x, y, terminal) {
-            var model = angular.copy(systemNodeModel),
-                terminalId, terId,
-                internalType = isInput ? 'outputs' : 'inputs',
-                type = isInput ? 'input' : 'output';
-
-            terId  = this._generateNodeId({label: type});
-
-            model.label = terId;
-            model.softwareDescription.label = terId;
-            model.softwareDescription.type = type;
-            model[internalType].push({
-                'label': terId,
-                'id': terId,
-                '@id': terId,
-                'depth': 0,
-                'schema': {
-                    'type': 'file'
-                }
-            });
-
-            terminalId = terId;
-
-            var _id = model.id || this._generateNodeId(model);
-
-            model.id = model['@id'] = _id;
-
-            this.addNode(model, x, y, true);
-            this._connectSystemNode(terminal, _id, isInput, terminalId);
         },
 
         /**
@@ -779,63 +737,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          * @private
          */
         _getNodes: function () {
-            return angular.copy(_.pluck(this.nodes, 'model'));
-        },
-
-        /**
-         * Connect input/output thats created with start node
-         *
-         * @param terminal
-         * @param nodeId
-         * @param isInput
-         * @param terminalId
-         * @private
-         */
-        _connectSystemNode: function (terminal, nodeId, isInput, terminalId) {
-            var node = this.nodes[nodeId],
-                type = !isInput ? 'input' : 'output',
-                nodeTer = node.getTerminalById(terminalId, type);
-
-            this.Event.trigger('connection:create', terminal, nodeTer);
-        },
-
-        /**
-         * Check if are intersects with current position of mouse while dragging connection
-         *
-         * @param coords
-         * @param terminal
-         */
-        checkAreaIntersect: function (coords, terminal) {
-
-            var areaWidth = this.constraints.dropArea.width;
-
-            if (!this.mouseoverTerminal) {
-
-                if (coords.x1 <= areaWidth && this.dropZoneRect.isInput) {
-                    this._createSystemNode(this.dropZoneRect.isInput, coords.x1, coords.y1, terminal);
-                }
-
-                if (coords.x2 >= (this.canvas.width - areaWidth) && !this.dropZoneRect.isInput) {
-                    this._createSystemNode(this.dropZoneRect.isInput, coords.x2, coords.y2, terminal);
-                }
-
-            }
-
-
-            if (this.dropZoneRect) {
-                this.dropZoneRect.remove();
-                this.dropZoneRect = null;
-            }
-
-        },
-
-        /**
-         * Mark drop area public method
-         *
-         * @param isInput
-         */
-        markDropArea: function (isInput) {
-            this._markCreateArea(isInput);
+            return _.clone(_.pluck(this.nodes, 'model'), true);
         },
 
         /**
@@ -975,7 +877,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          */
         addNode: function (nodeModel, clientX, clientY, rawCoords) {
 
-            var rawModel = angular.copy(nodeModel.json || nodeModel),
+            var rawModel = _.clone(nodeModel.json || nodeModel, true),
                 model;
 
             if (nodeModel.type && nodeModel.type === 'workflow') {
