@@ -1,6 +1,5 @@
 require.config({
     baseUrl: 'app',
-    deps: ['main'],
     // make components more sensible
     // expose jquery
     paths: {

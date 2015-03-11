@@ -120,9 +120,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
             this.Event.subscribe('node:select', function (model) {
 
-                if (!model.softwareDescription || model.softwareDescription.repo_name !== 'system') {
-                    $rootScope.$broadcast('node:select', model, _self.exposed, _self.values);
-                }
+                //@todo add handler for this event
 
             });
 
@@ -873,7 +871,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          * @param nodeModel
          * @param clientX
          * @param clientY
-         * @param rawCoords
+         * @param [rawCoords]
          */
         addNode: function (nodeModel, clientX, clientY, rawCoords) {
 
