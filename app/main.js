@@ -1,12 +1,10 @@
 
-require(['jquery', 'dyole/graph'], function($, Graph){
-    $(function(){
-        console.log('loaded');
+require(['dyole/graph'], function(Graph){
+    console.log('loaded');
 
-        var b = new Graph({
-            $parent: $('.graph-placeholder'),
-            editMode: true
-        });
-
+    var b = new Graph({
+        $parent: $('.graph-placeholder'),
+        editMode: true
     });
+
 });
