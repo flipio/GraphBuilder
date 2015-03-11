@@ -17,7 +17,7 @@ require.config({
         },
         'raphael-curve' : ['raphael'],
         'raphael-button': ['raphael'],
-        'raphael-group': ['raphael-curve', 'raphael-button' ]
+        'raphael-group': ['raphael-curve', 'raphael-button']
 
     }
 });

@@ -96,7 +96,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
             this.Event.subscribe('node:add', function (model) {
 
-                var node = Node.getInstance({
+                var node = new Node({
                     pipeline: _self,
                     model: model,
                     canvas: _self.canvas,
@@ -385,7 +385,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 // schema is only used for tool execution
                 var model = _.extend(nodeModel, _self.model.display.nodes[nodeId]);
 
-                _self.nodes[nodeId] = Node.getInstance({
+                _self.nodes[nodeId] = new Node({
                     pipeline: _self,
                     model: model,
                     canvas: _self.canvas,
@@ -757,7 +757,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             input = this.tempConnectionRefs.end;
             output = this.tempConnectionRefs.start;
 
-            _self.connections[connection.id] = Connection.getInstance({
+            _self.connections[connection.id] = new Connection({
                 model: connection,
                 canvas: _self.canvas,
                 parent: _self.pipelineWrap,
@@ -877,7 +877,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          */
         addNode: function (nodeModel, clientX, clientY, rawCoords) {
 
-            var rawModel = _.clone(nodeModel.json || nodeModel, true),
+            var rawModel = _.clone(nodeModel, true),
                 model;
 
             if (nodeModel.type && nodeModel.type === 'workflow') {
