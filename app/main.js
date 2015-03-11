@@ -1,12 +1,10 @@
 
-require(['jquery', 'dyole/graph'], function($, Graph){
-    $(function(){
-        console.log('loaded');
+require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel'], function($, Graph, NodeModel){
 
-        var b = new Graph({
+        var canvas = new Graph({
             $parent: $('.graph-placeholder'),
             editMode: true
         });
 
-    });
+    canvas.addNode(NodeModel, 200, 200);
 });
