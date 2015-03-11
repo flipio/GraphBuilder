@@ -8,7 +8,9 @@ define([
         'dyole/event/event',
         'dyole/constants/GraphModel',
         'dyole/elements/node',
-        'dyole/elements/connection'
+        'dyole/elements/connection',
+
+        'raphael-group'
     ],
 function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 

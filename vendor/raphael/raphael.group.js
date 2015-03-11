@@ -1,314 +1,322 @@
 'use strict';
+define([
+    'jquery',
+    'raphael',
+    'raphael-button',
+    'raphael-curve'
+], function ($, Raphael) {
 
-Raphael.fn.group = function () {
+    Raphael.fn.group = function () {
 
-    var r = this,
-        cfg = (arguments[0] instanceof Array) ? {} : arguments[0],
-        items = (arguments[0] instanceof Array) ? arguments[0] : arguments[1];
+        var r = this,
+            cfg = (arguments[0] instanceof Array) ? {} : arguments[0],
+            items = (arguments[0] instanceof Array) ? arguments[0] : arguments[1];
 
-    function Group(cfg, items) {
-        var inst,
-            set = r.set(items),
-            group = r.raphael.vml ?
-                document.createElement("group") :
-                document.createElementNS("http://www.w3.org/2000/svg", "g");
+        function Group(cfg, items) {
+            var inst,
+                set = r.set(items),
+                group = r.raphael.vml ?
+                    document.createElement("group") :
+                    document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-        r.canvas.appendChild(group);
+            r.canvas.appendChild(group);
 
-        function updateScale(transform, scaleX, scaleY) {
-            var scaleString = 'scale(' + scaleX + ' ' + scaleY + ')';
-            if (!transform) {
-                return scaleString;
+            function updateScale(transform, scaleX, scaleY) {
+                var scaleString = 'scale(' + scaleX + ' ' + scaleY + ')';
+                if (!transform) {
+                    return scaleString;
+                }
+                if (transform.indexOf('scale(') < 0) {
+                    return transform + ' ' + scaleString;
+                }
+                return transform.replace(/scale\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, scaleString);
             }
-            if (transform.indexOf('scale(') < 0) {
-                return transform + ' ' + scaleString;
-            }
-            return transform.replace(/scale\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, scaleString);
-        }
 
-        function updateRotation(transform, rotation) {
-            var rotateString = 'rotate(' + rotation + ')';
-            if (!transform) {
-                return rotateString;
+            function updateRotation(transform, rotation) {
+                var rotateString = 'rotate(' + rotation + ')';
+                if (!transform) {
+                    return rotateString;
+                }
+                if (transform.indexOf('rotate(') < 0) {
+                    return transform + ' ' + rotateString;
+                }
+                return transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString);
             }
-            if (transform.indexOf('rotate(') < 0) {
-                return transform + ' ' + rotateString;
-            }
-            return transform.replace(/rotate\(-?[0-9]+(\.[0-9][0-9]*)?\)/, rotateString);
-        }
 
-        function updateTranslation(transform, x, y) {
-            var translateString = 'translate(' + x + ' ' + y + ')';
-            if (transform.indexOf('translate(') < 0) {
-                return transform + ' ' + translateString;
+            function updateTranslation(transform, x, y) {
+                var translateString = 'translate(' + x + ' ' + y + ')';
+                if (transform.indexOf('translate(') < 0) {
+                    return transform + ' ' + translateString;
+                }
+                return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
             }
-            return transform.replace(/translate\(-?[0-9]*?\.?[0-9]*?\ -?[0-9]*?\.?[0-9]*?\)/, translateString);
-        }
 
-        inst = {
-            scale: function (newScaleX, newScaleY) {
-                var transform = group.getAttribute('transform') || '';
-                group.setAttribute('transform', updateScale(transform, newScaleX, newScaleY));
-                return this;
-            },
-            scaleAtPoint: function (newScaleFactor, point) {
-                var trans = this.getTranslation(), scale =  1 - newScaleFactor;
-                this.scale(newScaleFactor, newScaleFactor);
+            inst = {
+                scale: function (newScaleX, newScaleY) {
+                    var transform = group.getAttribute('transform') || '';
+                    group.setAttribute('transform', updateScale(transform, newScaleX, newScaleY));
+                    return this;
+                },
+                scaleAtPoint: function (newScaleFactor, point) {
+                    var trans = this.getTranslation(), scale = 1 - newScaleFactor;
+                    this.scale(newScaleFactor, newScaleFactor);
 //                    this.translate( point.x * (1 - newScaleFactor ) + trans.x * scale,
 //                            point.y * (1 - newScaleFactor ) + trans.y * scale );
 
-            },
-            getScale: function () {
-                var numberPattern = /scale\((-?[0-9]*?\.?[0-9]*?)\ (-?[0-9]*?\.?[0-9]*?)\)/,
-                    transform = group.getAttribute('transform'),
-                    result = {}, match;
+                },
+                getScale: function () {
+                    var numberPattern = /scale\((-?[0-9]*?\.?[0-9]*?)\ (-?[0-9]*?\.?[0-9]*?)\)/,
+                        transform = group.getAttribute('transform'),
+                        result = {}, match;
 
-                if (transform && numberPattern.test(transform)) {
-                    match = transform.match(numberPattern);
+                    if (transform && numberPattern.test(transform)) {
+                        match = transform.match(numberPattern);
 
-                    result.x = parseFloat(match[1]);
-                    result.y = parseFloat(match[2]);
+                        result.x = parseFloat(match[1]);
+                        result.y = parseFloat(match[2]);
 
-                } else {
-                    result = {
-                        x: 1,
-                        y: 1
-                    };
-                }
-
-                return result;
-            },
-            rotate: function (deg) {
-                var transform = group.getAttribute('transform') || '';
-                group.setAttribute('transform', updateRotation(transform, deg));
-            },
-            push: function (item) {
-                function pushOneRaphaelVector(it) {
-                    var i;
-                    if (it.type === 'set') {
-                        for (i = 0; i < it.length; i++) {
-                            pushOneRaphaelVector(it[i]);
-                        }
-                    } else if (it.type === 'group') {
-                        group.appendChild(it.node);
-
-                        set.push(it.set);
                     } else {
-                        group.appendChild(it.node);
-                        set.push(it);
+                        result = {
+                            x: 1,
+                            y: 1
+                        };
                     }
-                }
 
-                pushOneRaphaelVector(item);
-                return this;
-            },
-            translate: function (newTranslateX, newTranslateY) {
-                var transform = group.getAttribute('transform') || '';
-                group.setAttribute('transform', updateTranslation(transform, newTranslateX, newTranslateY));
-                return this;
-            },
+                    return result;
+                },
+                rotate: function (deg) {
+                    var transform = group.getAttribute('transform') || '';
+                    group.setAttribute('transform', updateRotation(transform, deg));
+                },
+                push: function (item) {
+                    function pushOneRaphaelVector(it) {
+                        var i;
+                        if (it.type === 'set') {
+                            for (i = 0; i < it.length; i++) {
+                                pushOneRaphaelVector(it[i]);
+                            }
+                        } else if (it.type === 'group') {
+                            group.appendChild(it.node);
 
-            setTranslation: function (x, y) {
+                            set.push(it.set);
+                        } else {
+                            group.appendChild(it.node);
+                            set.push(it);
+                        }
+                    }
 
-                group.setAttribute('transform', 'translate(' + x + ' ' + y + ')');
+                    pushOneRaphaelVector(item);
+                    return this;
+                },
+                translate: function (newTranslateX, newTranslateY) {
+                    var transform = group.getAttribute('transform') || '';
+                    group.setAttribute('transform', updateTranslation(transform, newTranslateX, newTranslateY));
+                    return this;
+                },
 
-                return this;
-            },
+                setTranslation: function (x, y) {
 
-            getTranslation: function () {
-                var numberPattern = /translate\((-?[0-9]*?\.?[0-9]*?)\ (-?[0-9]*?\.?[0-9]*?)\)/,
-                    transform = group.getAttribute('transform'),
-                    result = {}, match;
+                    group.setAttribute('transform', 'translate(' + x + ' ' + y + ')');
 
-                if (transform && numberPattern.test(transform)) {
-                    match = transform.match(numberPattern);
+                    return this;
+                },
 
-                    result.x = parseFloat(match[1]);
-                    result.y = parseFloat(match[2]);
-                } else {
-                    result = {
-                        x: 0,
-                        y: 0
-                    };
-                }
+                getTranslation: function () {
+                    var numberPattern = /translate\((-?[0-9]*?\.?[0-9]*?)\ (-?[0-9]*?\.?[0-9]*?)\)/,
+                        transform = group.getAttribute('transform'),
+                        result = {}, match;
 
-                return result;
-            },
+                    if (transform && numberPattern.test(transform)) {
+                        match = transform.match(numberPattern);
 
-            getBBox: function () {
-                return set.getBBox();
-            },
+                        result.x = parseFloat(match[1]);
+                        result.y = parseFloat(match[2]);
+                    } else {
+                        result = {
+                            x: 0,
+                            y: 0
+                        };
+                    }
 
-            getElementBBox: function () {
-                return this.node.getBBox();
-            },
+                    return result;
+                },
 
-            toFront: function () {
+                getBBox: function () {
+                    return set.getBBox();
+                },
 
-                this.node.parentNode.appendChild(this.node);
+                getElementBBox: function () {
+                    return this.node.getBBox();
+                },
 
-                return this;
-            },
+                toFront: function () {
 
-            toBack: function () {
+                    this.node.parentNode.appendChild(this.node);
 
-                $(this.node.parentNode).prepend(this.node);
+                    return this;
+                },
 
-                return this;
-            },
+                toBack: function () {
 
-            drag: function (onmove, onstart, onend, moveContext, startContext, endContext) {
+                    $(this.node.parentNode).prepend(this.node);
 
-                var start;
+                    return this;
+                },
 
-                function onMove(dx, dy, x, y, event) {
+                drag: function (onmove, onstart, onend, moveContext, startContext, endContext) {
+
+                    var start;
+
+                    function onMove(dx, dy, x, y, event) {
 
 //                        this.translate(start.x + dx, start.y + dy);
 
-                    if (onmove) {
-                        [].push.call(arguments, start);
-                        onmove.apply((moveContext ? moveContext : this), arguments);
+                        if (onmove) {
+                            [].push.call(arguments, start);
+                            onmove.apply((moveContext ? moveContext : this), arguments);
+                        }
                     }
-                }
 
-                function onStart(x, y, event) {
+                    function onStart(x, y, event) {
 
-                    var elTransform = this.node.getCTM();
+                        var elTransform = this.node.getCTM();
 
-                    start = {
-                        x: elTransform.e,
-                        y: elTransform.f
-                    };
+                        start = {
+                            x: elTransform.e,
+                            y: elTransform.f
+                        };
 
-                    if (onstart) {
+                        if (onstart) {
 
-                        // NOTE: 'hack' found here
-                        // https://stackoverflow.com/questions/13610987/javascript-add-extra-argument
-                        [].push.call(arguments, start);
-                        onstart.apply((startContext ? startContext : this), arguments);
+                            // NOTE: 'hack' found here
+                            // https://stackoverflow.com/questions/13610987/javascript-add-extra-argument
+                            [].push.call(arguments, start);
+                            onstart.apply((startContext ? startContext : this), arguments);
+                        }
                     }
-                }
 
-                function onEnd(event) {
-                    start = null;
-                    if (onend) {
-                        onend.apply((endContext ? endContext : this), arguments);
+                    function onEnd(event) {
+                        start = null;
+                        if (onend) {
+                            onend.apply((endContext ? endContext : this), arguments);
+                        }
                     }
-                }
 
-                set.forEach(function (el) {
-                    if (el.type === 'group') {
-                        el.drag(onMove, onStart, onEnd, this, this, this);
+                    set.forEach(function (el) {
+                        if (el.type === 'group') {
+                            el.drag(onMove, onStart, onEnd, this, this, this);
+                        }
+                    });
+
+                    set.drag(onMove, onStart, onEnd, this, this, this);
+                },
+                hover: function (functionIn, functionOut, scopeIn, scopeOut) {
+
+                    if (scopeIn) {
+                        this.mouseover(functionIn, scopeIn);
                     }
-                });
 
-                set.drag(onMove, onStart, onEnd, this, this, this);
-            },
-            hover: function (functionIn, functionOut, scopeIn, scopeOut) {
+                    if (scopeOut) {
+                        this.mouseout(functionOut, scopeOut);
+                    }
 
-                if (scopeIn) {
-                    this.mouseover(functionIn, scopeIn);
-                }
-
-                if (scopeOut) {
-                   this.mouseout(functionOut, scopeOut);
-                }
-
-                if (!scopeIn && !scopeOut) {
-                    $(this.node).hover(functionIn, functionOut);
-                }
+                    if (!scopeIn && !scopeOut) {
+                        $(this.node).hover(functionIn, functionOut);
+                    }
 
 
-                return this;
-            },
+                    return this;
+                },
 
-            unhover: function () {
-                $(this.node).unbind('mouseover').unbind('mouseout');
+                unhover: function () {
+                    $(this.node).unbind('mouseover').unbind('mouseout');
 
-                return this;
-            },
+                    return this;
+                },
 
-            mouseover: function (func, scope) {
-                if (scope) {
-                    $(this.node).mouseover(function () {
+                mouseover: function (func, scope) {
+                    if (scope) {
+                        $(this.node).mouseover(function () {
+                            func.apply(scope, arguments);
+                        });
+                    } else {
+                        $(this.node).mouseover(func);
+                    }
+
+                    return this;
+                },
+
+                mouseout: function (func, scope) {
+                    if (scope) {
+                        $(this.node).mouseout(function () {
+                            func.apply(scope, arguments);
+                        });
+                    } else {
+                        $(this.node).mouseout(func);
+                    }
+
+                    return this;
+                },
+
+                mousedown: function (func, scope) {
+                    scope = scope || this;
+
+                    $(this.node).mousedown(function () {
                         func.apply(scope, arguments);
                     });
-                } else {
-                    $(this.node).mouseover(func);
-                }
+                },
 
-                return this;
-            },
+                mouseup: function (func, scope) {
+                    scope = scope || this;
 
-            mouseout: function (func, scope) {
-                if (scope) {
-                    $(this.node).mouseout(function () {
+                    $(this.node).mouseup(function () {
                         func.apply(scope, arguments);
                     });
-                } else {
-                    $(this.node).mouseout(func);
-                }
+                },
 
-                return this;
-            },
+                unbindMouse: function () {
+                    $(this.node).unbind('mousedown mouseup');
+                    return this;
+                },
 
-            mousedown: function (func, scope) {
-                scope = scope || this;
+                click: function (func, scope) {
+                    $(this.node).click(function () {
+                        func.apply(scope ? scope : this, arguments);
+                    });
+                },
 
-                $(this.node).mousedown(function () {
-                    func.apply(scope, arguments);
-                });
-            },
+                unclick: function () {
+                    $(this.node).unbind('click');
+                    return this;
+                },
 
-            mouseup: function (func, scope) {
-                scope = scope || this;
+                keyup: function (func, scope) {
+                    scope = scope || this;
 
-                $(this.node).mouseup(function () {
-                    func.apply(scope, arguments);
-                });
-            },
+                    $(this.node).bind('keypress', function () {
+                        func.apply(scope, arguments);
+                    });
+                },
 
-            unbindMouse: function () {
-                $(this.node).unbind('mousedown mouseup');
-                return this;
-            },
+                unkeyup: function () {
+                    $(this.node).unbind('click');
+                    return this;
+                },
 
-            click: function (func, scope) {
-                $(this.node).click(function () {
-                    func.apply(scope ? scope : this, arguments);
-                });
-            },
+                remove: function () {
+                    $(this.node).unbind();
+                    set.remove();
+                },
 
-            unclick: function () {
-                $(this.node).unbind('click');
-                return this;
-            },
+                set: set,
+                type: 'group',
+                node: group
+            };
 
-            keyup: function (func, scope) {
-                scope = scope || this;
+            return inst;
+        }
 
-                $(this.node).bind('keypress',function () {
-                    func.apply(scope, arguments);
-                });
-            },
+        return new Group(cfg, items);
+    };
 
-            unkeyup: function () {
-                $(this.node).unbind('click');
-                return this;
-            },
-
-            remove: function () {
-                $(this.node).unbind();
-                set.remove();
-            },
-
-            set: set,
-            type: 'group',
-            node: group
-        };
-
-        return inst;
-    }
-
-    return new Group(cfg, items);
-};
+});
