@@ -873,7 +873,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          * @param nodeModel
          * @param clientX
          * @param clientY
-         * @param rawCoords
+         * @param [rawCoords]
          */
         addNode: function (nodeModel, clientX, clientY, rawCoords) {
 
