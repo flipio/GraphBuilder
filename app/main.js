@@ -6,13 +6,12 @@ require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel'], function ($, Gra
     });
 
     var constraints = {
-        labelOffset: 50
+        labelOffset: 50,
+        radius:70
     };
 
     canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
-    canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
-    canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
-    canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
+    canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false);
 
 
     canvas.Event.subscribe('node:showInfo', function (node) {

@@ -8,6 +8,8 @@ define([
     ],
     function ($, _, Terminal) {
 
+        var Constraints = {};
+
         var Node = function (options) {
             // cache options
             this.options = options;
@@ -38,17 +40,19 @@ define([
 
             this.outputRefs = this.model.outputs;
 
-            this._initTerminals();
-
-            if (options.constraints) {
-                _.extend(this.constraints, options.constraints);
+            if (typeof options.constraints !== 'undefined') {
+                Constraints = _.extend({}, this.constraints, options.constraints);
+            } else {
+                Constraints = this.constraints;
             }
+
+            this._initTerminals();
 
         };
 
         Node.prototype = {
 
-            constraints: {
+            constraints:  {
 
                 radius: 48,
                 borderWidth: 10,
@@ -124,12 +128,12 @@ define([
             render: function () {
 
                 var self = this,
+                    constraints = Constraints,
                     model = this.model,
                     canvas = this.canvas,
-
-                    radius = this.constraints.radius,
-                    borderWidth = this.constraints.borderWidth,
-                    labelOffset = this.constraints.labelOffset,
+                    radius = constraints.radius,
+                    borderWidth = constraints.borderWidth,
+                    labelOffset = constraints.labelOffset,
                     inputs = this.inputs,
                     outputs = this.outputs,
 
@@ -147,9 +151,9 @@ define([
 
                 innerBorder = canvas.circle(0, 0, radius - borderWidth);
                 innerBorder.attr({
-                    fill: this.constraints.fill,
-                    stroke: this.constraints.stroke
-                    //                    gradient: this.constraints.gradient
+                    fill: constraints.fill,
+                    stroke: constraints.stroke
+                    //                    gradient: constraints.gradient
                 });
 
                 borders = canvas.group();
@@ -227,7 +231,7 @@ define([
                     outputs = this.outputs,
                     modelInputs = this.inputRefs,
                     modelOutputs = this.outputRefs,
-                    radius = this.constraints.radius,
+                    radius = Constraints.radius,
                     inputStartingAngle = 120,
                     outputStartingAngle = -60,
                     inputsLen = modelInputs.length,
@@ -522,7 +526,7 @@ define([
             _showButtons: function () {
                 var _self = this,
                     bbox,
-                    nodeRadius = this.constraints.radius,
+                    nodeRadius = Constraints.radius,
                     buttonDistance = typeof this.buttons.distance !== 'undefined' ? -this.buttons.distance - nodeRadius - this.buttons.radius : -nodeRadius * 1.5;
 
                 if (!this.infoButton && !this.removeNodeButton) {
@@ -784,7 +788,7 @@ define([
 
                 // Show selected state
                 this._innerBorder.attr({
-                    fill: this.constraints.selected.fill
+                    fill: Constraints.selected.fill
                 });
 
                 this.selected = true;
@@ -798,7 +802,7 @@ define([
 
                 // Show default state
                 this._innerBorder.attr({
-                    fill: this.constraints.fill
+                    fill: Constraints.fill
                 });
 
                 console.log('deselect');
