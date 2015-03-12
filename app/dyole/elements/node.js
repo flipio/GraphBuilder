@@ -72,7 +72,7 @@ define([
             icons: {
                 input: '/preview_assets/images/icon-input-2.png',
                 output: '/preview_assets/images/icon-output-2.png',
-                default: '/preview_assets/images/icon-default.png'
+                default: '/preview_assets/images/icon-db.png'
             },
 
             buttons: {
