@@ -829,6 +829,20 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         },
 
         /**
+         * Get Node instance on canvas
+         *
+         * @param id
+         * @returns {{}|*}
+         */
+        getNodeById: function (id) {
+            if (this.nodes[id]) {
+                return this.nodes[id];
+            } else {
+                throw 'Node with id: ' + id + ' does not exist';
+            }
+        },
+
+        /**
          * Destroys pipeline and its references
          */
         destroy: function () {
@@ -914,6 +928,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             this.model.schemas[model.id] = rawModel;
 
             this.Event.trigger('node:add', model, constraints);
+
+            return _id;
         },
 
         /**
