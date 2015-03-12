@@ -94,13 +94,14 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 // on graph change
             });
 
-            this.Event.subscribe('node:add', function (model) {
+            this.Event.subscribe('node:add', function (model, constraints) {
 
                 var node = new Node({
                     pipeline: _self,
                     model: model,
                     canvas: _self.canvas,
-                    pipelineWrap: _self.pipelineWrap
+                    pipelineWrap: _self.pipelineWrap,
+                    constraints: constraints
                 });
 
                 _self.nodes[model.id] = node;
@@ -866,17 +867,22 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         },
 
         /**
-         * Add node to the canvas
          *
-         * @param nodeModel
-         * @param clientX
-         * @param clientY
-         * @param [rawCoords]
+         * @param nodeModel {object}
+         * @param coords {object} {x: x, y: y}
+         * @param [rawCoords] {boolean}
+         * @param [constraints] {object}
          */
-        addNode: function (nodeModel, clientX, clientY, rawCoords) {
+        addNode: function (nodeModel, coords, rawCoords, constraints) {
 
             var rawModel = _.clone(nodeModel, true),
                 model;
+
+            var clientX = coords.x;
+            var clientY = coords.y;
+
+            rawCoords = rawCoords || false;
+            constraints = constraints || {};
 
             if (nodeModel.type && nodeModel.type === 'workflow') {
                 model = this._transformWorkflowModel(nodeModel);
@@ -888,8 +894,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
             var canvas = this._getOffset(this.$parent[0]);
 
-            rawCoords = rawCoords || false;
-
             var x = ( clientX - canvas.left )  - this.pipelineWrap.getTranslation().x,
                 y = ( clientY - canvas.top  ) - this.pipelineWrap.getTranslation().y;
 
@@ -897,7 +901,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 x = clientX - this.pipelineWrap.getTranslation().x;
                 y = clientY - this.pipelineWrap.getTranslation().y;
             }
-
 
             model.x = x / zoom;
             model.y = y / zoom;
@@ -910,7 +913,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
             this.model.schemas[model.id] = rawModel;
 
-            this.Event.trigger('node:add', model);
+            this.Event.trigger('node:add', model, constraints);
         },
 
         /**

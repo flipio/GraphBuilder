@@ -40,6 +40,10 @@ define([
 
             this._initTerminals();
 
+            if (options.constraints) {
+                _.extend(this.constraints, options.constraints);
+            }
+
         };
 
         Node.prototype = {

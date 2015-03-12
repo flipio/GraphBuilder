@@ -20,10 +20,8 @@ build and run this app, such as [grunt](http://gruntjs.com),
 
 ## Running the server
 
-You can run your app using `grunt preview`. This will start a
-server on `localhost:8000`, meaning you can simply go to the
-url [localhost:8000/index.htm](http://localhost:8000/index.htm)
-while it's running.
+You can run your app using `grunt serve`. This will start a
+server on `localhost:8000`
 
 If you'd like to run the compiled version, run
 `grunt preview-live`.
