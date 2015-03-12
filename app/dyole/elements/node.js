@@ -61,18 +61,18 @@ define([
                 },
 
                 selected: {
-                    fill: '#F0AD4E'
+                    fill: '#FF9800'
                 },
 
                 //defaults
-                fill: '#29567D',
+                fill: '#424E4F',
                 stroke: 'none'
             },
 
             icons: {
                 input: '/preview_assets/images/icon-input-2.png',
                 output: '/preview_assets/images/icon-output-2.png',
-                default: '/preview_assets/images/icon-input-2.png'
+                default: '/preview_assets/images/icon-default.png'
             },
 
             buttons: {
