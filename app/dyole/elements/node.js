@@ -172,23 +172,6 @@ define([
 
                 imgUrl = this.icons.default;
 
-                var modification = {
-                    left: 0,
-                    top: 0
-                };
-
-                if (model.softwareDescription && model.softwareDescription.repo_name === 'system') {
-                    if (this.inputs.length === 0) {
-                        imgUrl = this.icons.input;
-                        modification.left = -2;
-                    } else {
-                        imgUrl = this.icons.output;
-                        modification.left = 1;
-                    }
-                } else {
-//                    modification.left = 2;
-                }
-
                 if (model.type === 'workflow') {
                     imgUrl = this.icons.workflow;
                 }
@@ -197,7 +180,7 @@ define([
                 img.src = imgUrl;
 
                 $(img).load(function () {
-                    icon = canvas.image(imgUrl, -img.width / 2 + modification.left, -img.height / 2 + modification.top, img.width, img.height);
+                    icon = canvas.image(imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
                     borders.push(icon);
 
                     self._attachEvents();
@@ -403,15 +386,6 @@ define([
                 borders.drag(this.onMove, this.onMoveStart, this.onMoveEnd,
                     this, this, this);
 
-                this.label.dblclick(function (e) {
-                    e.preventDefault();
-
-                    if (this.model.softwareDescription && this.model.softwareDescription.repo_name === 'system' && this.Pipeline.editMode) {
-                        this._initNameChanging();
-                    }
-
-                }, this);
-
             },
 
             onMoveStart: function (x, y, event, startCoords) {
@@ -569,32 +543,6 @@ define([
                         scope: this
                     });
 
-
-                    if (this.model.softwareDescription && this.model.softwareDescription.repo_name === 'system') {
-
-                        bbox = this.label.getBBox();
-                        this.editLabelButton = this.canvas.button({
-                            fill: this.buttons.rename.fill,
-                            x: bbox.x + bbox.width + 20,
-                            y: bbox.y + 8,
-                            radius: 10,
-                            border: this.buttons.border,
-                            image: {
-                                url: 'images/' + this.buttons.rename.image.name,
-                                width: 13,
-                                height: 13
-                            },
-
-                            borderFill: 'transparent',
-                            borderStroke: 'transparent'
-                        }, {
-                            onClick: this._initNameChanging,
-                            scope: this
-                        });
-
-                        this.el.push(this.editLabelButton.getEl());
-                    }
-
                     _self.el.push(_self.infoButton.getEl())
                         .push(_self.removeNodeButton.getEl());
 
@@ -614,11 +562,6 @@ define([
                     this.removeNodeButton = null;
                 }
 
-                if (this.editLabelButton) {
-                    this.editLabelButton.remove();
-                    this.editLabelButton = null;
-                }
-
             },
 
             _removeNodeButtonClick: function () {
@@ -635,149 +578,6 @@ define([
                 //show info node info
 
                 this.Pipeline.Event.trigger('node:showInfo', this.model);
-            },
-
-            /**
-             * Triggered only on system Nodes
-             *
-             * @private
-             */
-            _initNameChanging: function () {
-                var _self = this;
-                var nodeName = (this.model.softwareDescription && this.model.softwareDescription.name) ? this.model.id : this.model.name;
-
-            },
-
-            _changeNodeName: function (name) {
-
-                var ter, old, oldId,
-                    isInput = this.inputs.length === 0;
-
-                if (this.model.softwareDescription && this.model.softwareDescription.repo_name === 'system') {
-
-                    // Genereta id first(Check for id conflict)
-                    name = this.Pipeline._generateNodeId({name: name});
-
-
-                    this.model.label = name;
-                    this.Pipeline.model.schemas[this.model.id].name = name;
-
-                    //TODO: Refactor this to use one function
-                    if (isInput) {
-                        ter = this.outputs[0];
-
-                        old = _.find(this.Pipeline.model.schemas[this.model.id].outputs, function (inp) {
-                            return inp.id === ter.model.id;
-                        });
-
-                        oldId = ter.model.id;
-
-                        old.label = old.name = name;
-                        old.id = name;
-                        old['@id'] = name;
-
-                        this.model.outputs.push(old);
-
-                        _.remove(this.model.outputs, function (inp) {
-                            return inp.id === ter.model.id;
-                        });
-
-                        this.Pipeline.model.schemas[name] = this.Pipeline.model.schemas[oldId];
-
-                        this.Pipeline.model.schemas[name].outputs.pop();
-                        this.Pipeline.model.schemas[name].outputs.push(old);
-
-                        _.remove(this.Pipeline.model.schemas[name].outputs, function (inp) {
-                            return inp.id === oldId;
-                        });
-
-                        ter.model.label = ter.model.id = ter.model['@id'] = name;
-
-                        ter.changeTerminalName(name);
-
-                        this.model.outputs[0] = ter.model;
-
-                    } else {
-
-                        ter = this.inputs[0];
-
-                        old = _.find(this.Pipeline.model.schemas[this.model.id].inputs, function (inp) {
-                            return inp.id === ter.model.id;
-                        });
-
-                        oldId = ter.model.id;
-
-                        old.label = old.name = name;
-                        old.id = name;
-                        old['@id'] = name;
-
-                        this.model.inputs.push(old);
-
-                        _.remove(this.model.inputs, function (inp) {
-                            return inp.id === ter.model.id;
-                        });
-
-                        this.Pipeline.model.schemas[name] = this.Pipeline.model.schemas[oldId];
-
-                        this.Pipeline.model.schemas[name].inputs.pop();
-                        this.Pipeline.model.schemas[name].inputs.push(old);
-
-                        _.remove(this.Pipeline.model.schemas[name].inputs, function (inp) {
-                            return inp.id === oldId;
-                        });
-
-                        ter.model.label = ter.model.id = ter.model['@id'] = name;
-
-                        ter.changeTerminalName(name);
-
-                        this.model.inputs[0] = ter.model;
-
-                    }
-
-                    this.model.id = this.model['@id'] = name;
-                    this.model.softwareDescription.name = name;
-
-                    this.Pipeline.model.schemas[name].id = this.model.id;
-
-                    delete this.Pipeline.model.schemas[oldId];
-
-                    this.Pipeline.nodes[name] = this.Pipeline.nodes[oldId];
-                    delete this.Pipeline.nodes[oldId];
-
-                    if (this.Pipeline.model.display.nodes[oldId]) {
-                        delete this.Pipeline.model.display.nodes[oldId];
-                    }
-
-                    // Delete unwanted props from schema
-                    // when id changes it picks up whole model with x and y coordinates which we dont wont
-                    if (isInput) {
-                        delete this.Pipeline.model.schemas[this.model.id].outputs[0].x;
-                        delete this.Pipeline.model.schemas[this.model.id].outputs[0].y;
-                        delete this.Pipeline.model.schemas[this.model.id].outputs[0].input;
-                    } else {
-                        delete this.Pipeline.model.schemas[this.model.id].inputs[0].x;
-                        delete this.Pipeline.model.schemas[this.model.id].inputs[0].y;
-                        delete this.Pipeline.model.schemas[this.model.id].inputs[0].input;
-                    }
-
-                    _.each(this.connections, function (c) {
-                        if (isInput) {
-                            c.model.output_name = name;
-                            c.model.start_node = name;
-                        } else {
-                            c.model.input_name = name;
-                            c.model.end_node = name;
-                        }
-                    });
-
-                    this.label.attr('text', name);
-                    this._destroyButtons();
-
-                    if (this.selected) {
-                        this._showButtons();
-                    }
-
-                }
             },
 
             _select: function () {
