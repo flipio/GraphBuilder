@@ -125,6 +125,10 @@ define([
                 }
             },
 
+            getFirstTerminal: function (type) {
+                return this[type+'s'][0];
+            },
+
             render: function () {
 
                 var self = this,

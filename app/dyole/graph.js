@@ -838,7 +838,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             if (this.nodes[id]) {
                 return this.nodes[id];
             } else {
-                throw 'Node with id: ' + id + ' does not exist';
+                throw new Error('Node with id: ' + id + ' not found');
             }
         },
 
@@ -879,13 +879,36 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
             $('body').off('mouseup');
         },
+        
+        connectNodes: function (n1, n2) {
+            var n1t = this.getNodeById(n1).getFirstTerminal('output');
+            var n2t = this.getNodeById(n2).getFirstTerminal('input');
+            
+            var model = {
+                id: _.random(100000, 999999) + '', // it has to be a string
+                start_node: n1,
+                end_node: n2,
+                input_name: n2t.id,
+                output_name: n1t.id
+            };
+            
+            this.tempConnectionRefs = {
+                end: n2t,
+                start: n1t
+            };
+
+            this.createConnection(model);
+        },
 
         /**
+         * Add node to the canvas
          *
          * @param nodeModel {object}
          * @param coords {object} {x: x, y: y}
          * @param [rawCoords] {boolean}
          * @param [constraints] {object}
+         * 
+         * @returns {string} Node ID created
          */
         addNode: function (nodeModel, coords, rawCoords, constraints) {
 

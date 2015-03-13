@@ -12,10 +12,12 @@ require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel'], function ($, Gra
 
     var n1, n2;
 
-    n1 = canvas.addNode(NodeModel.get(), {x: 400, y: 200}, false, constraints);
-    n2 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false);
+    n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
+    n2 = canvas.addNode(NodeModel.get(), {x: 400, y: 200}, false);
 
     console.log(canvas.getNodeById(n1));
+    
+    canvas.connectNodes(n1, n2);
 
     canvas.Event.subscribe('node:showInfo', function (node) {
 
