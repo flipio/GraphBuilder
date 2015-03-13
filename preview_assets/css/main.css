@@ -3,8 +3,9 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 
 
 .graph-placeholder {
-    width: 600px;
+    width:  900px;
     height: 600px;
     margin: 10px;
-    background: #fff url('../images/grid.png') repeat 0 0
+    background: #fff url('../images/grid.png') repeat 0 0;
+    border: solid 1px #eee;
 }
