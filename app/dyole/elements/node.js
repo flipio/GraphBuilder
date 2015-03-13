@@ -148,7 +148,6 @@ define([
 
                 outerBorder = canvas.circle(0, 0, radius);
                 outerBorder.attr({
-                    //                    fill: '90-#F4F4F4-#F4F4F4:50-#F4F4F4:50-#F4F4F4',
                     fill: '#FBFCFC',
                     stroke: '#dddddd'
                 });
