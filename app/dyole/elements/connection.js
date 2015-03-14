@@ -32,6 +32,7 @@ define([
             strokeWidth: 7,
 //            strokeColor: '#dddddd',
             strokeColor: '#FBFCFC',
+            labelColor : '#8989FF',
 
             images: {
                 wirePath: '/preview_assets/images/wire-cut.png'
@@ -145,7 +146,18 @@ define([
 
                 strokeWidth = this.strokeWidth * scale;
 
+
                 this.connection.redraw(coords, strokeWidth);
+
+
+                var totalLen = this.connection.getPathInner().getTotalLength();
+                var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen/2);
+
+
+
+                //console.log(labelCoords);
+
+                this.connectionLabel.attr({x: labelCoords.x, y:labelCoords.y});
 
                 this.removeWire();
             },
@@ -195,6 +207,11 @@ define([
 //                stroke: '#c8c8c8',
 //                'stroke-width': 4
 //            });
+
+                var totalLen = this.connection.getPathInner().getTotalLength();
+                var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen/2);
+
+                this.connectionLabel = this.canvas.text(labelCoords.x, labelCoords.y, this.model.connection_name).attr({fill: this.labelColor});
 
                 this.connection.toBack();
 

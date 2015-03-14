@@ -142,7 +142,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                     start_node: start.parent.model.id,
                     end_node: end.parent.model.id,
                     input_name: end.id,
-                    output_name: start.id
+                    output_name: start.id,
+                    connection_name : ''
                 };
 
                 _self.createConnection(model);
@@ -743,9 +744,9 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          * Generate connection based on temp connection
          * User interaction connection creating
          *
-         * @param connection
+         * @param connectionModel
          */
-        createConnection: function (connection) {
+        createConnection: function (connectionModel) {
             var _self = this,
                 input, output;
 
@@ -756,8 +757,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             input = this.tempConnectionRefs.end;
             output = this.tempConnectionRefs.start;
 
-            _self.connections[connection.id] = new Connection({
-                model: connection,
+            _self.connections[connectionModel.id] = new Connection({
+                model: connectionModel,
                 canvas: _self.canvas,
                 parent: _self.pipelineWrap,
                 nodes: _self.nodes,
@@ -767,8 +768,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 element: _self.$parent
             });
 
-            _self.nodes[connection.start_node].addConnection(_self.connections[connection.id]);
-            _self.nodes[connection.end_node].addConnection(_self.connections[connection.id]);
+            _self.nodes[connectionModel.start_node].addConnection(_self.connections[connectionModel.id]);
+            _self.nodes[connectionModel.end_node].addConnection(_self.connections[connectionModel.id]);
 
 
             this.Event.trigger('pipeline:change');
@@ -879,17 +880,25 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
             $('body').off('mouseup');
         },
-        
-        connectNodes: function (n1, n2) {
+
+
+        /**
+         *
+         * @param n1
+         * @param n2
+         * @param [connectionName]
+         */
+        connectNodes: function (n1, n2, connectionName) {
             var n1t = this.getNodeById(n1).getFirstTerminal('output');
             var n2t = this.getNodeById(n2).getFirstTerminal('input');
             
-            var model = {
+            var connectionModel = {
                 id: _.random(100000, 999999) + '', // it has to be a string
                 start_node: n1,
                 end_node: n2,
                 input_name: n2t.id,
-                output_name: n1t.id
+                output_name: n1t.id,
+                connection_name : connectionName || ''
             };
             
             this.tempConnectionRefs = {
@@ -897,7 +906,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 start: n1t
             };
 
-            this.createConnection(model);
+            this.createConnection(connectionModel);
         },
 
         /**
