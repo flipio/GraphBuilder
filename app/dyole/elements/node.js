@@ -611,6 +611,9 @@ define([
                 console.log('deselect');
 
                 this.selected = false;
+                
+
+                this.Pipeline.Event.trigger('node:deselected', this.model);
             },
 
             removeNode: function () {

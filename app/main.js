@@ -1,4 +1,4 @@
-require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel'], function ($, Graph, NodeModel) {
+require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel', 'lodash'], function ($, Graph, NodeModel, _) {
 
     var canvas = new Graph({
         $parent: $('.graph-placeholder'),
@@ -36,7 +36,28 @@ require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel'], function ($, Gra
     canvas.Event.subscribe('node:select', function (node) {
 
         console.log('select', node);
+        var allNodeConnections =  canvas.getNodeById(node.id).connections;
 
-        console.log(canvas.getNodeById(node.id).connections);
+        _.each(allNodeConnections, function(connectionObject) {
+            connectionObject._glow = connectionObject.connection.getPathOuter().glow();
+        });
+
     });
+
+
+    canvas.Event.subscribe('node:deselected', function (node) {
+
+
+
+        var allNodeConnections =  canvas.getNodeById(node.id).connections;
+
+        _.each(allNodeConnections, function(connectionObject) {
+            if (connectionObject._glow) {
+
+                connectionObject._glow.remove();
+            }
+        });
+
+    });
+
 });
