@@ -190,6 +190,16 @@ define(['jquery', 'raphael'], function ($, Raphael) {
                     return path;
                 },
 
+                getNode: function() {
+
+                    return path.node;
+                },
+
+                getPathInner : function() {
+
+                    return pathInner;
+                },
+
                 getBBox: function () {
                     return path.getBBox();
                 },
