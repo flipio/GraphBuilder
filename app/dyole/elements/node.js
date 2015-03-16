@@ -20,7 +20,6 @@ define([
             this.parent = options.pipelineWrap;
             this.Pipeline = options.pipeline;
             this.baseUrl = this.Pipeline.assetsUrl;
-            this.buttons.rootpath = this.Pipeline.assetsUrl;
 
             // node instance on canvas
             this.el = null;
@@ -92,7 +91,6 @@ define([
                 radius: 14,
                 border: 4,
 
-                rootPath: '/preview_assets',
                 // if you want to change buttons distance from node uncomment and change distance
                 //            distance: 5,
 
@@ -101,7 +99,7 @@ define([
                     disabled: '#ccc',
 
                     image: {
-                        name: 'icon-info.png',
+                        name: 'preview_assets/images/icon-info.png',
                         width: 6,
                         height: 11
                     }
@@ -112,7 +110,7 @@ define([
                     fill: '#EF4836',
 
                     image: {
-                        name: 'icon-delete.png',
+                        name: 'preview_assets/images/icon-delete.png',
                         width: 10,
                         height: 10
                     }
@@ -123,7 +121,7 @@ define([
                     fill: 'transparent',
 
                     image: {
-                        name: 'icon-pencil.png',
+                        name: 'preview_assets/images/icon-pencil.png',
                         width: 12,
                         height: 12
                     }
@@ -514,7 +512,7 @@ define([
 
                 if (!this.infoButton && !this.removeNodeButton) {
 
-                    this.buttons.rename.image.url = this.buttons.rootPath + '/images/' + this.buttons.rename.image.name;
+                    this.buttons.rename.image.url = this.baseUrl + this.buttons.rename.image.name;
 
                     this.infoButton = this.canvas.button({
                         fill: this.buttons.info.fill,
@@ -523,7 +521,7 @@ define([
                         radius: this.buttons.radius,
                         border: this.buttons.border,
                         image: {
-                            url: this.buttons.rootPath + '/images/' + this.buttons.info.image.name,
+                            url: this.baseUrl + this.buttons.info.image.name,
                             width: 14,
                             height: 14
                         }
@@ -539,7 +537,7 @@ define([
                         radius: this.buttons.radius,
                         border: this.buttons.border,
                         image: {
-                            url: this.buttons.rootPath + '/images/' + this.buttons.delete.image.name,
+                            url: this.baseUrl + this.buttons.delete.image.name,
                             width: 14,
                             height: 14
                         }
