@@ -180,10 +180,11 @@ define([
                 }
 
                 img = new Image();
+                imgUrl = self.baseUrl  + imgUrl;
                 img.src = imgUrl;
 
                 $(img).load(function () {
-                    icon = canvas.image(self.baseUrl + imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
+                    icon = canvas.image(imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
                     borders.push(icon);
 
                     self._attachEvents();
