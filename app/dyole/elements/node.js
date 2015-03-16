@@ -20,6 +20,7 @@ define([
             this.parent = options.pipelineWrap;
             this.Pipeline = options.pipeline;
             this.baseUrl = this.Pipeline.assetsUrl;
+            this.buttons.rootpath = this.Pipeline.assetsUrl;
 
             // node instance on canvas
             this.el = null;
