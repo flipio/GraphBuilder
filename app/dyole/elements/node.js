@@ -14,10 +14,12 @@ define([
             // cache options
             this.options = options;
 
+
             this.canvas = options.canvas;
 
             this.parent = options.pipelineWrap;
             this.Pipeline = options.pipeline;
+            this.baseUrl = this.Pipeline.assetsUrl;
 
             // node instance on canvas
             this.el = null;
@@ -52,6 +54,8 @@ define([
 
         Node.prototype = {
 
+
+
             constraints:  {
 
                 radius: 48,
@@ -78,9 +82,9 @@ define([
             },
 
             icons: {
-                input: '/preview_assets/images/icon-input-2.png',
-                output: '/preview_assets/images/icon-output-2.png',
-                default: '/preview_assets/images/icon-db.png'
+                input:   'preview_assets/images/icon-input-2.png',
+                output:  'preview_assets/images/icon-output-2.png',
+                default: 'preview_assets/images/icon-db.png'
             },
 
             buttons: {
@@ -179,7 +183,7 @@ define([
                 img.src = imgUrl;
 
                 $(img).load(function () {
-                    icon = canvas.image(imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
+                    icon = canvas.image(self.baseUrl + imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
                     borders.push(icon);
 
                     self._attachEvents();

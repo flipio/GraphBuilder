@@ -19,6 +19,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         // cache options
         this.options = options;
 
+        this.assetsUrl = options.assetsUrl;
+
         this.model = options.model || GraphModel;
         this.$parent = options.$parent;
 
@@ -67,6 +69,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
     };
 
     Graph.prototype = {
+
+        assetsUrl : '/',
 
         constraints: {},
 

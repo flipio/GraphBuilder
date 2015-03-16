@@ -2,6 +2,7 @@ require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel', 'lodash'], functi
 
     var canvas = new Graph({
         $parent: $('.graph-placeholder'),
+        assetsUrl : '/',
         editMode: true
     });
 

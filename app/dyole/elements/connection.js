@@ -19,6 +19,8 @@ define([
             this.input = options.input;
             this.output = options.output;
 
+            this.baseUrl = this.Pipeline.assetsUrl;
+
             this.id = this.model.id;
 
 //            this.tempConnectionActive = false;
@@ -29,13 +31,15 @@ define([
 
         Connection.prototype = {
 
+            baseUrl : '/',
+
             strokeWidth: 7,
 //            strokeColor: '#dddddd',
             strokeColor: '#FBFCFC',
             labelColor : '#8989FF',
 
             images: {
-                wirePath: '/preview_assets/images/wire-cut.png'
+                wirePath: 'preview_assets/images/wire-cut.png'
             },
 
             _attachEvents: function () {
@@ -105,7 +109,7 @@ define([
 
                     this.removeWire();
 
-                    this.wire = this.canvas.image(src, x - canvasOffset.left - 15, y - canvasOffset.top - 15, 25, 25);
+                    this.wire = this.canvas.image(this.baseUrl + src, x - canvasOffset.left - 15, y - canvasOffset.top - 15, 25, 25);
 
                     this.wire.click(function () {
                         self.removeWire();
