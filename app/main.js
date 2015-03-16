@@ -29,34 +29,20 @@ require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel', 'lodash'], functi
 
     canvas.Event.subscribe('node:showInfo', function (node) {
 
-        console.log('info', node);
-
+        console.log('%cnode:showInfo', 'color:#acacff;background:black;', node);
 
     });
+
     canvas.Event.subscribe('node:select', function (node) {
 
-        console.log('select', node);
-        var allNodeConnections =  canvas.getNodeById(node.id).connections;
-
-        _.each(allNodeConnections, function(connectionObject) {
-            connectionObject._glow = connectionObject.connection.getPathOuter().glow();
-        });
+        console.log('%cnode:select', 'color:#acacff;background:black;', node);
 
     });
 
 
     canvas.Event.subscribe('node:deselected', function (node) {
 
-
-
-        var allNodeConnections =  canvas.getNodeById(node.id).connections;
-
-        _.each(allNodeConnections, function(connectionObject) {
-            if (connectionObject._glow) {
-
-                connectionObject._glow.remove();
-            }
-        });
+        console.log('%cnode:deselected', 'color:#acacff;background:black;', node);
 
     });
 
