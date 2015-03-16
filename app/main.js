@@ -39,7 +39,7 @@ require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel', 'lodash'], functi
         var allNodeConnections =  canvas.getNodeById(node.id).connections;
 
         _.each(allNodeConnections, function(connectionObject) {
-            connectionObject._glow = connectionObject.connection.getPathOuter().glow();
+            connectionObject.glow();
         });
 
     });
@@ -52,10 +52,8 @@ require(['jquery', 'dyole/graph', 'dyole/constants/NodeModel', 'lodash'], functi
         var allNodeConnections =  canvas.getNodeById(node.id).connections;
 
         _.each(allNodeConnections, function(connectionObject) {
-            if (connectionObject._glow) {
+            connectionObject.removeGlow();
 
-                connectionObject._glow.remove();
-            }
         });
 
     });
