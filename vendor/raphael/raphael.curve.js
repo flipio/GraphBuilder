@@ -210,6 +210,10 @@ define(['jquery', 'raphael'], function ($, Raphael) {
 
                 getEndPointCoords: function () {
                     return endCoords;
+                },
+
+                push: function (el) {
+                    return path.push(el);
                 }
 
             };

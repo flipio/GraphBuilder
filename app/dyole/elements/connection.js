@@ -135,6 +135,8 @@ define([
                     this.wire.unclick();
                     this.wire.remove();
                 }
+
+                return this;
             },
 
             draw: function () {
@@ -157,9 +159,41 @@ define([
 
                 //console.log(labelCoords);
 
-                this.connectionLabel.attr({x: labelCoords.x, y:labelCoords.y});
+                if (this.connectionLabel) {
+                    this.connectionLabel.attr({x: labelCoords.x, y:labelCoords.y});
+                }
 
                 this.removeWire();
+
+                if (this._glow) {
+                    console.log('Glow: ', this._glow);
+                    this.removeGlow();
+                    this.glow();
+                } else {
+                    this.removeGlow()
+                }
+
+                return this;
+            },
+
+            glow: function () {
+
+                this._glow = this.connection.getPathOuter().glow();
+                this.connection.push(this._glow);
+
+                this._glow.toBack();
+
+                return this;
+            },
+
+            removeGlow: function () {
+
+                if (this._glow) {
+                    this._glow.remove();
+                    this._glow = null;
+                }
+
+                return this;
             },
 
             _getCoords: function (input, output) {
@@ -199,8 +233,6 @@ define([
                     'stroke-width': this.strokeWidth * scale
                 };
 
-//            console.log('connection', scale);
-
                 this.connection = this.canvas.curve(coords, attr);
                 this.parent.push(this.connection.getPath());
 //            this.connection.makeBorder({
@@ -211,7 +243,10 @@ define([
                 var totalLen = this.connection.getPathInner().getTotalLength();
                 var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen/2);
 
-                this.connectionLabel = this.canvas.text(labelCoords.x, labelCoords.y, this.model.connection_name).attr({fill: this.labelColor});
+                if( this.model.connection_name && this.model.connection_name !== '') {
+                    this.connectionLabel = this.canvas.text(labelCoords.x, labelCoords.y, this.model.connection_name).attr({fill: this.labelColor});
+                    this.connection.push(this.connectionLabel);
+                }
 
                 this.connection.toBack();
 
@@ -242,6 +277,10 @@ define([
 
                 this.output.terminals[this.input.model.id] = null;
                 delete this.output.terminals[this.input.model.id];
+
+                if (this.connectionLabel) {
+                    this.connectionLabel.remove();
+                }
 
                 if (!inputCheck) {
                     this.input.terminalConnected = false;
