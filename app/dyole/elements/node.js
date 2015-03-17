@@ -424,11 +424,9 @@ define([
 
                 this.dragged = true;
 
-
-                //            this.parentView.moveSelectedNodes((start.x + dx) - old.x, ( start.y + dy) - old.y , this.model.get('id'));
-
                 this.Pipeline.Event.trigger('scrollbars:draw');
                 this.Pipeline.Event.trigger('pipeline:change');
+                this.Pipeline.Event.trigger('node:drag', this.model, start.x + dx, start.y + dy);
             },
 
             onMoveEnd: function () {
@@ -600,7 +598,6 @@ define([
 
                 this.selected = true;
 
-                console.log('__select__', this.model.id);
                 this.Pipeline.Event.trigger('node:select', this.model);
             },
 
@@ -612,10 +609,7 @@ define([
                     fill: Constraints.fill
                 });
 
-                console.log('deselect');
-
                 this.selected = false;
-                
 
                 this.Pipeline.Event.trigger('node:deselected', this.model);
             },
