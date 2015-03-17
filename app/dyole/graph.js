@@ -851,6 +851,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          * Destroys pipeline and its references
          */
         destroy: function () {
+
             var _self = this,
                 events = ['connection:create', 'scrollbars:draw', 'node:add', 'node:deselect'];
 

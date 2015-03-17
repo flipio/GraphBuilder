@@ -32,6 +32,21 @@ define([
                 m.name = m.name + ' ' + m.id;
 
                 return m;
-            }
+            },
+            set:  function(setupNode) {
+                var n = _.clone(model, true);
+
+                n.id =  _.random(100000, 999999) + '';
+                n.inputs[0].id =  _.random(100000, 999999) + '';
+                n.outputs[0].id =  _.random(100000, 999999) + '';
+                n.name = n.name + ' ' + n.id;
+
+
+                if (setupNode.name) { n.name = setupNode.name; }
+                if (setupNode.inputsName) {n.inputs[0].name = setupNode.inputsName;}
+                if (setupNode.outputName) {n.outputs[0].name = setupNode.outputName;}
+                if (setupNode.properties) { n.properties = setupNode.properties;}
+                return n;
+        }
         };
     });

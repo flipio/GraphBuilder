@@ -4,7 +4,7 @@ require.config({
     // expose jquery
     paths: {
         'components': '../bower_components',
-        'jquery': '../bower_components/jquery/dist/jquery',
+        'jquery':  '../bower_components/jquery/dist/jquery',
         'lodash': '../bower_components/lodash/lodash',
         'raphael': '../vendor/raphael/raphael',
         'raphael-curve': '../vendor/raphael/raphael.curve',
