@@ -90,7 +90,8 @@ module.exports = function (grunt) {
         connect: {
             development: {
                 options: {
-                    keepalive: true
+                    keepalive: true,
+                    port: grunt.option('port') || 8000
                 }
             },
             production: {
