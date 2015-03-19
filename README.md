@@ -33,7 +33,7 @@ If you'd like to run the compiled version, run
 
 ## API
 
-### Instantiating the canvasdoc
+### Instantiating the canvas
 
     var canvas = new Graph({
         $parent: $('.graph-placeholder'),
