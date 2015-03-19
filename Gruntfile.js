@@ -97,7 +97,7 @@ module.exports = function (grunt) {
             production: {
                 options: {
                     keepalive: true,
-                    port: 8000,
+                    port: grunt.option('port') || 8000,
                     middleware: function (connect, options) {
                         return [
                             // rewrite requirejs to the compiled version
