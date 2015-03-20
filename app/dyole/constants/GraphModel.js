@@ -2,7 +2,8 @@
  * Created by filip on 11.3.15..
  */
 define(function () {
-    return {
+    //@body
+    var GraphModel = {
         display: {
             canvas: {
                 x: 0,
@@ -14,4 +15,6 @@ define(function () {
         nodes: [],
         schemas: {}
     };
+    //@body
+    return GraphModel;
 });

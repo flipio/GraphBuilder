@@ -13,6 +13,8 @@ define([
         'raphael-group'
     ],
 function ($, _, Raphael, Event, GraphModel, Node, Connection) {
+    
+    //@body
 
     var Graph = function (options) {
 
@@ -1100,6 +1102,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
     };
 
-
+    //@body
     return Graph;
 });

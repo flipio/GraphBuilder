@@ -6,7 +6,7 @@ define([
         'lodash'
     ],
     function ($, _) {
-
+        //@body
         var Connection = function (options) {
 
             this.nodeViews = options.nodes;
@@ -310,6 +310,6 @@ define([
                 });
             }
         };
-
+        //@body
         return Connection;
     });

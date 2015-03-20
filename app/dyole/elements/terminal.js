@@ -6,7 +6,7 @@ define([
         'lodash'
     ],
     function ($, _) {
-
+        //@body
         var Terminal = function (options) {
 
             this.options = options;
@@ -473,6 +473,6 @@ define([
 
         };
 
-
+        //@body
         return Terminal;
     });

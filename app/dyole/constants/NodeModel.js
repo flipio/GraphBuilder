@@ -4,49 +4,67 @@
 'use strict';
 
 define([
-        'lodash'
-    ],
-    function (_) {
+		'lodash'
+	], function (_) {
 
-        var model = {
-                    id: _.random(100000, 999999) + '',
-                    name: 'Test node',
-                    inputs: [{
-                        id: _.random(100000, 999999) + '',
-                        name: 'input'
-                    }],
-                    outputs: [{
-                        id: _.random(100000, 999999) + '',
-                        name: 'output'
-                    }],
-                    properties: {}
-                };
+		//@body
+		var NodeModel = (function () {
+			var model = {
+				id: _.random(100000, 999999) + '',
+				name: 'Test node',
+				inputs: [
+					{
+						id: _.random(100000, 999999) + '',
+						name: 'input'
+					}
+				],
+				outputs: [
+					{
+						id: _.random(100000, 999999) + '',
+						name: 'output'
+					}
+				],
+				properties: {}
+			};
 
-        return {
-            get : function() {
-                var m = _.clone(model, true);
+			return {
+				get: function () {
+					var m = _.clone(model, true);
 
-                m.id =  _.random(100000, 999999) + '';
-                m.inputs[0].id =  _.random(100000, 999999) + '';
-                m.outputs[0].id =  _.random(100000, 999999) + '';
-                m.name = m.name + ' ' + m.id;
+					m.id = _.random(100000, 999999) + '';
+					m.inputs[0].id = _.random(100000, 999999) + '';
+					m.outputs[0].id = _.random(100000, 999999) + '';
+					m.name = m.name + ' ' + m.id;
 
-                return m;
-            },
-            set:  function(setupNode) {
-                var n = _.clone(model, true);
+					return m;
+				},
+				set: function (setupNode) {
+					var n = _.clone(model, true);
 
-                n.id =  _.random(100000, 999999) + '';
-                n.inputs[0].id =  _.random(100000, 999999) + '';
-                n.outputs[0].id =  _.random(100000, 999999) + '';
-                n.name = n.name + ' ' + n.id;
+					n.id = _.random(100000, 999999) + '';
+					n.inputs[0].id = _.random(100000, 999999) + '';
+					n.outputs[0].id = _.random(100000, 999999) + '';
+					n.name = n.name + ' ' + n.id;
 
+					if (setupNode.name) {
+						n.name = setupNode.name;
+					}
+					if (setupNode.inputsName) {
+						n.inputs[0].name = setupNode.inputsName;
+					}
+					if (setupNode.outputName) {
+						n.outputs[0].name = setupNode.outputName;
+					}
+					if (setupNode.properties) {
+						n.properties = setupNode.properties;
+					}
+					return n;
+				}
+			};
 
-                if (setupNode.name) { n.name = setupNode.name; }
-                if (setupNode.inputsName) {n.inputs[0].name = setupNode.inputsName;}
-                if (setupNode.outputName) {n.outputs[0].name = setupNode.outputName;}
-                if (setupNode.properties) { n.properties = setupNode.properties;}
-                return n;
-        }
-        };
-    });
+		});
+
+		//@body
+
+		return NodeModel;
+});

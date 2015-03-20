@@ -8,7 +8,7 @@ define([
     ],
     function($, _, Terminal) {
 
-        //@cutStart
+        //@body
         var Node = (function() {
 
             var Constraints = {};
@@ -665,7 +665,7 @@ define([
             return Node
         })();
 
-        //@cutEnd
+        //@body
 
         return Node;
     });

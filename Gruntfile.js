@@ -9,7 +9,7 @@ module.exports = function (grunt) {
         banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
             '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
             '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-            '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+            '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> (<%= pkg.author.email %>);' +
             ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
         // Task configuration.
         clean: {
@@ -18,11 +18,31 @@ module.exports = function (grunt) {
         concat: {
             options: {
                 banner: '<%= banner %>',
-                stripBanners: true
+                stripBanners: true,
+				process: function(src, filepath) {
+                    var string = src,
+						ignore = ['_header.js', '_footer.js', 'temp-graph.js'];
+
+                    if (filepath.indexOf('_header.js') === -1 && filepath.indexOf('_footer.js') === -1 &&  filepath.indexOf('temp-graph.js') === -1) {
+                        string = src.split('//@body')[1];
+                    }
+
+					return string;
+				}
             },
             dist: {
-                src: ['bower_components/requirejs/require.js', '<%= concat.dist.dest %>'],
-                dest: 'dist/require.js'
+                files: { 
+					"dist/temp-graph.js": ['app/dyole/**/*.js']
+				}
+            },
+            wrap: {
+                files: {
+                    "dist/graph.js": [
+                        'app/_header.js',
+                        'dist/temp-graph.js',
+                        'app/_footer.js'
+                    ]
+                }
             }
         },
         uglify: {
@@ -30,8 +50,8 @@ module.exports = function (grunt) {
                 banner: '<%= banner %>'
             },
             dist: {
-                src: '<%= concat.dist.dest %>',
-                dest: 'dist/require.min.js'
+                src: 'dist/graph.js',
+                dest: 'dist/graph.min.js'
             }
         },
         qunit: {
@@ -127,7 +147,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'qunit', 'clean', 'requirejs', 'concat', 'uglify']);
+    grunt.registerTask('default', [	'clean', 'concat', 'uglify']);
     grunt.registerTask('preview', ['connect:development']);
     grunt.registerTask('serve', ['connect:development', 'watch:js']);
     grunt.registerTask('preview-live', ['default', 'connect:production']);
