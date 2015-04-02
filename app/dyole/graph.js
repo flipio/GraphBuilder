@@ -815,7 +815,54 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             this._drawScrollbars();
             this.model.display.canvas.zoom = this.currentScale;
         },
+        
+        _parseTreeGraphModel: function (TreeGraph) {
+            var _self = this,
+                model = this.model,
+                GAP = 100;
 
+            var position = {
+                x: 0,
+                y: 0
+            };
+
+            var _parseTree = function (graph, level, parent) {
+                _.forEach(graph, function (node, index) {
+                    model.nodes.push(node.model);
+                    model.schemas[node.id] = node.model;
+
+                    model.display.nodes[node.id] = _generateCoords(level, graph.length, index);
+
+                    if (typeof parent !== 'undefined') {
+                        var relation = {
+                            'id': '',
+                            'start_node': parent.model.id,
+                            'output_name': parent.model.outputs[0].id,
+                            'end_node':  node.model.id,
+                            'input_name':  node.model.inputs[0].id
+                        };
+
+                        model.relations.push(relation);
+                    }
+
+                    if (typeof node.children !== 'undefined' && _.isArray(node.children) && node.children.length > 0) {
+                        _parseTree(node.children, level++, node);
+                    }
+                });
+            };
+
+            var _generateCoords = function (level, numOfItems, index) {
+                var x = GAP*level,
+                    y = 0;
+
+                return {
+                    x: x,
+                    y: y
+                }
+            };
+
+            _parseTree(TreeGraph, 0);
+        },
 
         /**
          * ------------------------------------------------------
