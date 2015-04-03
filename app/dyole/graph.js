@@ -824,11 +824,15 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             var model = this.model,
                 GAP = 250;
 
-            var _parseTree = function (node, level, parent, index) {
+            var levelIndex = {};
+
+            var _parseTree = function (node, level, parent) {
                 model.nodes.push(node.model);
                 model.schemas[node.model.id] = node.model;
 
-                model.display.nodes[node.model.id] = _generateCoords(level, index++);
+                levelIndex[level] = typeof levelIndex[level] === 'number' ? levelIndex[level] + 1 : 0;
+                
+                model.display.nodes[node.model.id] = _generateCoords(level, levelIndex[level]);
 
                 if (parent) {
 
