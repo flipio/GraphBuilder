@@ -6,14 +6,15 @@ define(function () {
     var GraphModel = {
         display: {
             canvas: {
-                x: 0,
-                y: 0,
+                x: 50,
+                y: 50,
                 zoom: 1
             },
             nodes: {}
         },
         nodes: [],
-        schemas: {}
+        schemas: {},
+        relations: []
     };
     //@body
     return GraphModel;

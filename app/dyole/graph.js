@@ -24,6 +24,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         this.assetsUrl = options.assetsUrl;
 
         this.model = options.model || GraphModel;
+        this._parseTreeGraphModel(options.TreeModel);
+
         this.$parent = options.$parent;
 
         this.nodes = {};
@@ -437,7 +439,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 output = _self.nodes[connection.end_node].getTerminalById(
                     connection.input_name, 'input');
 
-            _self.connections[connection.id] = Connection.getInstance({
+            _self.connections[connection.id] = new Connection({
                 model: connection,
                 canvas: _self.canvas,
                 parent: _self.pipelineWrap,
@@ -817,43 +819,39 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         },
         
         _parseTreeGraphModel: function (TreeGraph) {
-            var _self = this,
-                model = this.model,
-                GAP = 100;
+            var model = this.model,
+                GAP = 250;
 
-            var position = {
-                x: 0,
-                y: 0
+            var _parseTree = function (node, level, parent, index) {
+                model.nodes.push(node.model);
+                model.schemas[node.model.id] = node.model;
+
+                model.display.nodes[node.model.id] = _generateCoords(level, index++);
+
+                if (parent) {
+
+                    var relation = {
+                        'id': '',
+                        'start_node': parent.model.id,
+                        'output_name': parent.model.outputs[0].id,
+                        'end_node':  node.model.id,
+                        'input_name':  node.model.inputs[0].id
+                    };
+
+                    model.relations.push(relation);
+                }
+
+                if (typeof node.children !== 'undefined' && _.isArray(node.children) && node.children.length > 0) {
+                    level++;
+                    _.forEach(node.children, function (n, index) {
+                        _parseTree(n, level, node, index);
+                    });
+                }
             };
 
-            var _parseTree = function (graph, level, parent) {
-                _.forEach(graph, function (node, index) {
-                    model.nodes.push(node.model);
-                    model.schemas[node.id] = node.model;
-
-                    model.display.nodes[node.id] = _generateCoords(level, graph.length, index);
-
-                    if (typeof parent !== 'undefined') {
-                        var relation = {
-                            'id': '',
-                            'start_node': parent.model.id,
-                            'output_name': parent.model.outputs[0].id,
-                            'end_node':  node.model.id,
-                            'input_name':  node.model.inputs[0].id
-                        };
-
-                        model.relations.push(relation);
-                    }
-
-                    if (typeof node.children !== 'undefined' && _.isArray(node.children) && node.children.length > 0) {
-                        _parseTree(node.children, level++, node);
-                    }
-                });
-            };
-
-            var _generateCoords = function (level, numOfItems, index) {
+            var _generateCoords = function (level, index, numOfItems) {
                 var x = GAP*level,
-                    y = 0;
+                    y = index*GAP/2;
 
                 return {
                     x: x,
@@ -861,7 +859,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 }
             };
 
-            _parseTree(TreeGraph, 0);
+            _parseTree(TreeGraph, 0, false, 0);
         },
 
         /**

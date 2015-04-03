@@ -19,7 +19,23 @@ function (NodeModel) {
                                 "model": NodeModel.get()
                             },
                             {
-                                "model": NodeModel.get()
+                                "model": NodeModel.get(),
+                                "children": [
+                                    {
+                                        "model": NodeModel.get()
+                                    },
+                                    {
+                                        "model": NodeModel.get(),
+                                        "children": [
+                                            {
+                                                "model": NodeModel.get()
+                                            },
+                                            {
+                                                "model": NodeModel.get()
+                                            }
+                                        ]
+                                    }
+                                ]
                             }
                         ]
                     },
