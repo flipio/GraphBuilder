@@ -24,7 +24,9 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         this.assetsUrl = options.assetsUrl;
 
         this.model = options.model || GraphModel;
-        this._parseTreeGraphModel(options.TreeModel);
+        if (options.TreeModel) {
+            this._parseTreeGraphModel(options.TreeModel);
+        }
 
         this.$parent = options.$parent;
 
