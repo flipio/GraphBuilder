@@ -9,9 +9,9 @@
     "test": "grunt qunit"
   },
   "author": {
-    "name": "Author Name",
-    "email": "email@domain.com",
-    "url": "http://bower.io/"
+    "name": "Filip Jelic",
+    "email": "jelic.filip@gmail.com",
+    "url": "http://www.filipjelic.com"
   },
   "licenses": [
     {
@@ -29,5 +29,8 @@
     "grunt-contrib-clean": "*",
     "grunt-contrib-requirejs": "*",
     "grunt-contrib-connect": "*"
+  },
+  "dependencies": {
+    "grunt-concat-sourcemap": "^0.4.3"
   }
 }

@@ -2,7 +2,10 @@
  * Created by filip on 11.3.15..
  */
 define(function () {
-    return {
+    
+    //@body
+    
+    var Event = {
         /**
          * Container object holding the event subscriptions list.
          *
@@ -162,4 +165,8 @@ define(function () {
             return subscribed;
         }
     };
+
+    //@body
+    return Event; 
+
 });

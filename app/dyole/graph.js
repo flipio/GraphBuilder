@@ -13,6 +13,8 @@ define([
         'raphael-group'
     ],
 function ($, _, Raphael, Event, GraphModel, Node, Connection) {
+    
+    //@body
 
     var Graph = function (options) {
 
@@ -22,6 +24,10 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         this.assetsUrl = options.assetsUrl;
 
         this.model = options.model || GraphModel;
+        if (options.TreeModel) {
+            this._parseTreeGraphModel(options.TreeModel);
+        }
+
         this.$parent = options.$parent;
 
         this.nodes = {};
@@ -442,7 +448,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 output = _self.nodes[connection.end_node].getTerminalById(
                     connection.input_name, 'input');
 
-            _self.connections[connection.id] = Connection.getInstance({
+            _self.connections[connection.id] = new Connection({
                 model: connection,
                 canvas: _self.canvas,
                 parent: _self.pipelineWrap,
@@ -820,7 +826,54 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             this._drawScrollbars();
             this.model.display.canvas.zoom = this.currentScale;
         },
+        
+        _parseTreeGraphModel: function (TreeGraph) {
+            var model = this.model,
+                GAP = 250;
 
+            var levelIndex = {};
+
+            var _parseTree = function (node, level, parent) {
+                model.nodes.push(node.model);
+                model.schemas[node.model.id] = node.model;
+
+                levelIndex[level] = typeof levelIndex[level] === 'number' ? levelIndex[level] + 1 : 0;
+
+                model.display.nodes[node.model.id] = _generateCoords(level, levelIndex[level]);
+
+                if (parent) {
+
+                    var relation = {
+                        'id': '',
+                        'start_node': parent.model.id,
+                        'output_name': parent.model.outputs[0].id,
+                        'end_node':  node.model.id,
+                        'input_name':  node.model.inputs[0].id
+                    };
+
+                    model.relations.push(relation);
+                }
+
+                if (typeof node.children !== 'undefined' && _.isArray(node.children) && node.children.length > 0) {
+                    level++;
+                    _.forEach(node.children, function (n, index) {
+                        _parseTree(n, level, node, index);
+                    });
+                }
+            };
+
+            var _generateCoords = function (level, index, numOfItems) {
+                var x = GAP*level,
+                    y = index*GAP/2;
+
+                return {
+                    x: x,
+                    y: y
+                }
+            };
+
+            _parseTree(TreeGraph, 0, false, 0);
+        },
 
         /**
          * ------------------------------------------------------
@@ -1107,6 +1160,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
     };
 
-
+    //@body
     return Graph;
 });
