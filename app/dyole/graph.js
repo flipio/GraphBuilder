@@ -831,7 +831,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 model.schemas[node.model.id] = node.model;
 
                 levelIndex[level] = typeof levelIndex[level] === 'number' ? levelIndex[level] + 1 : 0;
-                
+
                 model.display.nodes[node.model.id] = _generateCoords(level, levelIndex[level]);
 
                 if (parent) {
