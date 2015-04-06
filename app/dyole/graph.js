@@ -314,6 +314,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 startCoords.y = startCoords.y * currentZoomLevel.y;
 
                 //                globals.vents.trigger('inPlaceEdit:destroy');
+
+                _self.Event.trigger('canvas:drag:start', startCoords);
             };
 
             move = function onMove(x, y) {
@@ -330,7 +332,11 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                     _self._drawScrollbars();
                     _self.Event.trigger('pipeline:change');
 
+                    _self.Event.trigger('canvas:drag:move', {x: (translation.x + x) / currentZoomLevel.x, y: (
+                        translation.y + y) / currentZoomLevel.y});
                 }
+
+
 
             };
 
@@ -349,7 +355,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 can.y = canvasTranslation.y;
 
                 if (_self.rect.dragged) {
-                    //                    globals.vents.trigger('pipeline:change', 'display');
+                    _self.Event.trigger('canvas:drag:end', can);
+
                 }
 
                 startCoords = {

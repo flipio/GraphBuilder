@@ -550,6 +550,55 @@ define([
                 }
 
             },
+            _showInfoBox: function () {
+                var _self = this,
+                    bbox,
+                    nodeRadius = Constraints.radius,
+                    buttonDistance = typeof this.buttons.distance !== 'undefined' ? -this.buttons.distance - nodeRadius - this.buttons.radius : -nodeRadius * 1.5;
+
+                if (!this.InfoBox && !this.removeNodeButton) {
+
+                    this.buttons.rename.image.url = this.baseUrl + this.buttons.rename.image.name;
+
+                    this.InfoBox = this.canvas.button({
+                        fill: this.buttons.info.fill,
+                        x: +500,
+                        y: buttonDistance,
+                        radius: this.buttons.radius,
+                        border: this.buttons.border,
+                        image: {
+                            url: this.baseUrl + this.buttons.info.image.name,
+                            width: 400,
+                            height: 400
+                        }
+                    }, {
+                        onClick: this._showInfo,
+                        scope: this
+                    });
+
+                    this.removeNodeButton = this.canvas.button({
+                        fill: this.buttons.delete.fill,
+                        x: -16,
+                        y: buttonDistance,
+                        radius: this.buttons.radius,
+                        border: this.buttons.border,
+                        image: {
+                            url: this.baseUrl + this.buttons.delete.image.name,
+                            width: 14,
+                            height: 14
+                        }
+                    }, {
+                        onClick: this._removeNodeButtonClick,
+                        scope: this
+                    });
+
+                    _self.el.push(_self.InfoBox.getEl())
+                        .push(_self.removeNodeButton.getEl());
+
+                }
+
+            },
+
 
             _destroyButtons: function () {
 
@@ -579,6 +628,7 @@ define([
                 //show info node info
 
                 this.Pipeline.Event.trigger('node:showInfo', this.model);
+                this._showInfoBox(this.model);
             },
 
             _select: function () {
