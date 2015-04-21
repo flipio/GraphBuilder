@@ -984,7 +984,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          * 
          * @returns {string} Node ID created
          */
-        addNode: function (nodeModel, coords, rawCoords, constraints) {
+        addNode: function (nodeModel, coords, rawCoords, constraints, onCreate) {
 
             var rawModel = _.clone(nodeModel, true),
                 model;
@@ -1020,12 +1020,12 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
             model.id = _id;
 
-            console.log('Added node: ', _id);
+
 
             this.model.schemas[model.id] = rawModel;
 
             this.Event.trigger('node:add', model, constraints);
-
+            onCreate(_id);
             return _id;
         },
 
