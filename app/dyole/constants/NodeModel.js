@@ -58,6 +58,12 @@ define([
                 if (setupNode.properties) {
                     n.properties = setupNode.properties;
                 }
+                if (typeof setupNode.hasParent !== "undefined") {
+                    n.parent = setupNode.hasParent;
+                }
+                if (!n.childrenList) {
+                    n.childrenList = [];
+                }
                 return n;
             }
         };
