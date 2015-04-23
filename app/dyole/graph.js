@@ -900,11 +900,20 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
          * @returns {{}|*}
          */
         getNodeById: function (id) {
-            if (this.nodes[id]) {
-                return this.nodes[id];
-            } else {
+            if (!this.nodes[id]) {
                 throw new Error('Node with id: ' + id + ' not found');
             }
+
+            return this.nodes[id];
+        },
+
+        removeNode: function(nodeId) {
+
+            if (typeof nodeId === 'undefined') {
+                throw Error('Node ID must be supplied to remove node');
+            }
+
+            this.nodes[nodeId].destroy();
         },
 
         /**
