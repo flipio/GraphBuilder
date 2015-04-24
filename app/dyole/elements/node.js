@@ -572,7 +572,7 @@ define([
 
                 _removeNodeButtonClick: function() {
                     this._destroyButtons();
-                    this.removeNode();
+                    this.Pipeline.removeNode(this.model.id);
                 },
 
                 /**
@@ -625,6 +625,7 @@ define([
 
                     var _self = this;
 
+
                     _.each(this.connections, function(connection) {
                         if (connection) {
                             connection.destroyConnection();
@@ -645,14 +646,13 @@ define([
                         this.glow.remove();
                     }
 
+                    var parentId = this.model.parent, parentModel = this.Pipeline.nodes[parentId].model;
+
                     this.destroy();
 
                     delete this.Pipeline.model.schemas[this.model.id];
                     delete this.Pipeline.nodes[this.model.id];
 
-                    _.remove(this.Pipeline.nodes, function(n) {
-                        return n.id === _self.model.id;
-                    });
                     this.Pipeline.Event.trigger('node:remove', this.model);
                 },
 

@@ -908,12 +908,34 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         },
 
         removeNode: function(nodeId) {
+            var _self = this;
 
             if (typeof nodeId === 'undefined') {
                 throw Error('Node ID must be supplied to remove node');
             }
 
-            this.nodes[nodeId].destroy();
+            var node = this.nodes[nodeId],
+                parent = _self.nodes[node.model.parent];
+
+            _.remove(parent.model.childrenList, function(n) {
+                return n === _self.model.id;
+            });
+
+            if (node.model.childrenList && node.model.childrenList.length > 0) {
+                _.forEach(node.model.childrenList, function (child) {
+                    if (typeof _self.nodes[child] !== 'undefined') {
+
+                        _self.removeNode(child);
+
+                    }
+                });
+            }
+           // var index = parent.model.childrenList.indexOf(nodeId);
+          //  parent.model.childrenList.splice(index, 1);
+
+            node.removeNode();
+
+
         },
 
         /**
