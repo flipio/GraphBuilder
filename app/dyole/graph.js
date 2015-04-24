@@ -9,10 +9,11 @@ define([
         'dyole/constants/GraphModel',
         'dyole/elements/node',
         'dyole/elements/connection',
+        'dyole/helpers/sort',
 
         'raphael-group'
     ],
-function ($, _, Raphael, Event, GraphModel, Node, Connection) {
+function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
     
     //@body
 
@@ -24,6 +25,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
         this.assetsUrl = options.assetsUrl;
 
         this.model = options.model || GraphModel;
+
         if (options.TreeModel) {
             this._parseTreeGraphModel(options.TreeModel);
         }
@@ -834,6 +836,9 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             var levelIndex = {};
 
             var _parseTree = function (node, level, parent) {
+
+                node.model.parent = level === 0 ? false : parent.model.id;
+
                 model.nodes.push(node.model);
                 model.schemas[node.model.id] = node.model;
 
@@ -844,7 +849,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                 if (parent) {
 
                     var relation = {
-                        'id': '',
+                        'id': _.random(100000, 999999) + '',
                         'start_node': parent.model.id,
                         'output_name': parent.model.outputs[0].id,
                         'end_node':  node.model.id,
@@ -856,6 +861,14 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
 
                 if (typeof node.children !== 'undefined' && _.isArray(node.children) && node.children.length > 0) {
                     level++;
+                    var list = [];
+
+                    _.forEach(node.children, function (c) {
+                       list.push(c.model.id);
+                    });
+
+                    node.model.childrenList = list;
+
                     _.forEach(node.children, function (n, index) {
                         _parseTree(n, level, node, index);
                     });
@@ -930,12 +943,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
                     }
                 });
             }
-           // var index = parent.model.childrenList.indexOf(nodeId);
-          //  parent.model.childrenList.splice(index, 1);
 
             node.removeNode();
-
-
         },
 
         /**
@@ -1114,6 +1123,56 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection) {
             json.display.canvas.y = this.getEl().getTranslation().y;
 
             return json;
+        },
+
+        /**
+         * Get pipeline model
+         *
+         * @returns {*}
+         */
+        getTreeJSON: function () {
+            var _self = this,
+                json = [];
+
+            var sorted = Sort.tsort(this._getConnections());
+
+            if (sorted.errors.length > 0) {
+                throw Error('There are some errors in graph: ' + sorted.errors.toString());
+            }
+
+            var _createChildren = function (list, parent) {
+                _.forEach(list , function (nodeId) {
+                    _createModel(nodeId, parent);
+                });
+            };
+
+            var _createModel = function (nodeId, parent) {
+                var node = _self.getNodeById(nodeId),
+                    model = {
+                        model: {},
+                        children: []
+                    },
+                    children = node.model.childrenList; // list of ids
+
+                model.model = node.model;
+
+                if (typeof children !== 'undefined' && children.length > 0) {
+                    model.children = [];
+                    _createChildren(children, model.children);
+                }
+
+
+                if (model.children.length === 0) {
+                    delete model.children;
+                }
+
+                parent.push(model)
+
+            };
+
+            _createChildren(sorted.sorted, json);
+
+            return json[0];
         },
 
         /**

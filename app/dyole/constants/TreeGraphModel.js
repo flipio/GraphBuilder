@@ -13,8 +13,8 @@ function (NodeModel) {
                 "model": NodeModel.get(),
                 "children": [
                     {
-                        "model": NodeModel.get(),
-                        "children": [
+                        "model": NodeModel.get()
+                        /* "children": [
                             {
                                 "model": NodeModel.get()
                             },
@@ -37,11 +37,11 @@ function (NodeModel) {
                                     }
                                 ]
                             }
-                        ]
+                        ] */
                     },
                     {
-                        "model": NodeModel.get(),
-                        "children": [
+                        "model": NodeModel.get()
+/*                        "children": [
                             {
                                 "model": NodeModel.get(),
                                 "children": [
@@ -56,7 +56,7 @@ function (NodeModel) {
                             {
                                 "model": NodeModel.get()
                             }
-                        ]
+                        ] */
 
                     },
                     {

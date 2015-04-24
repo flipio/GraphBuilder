@@ -48,4 +48,5 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
 
     });
 
+    console.log(canvas.getTreeJSON());
 });
