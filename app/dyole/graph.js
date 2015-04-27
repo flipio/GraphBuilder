@@ -410,8 +410,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
                     canvas: _self.canvas,
                     pipelineWrap: _self.pipelineWrap
                 });
-
-                console.log(index, _self.nodes[nodeId]);
             });
 
             _.each(_self.nodes, function (node) {
