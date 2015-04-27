@@ -366,7 +366,7 @@ define([
                             output.hideTerminalName();
                         });
 
-                        //                _self.hideTooltip();
+                        //_self.hideTooltip();
                     });
 
                     borders.click(function() {
@@ -383,7 +383,7 @@ define([
                                 this._showInfo();
                             }
 
-                            //                    }
+                            // }
                         }
 
                         this.dragged = false;

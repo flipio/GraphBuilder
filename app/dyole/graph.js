@@ -1140,12 +1140,18 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          */
         getTreeJSON: function () {
             var _self = this,
-                json = [];
+                json = [],
 
-            var sorted = Sort.tsort(this._getConnections());
+                connections = this._getConnections();
+
+            var sorted = Sort.tsort(connections);
 
             if (sorted.errors.length > 0) {
                 throw Error('There are some errors in graph: ' + sorted.errors.toString());
+            }
+
+            if (connections.length === 0) {
+                return this.getJSON();
             }
 
             var _createChildren = function (list, parent) {
@@ -1178,7 +1184,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
                     delete model.children;
                 }
 
-                parent.push(model)
+                parent.push(model);
 
             };
 
