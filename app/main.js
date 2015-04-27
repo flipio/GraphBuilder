@@ -50,17 +50,18 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
 
     });
 
-    var temp = canvas.getTreeJSON();
-console.log(temp);
-//
-//    // reinit to test new model thats fetched
-//    canvas.destroy();
-//
-//    var canvasNew = new Graph({
-//        $parent: $('.graph-placeholder'),
-//        assetsUrl : '/',
-//        editMode: true,
-//        TreeModel: temp
-//    });
+    var temp = canvas.getJSON();
+
+    // reinit to test new model thats fetched
+    canvas.destroy();
+
+    var canvasNew = new Graph({
+        $parent: $('.graph-placeholder'),
+        assetsUrl : '/',
+        editMode: true,
+        model: temp
+    });
+
+    console.log(canvasNew.getTreeJSON());
 
 });

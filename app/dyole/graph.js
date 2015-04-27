@@ -1122,7 +1122,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
                 delete node.x;
                 delete node.y;
-                delete node.id;
             });
 
             json.display.canvas.x = this.getEl().getTranslation().x;
