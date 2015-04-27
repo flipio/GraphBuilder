@@ -1,6 +1,6 @@
 require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], function ($, Graph, TreeGraphModel, _) {
     var tree = [];
-    tree.push(TreeGraphModel.get(), TreeGraphModel.get());
+    tree.push(TreeGraphModel.get());
     var canvas = new Graph({
         $parent: $('.graph-placeholder'),
         assetsUrl : '/',
@@ -39,6 +39,7 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
     canvas.Event.subscribe('node:select', function (node) {
 
         console.log('%cnode:select', 'color:#acacff;background:black;', node);
+        console.log(canvas.getTreeJSON());
 
     });
 
@@ -49,8 +50,7 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
 
     });
 
-    var temp = canvas.getTreeJSON();
-
+    var temp = canvas.getJSON();
 
     // reinit to test new model thats fetched
     canvas.destroy();
@@ -59,7 +59,9 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
         $parent: $('.graph-placeholder'),
         assetsUrl : '/',
         editMode: true,
-        TreeModel: temp
+        model: temp
     });
+
+    console.log(canvasNew.getTreeJSON());
 
 });
