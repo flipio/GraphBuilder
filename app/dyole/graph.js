@@ -66,8 +66,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          */
         this.currentScale = this.model.display.canvas.zoom || 1.0;
 
-        console.log('Initialized Graph model: ', this.model);
-
         this._initCanvas();
         this._attachEvents();
         this._generateNodes();

@@ -17,7 +17,6 @@ define([
                 // cache options
                 this.options = options;
 
-
                 this.canvas = options.canvas;
 
                 this.parent = options.pipelineWrap;
