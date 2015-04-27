@@ -24,7 +24,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
         this.assetsUrl = options.assetsUrl;
 
-        this.model = options.model || GraphModel;
+        this.model = options.model || _.clone(GraphModel, true);
 
         if (options.TreeModel) {
             this._parseTreeGraphModel(options.TreeModel);
@@ -397,7 +397,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
             var _self = this;
 
-            _.each(this.model.nodes, function (nodeModel) {
+            _.each(_self.model.nodes, function (nodeModel, index) {
 
                 var nodeId = nodeModel['@id'] || nodeModel.id;
                 // schema is not merged because nodes is a copy of schema with modified inputs and outputs for displaying on canvas
@@ -410,9 +410,11 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
                     canvas: _self.canvas,
                     pipelineWrap: _self.pipelineWrap
                 });
+
+                console.log(index, _self.nodes[nodeId]);
             });
 
-            _.each(this.nodes, function (node) {
+            _.each(_self.nodes, function (node) {
                 _self.pipelineWrap.push(node.render().el);
             });
 
@@ -844,7 +846,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
                 levelIndex[level] = typeof levelIndex[level] === 'number' ? levelIndex[level] + 1 : 0;
 
-                model.display.nodes[node.model.id] = _generateCoords(level, levelIndex[level]);
+                model.display.nodes[node.model.id] =  model.display.nodes[node.model.id] || _generateCoords(level, levelIndex[level]);
 
                 if (parent) {
 
@@ -885,7 +887,13 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
                 }
             };
 
-            _parseTree(TreeGraph, 0, false, 0);
+            if (_.isArray(TreeGraph)) {
+                _.forEach(TreeGraph, function (Graph) {
+                    _parseTree(Graph, 0, false, 0);
+                });
+            } else {
+                _parseTree(TreeGraph, 0, false, 0);
+            }
         },
 
         /**
@@ -1154,6 +1162,10 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
                     },
                     children = node.model.childrenList; // list of ids
 
+                _.remove(sorted.sorted, function (i) {
+                    return i === nodeId;
+                });
+
                 model.model = node.model;
 
                 if (typeof children !== 'undefined' && children.length > 0) {
@@ -1170,9 +1182,16 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
             };
 
-            _createChildren(sorted.sorted, json);
 
-            return json[0];
+            var _create = function (item) {
+                _createModel(item, json);
+            };
+
+            while (sorted.sorted.length !== 0) {
+                _create(sorted.sorted[0]);
+            }
+
+            return json;
         },
 
         /**

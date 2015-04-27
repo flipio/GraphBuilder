@@ -1,10 +1,11 @@
 require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], function ($, Graph, TreeGraphModel, _) {
-
+    var tree = [];
+    tree.push(TreeGraphModel.get(), TreeGraphModel.get());
     var canvas = new Graph({
         $parent: $('.graph-placeholder'),
         assetsUrl : '/',
         editMode: true,
-        TreeModel: TreeGraphModel
+        TreeModel: tree
     });
 
     var constraints = {
@@ -48,5 +49,17 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
 
     });
 
-    console.log(canvas.getTreeJSON());
+    var temp = canvas.getTreeJSON();
+
+
+    // reinit to test new model thats fetched
+    canvas.destroy();
+
+    var canvasNew = new Graph({
+        $parent: $('.graph-placeholder'),
+        assetsUrl : '/',
+        editMode: true,
+        TreeModel: temp
+    });
+
 });
