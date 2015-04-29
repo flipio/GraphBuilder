@@ -925,6 +925,11 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
             return this.nodes[id];
         },
 
+        /**
+         * Removes node from canvas
+         *
+         * @param nodeId
+         */
         removeNode: function(nodeId) {
             var _self = this;
 
@@ -993,6 +998,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
 
         /**
+         *  Connect two nodes
          *
          * @param n1
          * @param n2
@@ -1130,7 +1136,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
         },
 
         /**
-         * Get pipeline model
+         * Get tree graph model
          *
          * @returns {*}
          */

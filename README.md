@@ -40,6 +40,113 @@ If you'd like to run the compiled version, run
         editMode: true
     });
 
+### Instantiation Options
+
+    {
+        $parent: $('.graph-placeholder'),   // required
+        assetsUrl : '/',                    // required
+        TreeModel: TreeModel,               // optional: it instantiate tree graph
+        model: model,                       // optional: it instantiate DAG graph
+        editMode: true                      // optional: enable edit mode; Default: false
+    }
+
+### TreeModel structure
+
+    {
+        "model": NodeModel.get(),
+        "children": [
+            {
+                "model": NodeModel.get(),
+                "children": [
+                    {
+                        "model": NodeModel.get(),
+                        "children": [
+                            {
+                                "model": NodeModel.get()
+                            },
+                            {
+                                "model": NodeModel.get(),
+                                "children": [
+                                    {
+                                        "model": NodeModel.get()
+                                    },
+                                    {
+                                        "model": NodeModel.get(),
+                                        "children": [
+                                            {
+                                                "model": NodeModel.get()
+                                            },
+                                            {
+                                                "model": NodeModel.get()
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "model": NodeModel.get(),
+                        "children": [
+                            {
+                                "model": NodeModel.get(),
+                                "children": [
+                                    {
+                                        "model": NodeModel.get()
+                                    },
+                                    {
+                                        "model": NodeModel.get()
+                                    }
+                                ]
+                            },
+                            {
+                                "model": NodeModel.get()
+                            }
+                        ]
+
+                    },
+                    {
+                        "model": NodeModel.get(),
+                        "children": [
+                            {
+                                "model": NodeModel.get()
+                            },
+                            {
+                                "model": NodeModel.get()
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+    
+    
+##### Multiple tree graphs on canvas
+Just pass array of TreeGraph models to TreeGraph option like this:
+    ```
+    [
+        TreeGraph
+    ]
+    ```
+    
+    
+### Graph API
+###### See docs for full spec of Public api calls
+
+    
+    canvasInstance.zoomIn();                                                        // returns current canvas scale; Canvas zoom in
+    canvasInstance.zoomOut();                                                       // returns current canvas scale; Canvas zoom out
+    canvasInstance.adjustSize();                                                    // returns null; Adjust canvas dimensions to fit the parent
+    canvasInstance.getNodeById(id);                                                 // returns node instance; Get Node instance on canvas
+    canvasInstance.removeNode(id);                                                  // returns null; Removes node from canvas
+    canvasInstance.addNode(nodeModel, coords, rawCoords, constraints, onCreate);    // returns node id; Add node to the canvas
+    canvasInstance.connectNodes(n1, n2, connectionName);                            // returns null; Connect two nodes
+    canvasInstance.destroy();                                                       // returns null; Destroys graph and its references
+    canvasInstance.getJSON();                                                       // returns graph model    
+    canvasInstance.getTreeJSON();                                                   // returns tree graph model    
+    
+
 ### Events
 
 ####`node:select` 
