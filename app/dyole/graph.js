@@ -158,6 +158,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
                 _self.createConnection(model);
 
+                _self.Event.trigger('connection:add', model);
             });
 
             $canvasArea.mousemove(function (e) {

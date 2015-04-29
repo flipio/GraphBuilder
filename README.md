@@ -1,6 +1,5 @@
 # GraphEditor
 
-
 ## Getting Started
 
 Make sure you have the latest packages installed
@@ -43,7 +42,6 @@ If you'd like to run the compiled version, run
 
 ### Events
 
-
 ####`node:select` 
 
 Triggered when you select a node.
@@ -54,7 +52,22 @@ arguments:
     
 example:    
     
-    canvas.Event.subscribe('node:select', function (node) {
+    canvasInstance.Event.subscribe('node:select', function (node) {
+    
+    
+    });
+
+####`node:deselected` 
+
+Triggered when you select a node.
+
+arguments:
+
+* `node` : node model
+    
+example:    
+    
+    canvasInstance.Event.subscribe('node:deselected', function (node) {
     
     
     });
@@ -68,7 +81,7 @@ arguments:
     
 example:  
 
-    canvas.Event.subscribe('node:showInfo', function (node) {
+    canvasInstance.Event.subscribe('node:showInfo', function (node) {
 
     });
 
@@ -82,7 +95,83 @@ arguments:
     
 example:  
 
-    canvas.Event.subscribe('node:deselected', function (node) {
+    canvasInstance.Event.subscribe('node:deselected', function (node) {
+
+
+    });
+
+
+
+####`node:drag`
+
+Triggered when you deselect node by clicking outside.
+arguments:
+
+* `node` : node model
+* `x` : x coord
+* `y` : y coord
+
+example:
+
+    canvasInstance.Event.subscribe('node:drag', function (model, x , y) {
+
+
+    });
+
+
+####`node:add`
+
+Triggered when you deselect node by clicking outside.
+arguments:
+
+* `node` : node model
+
+example:
+
+    canvasInstance.Event.subscribe('node:add', function (model) {
+
+
+    });
+
+
+####`node:remove`
+
+Triggered when you deselect node by clicking outside.
+arguments:
+
+* `node` : node model
+
+example:
+
+    canvasInstance.Event.subscribe('node:remove', function (model) {
+
+
+    });
+
+
+####`pipeline:change`
+
+Triggered when graph has been changed.
+arguments:
+
+example:
+
+    canvasInstance.Event.subscribe('pipeline:change', function () {
+
+
+    });
+
+
+####`connection:add`
+
+Triggered when graph has been changed.
+arguments:
+
+* `connection` : connection model
+
+example:
+
+    canvasInstance.Event.subscribe('connection:add', function (connection) {
 
 
     });
