@@ -27,7 +27,7 @@ Alternatively you can use `grunt serve --port xxxx` for custom port
 
 
 If you'd like to run the compiled version, run
-`grunt preview-live`.
+`grunt serve`.
 
 
 ## API
