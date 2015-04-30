@@ -645,7 +645,7 @@ define([
                         this.glow.remove();
                     }
 
-                    var parentId = this.model.parent, parentModel = this.Pipeline.nodes[parentId].model;
+                   
 
                     this.destroy();
 

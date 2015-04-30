@@ -939,10 +939,12 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
             var node = this.nodes[nodeId],
                 parent = _self.nodes[node.model.parent];
+            if (typeof parent !== "undefined") {
 
-            _.remove(parent.model.childrenList, function(n) {
-                return n === _self.model.id;
-            });
+                _.remove(parent.model.childrenList, function (n) {
+                    return n === _self.model.id;
+                });
+            }
 
             if (node.model.childrenList && node.model.childrenList.length > 0) {
                 _.forEach(node.model.childrenList, function (child) {
