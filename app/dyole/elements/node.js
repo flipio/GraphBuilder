@@ -17,7 +17,6 @@ define([
                 // cache options
                 this.options = options;
 
-
                 this.canvas = options.canvas;
 
                 this.parent = options.pipelineWrap;
@@ -650,6 +649,7 @@ define([
                         parentId = this.model.parent;
                         parentModel = this.Pipeline.nodes[parentId].model;
                     }
+
 
 
                     this.destroy();

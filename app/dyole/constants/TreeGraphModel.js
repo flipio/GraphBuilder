@@ -16,50 +16,50 @@ define([
                         "model": NodeModel.get(),
                         "children": [
                             {
-                                "model": NodeModel.get()
-                                /* "children": [
-                                 {
-                                 "model": NodeModel.get()
-                                 },
-                                 {
-                                 "model": NodeModel.get(),
-                                 "children": [
-                                 {
-                                 "model": NodeModel.get()
-                                 },
-                                 {
-                                 "model": NodeModel.get(),
-                                 "children": [
-                                 {
-                                 "model": NodeModel.get()
-                                 },
-                                 {
-                                 "model": NodeModel.get()
-                                 }
-                                 ]
-                                 }
-                                 ]
-                                 }
-                                 ] */
+                                "model": NodeModel.get(),
+                                "children": [
+                                    {
+                                        "model": NodeModel.get()
+                                    },
+                                    {
+                                        "model": NodeModel.get(),
+                                        "children": [
+                                            {
+                                                "model": NodeModel.get()
+                                            },
+                                            {
+                                                "model": NodeModel.get(),
+                                                "children": [
+                                                    {
+                                                        "model": NodeModel.get()
+                                                    },
+                                                    {
+                                                        "model": NodeModel.get()
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
                             },
                             {
-                                "model": NodeModel.get()
-                                /*                        "children": [
-                                 {
-                                 "model": NodeModel.get(),
-                                 "children": [
-                                 {
-                                 "model": NodeModel.get()
-                                 },
-                                 {
-                                 "model": NodeModel.get()
-                                 }
-                                 ]
-                                 },
-                                 {
-                                 "model": NodeModel.get()
-                                 }
-                                 ] */
+                                "model": NodeModel.get(),
+                                "children": [
+                                    {
+                                        "model": NodeModel.get(),
+                                        "children": [
+                                            {
+                                                "model": NodeModel.get()
+                                            },
+                                            {
+                                                "model": NodeModel.get()
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "model": NodeModel.get()
+                                    }
+                                ]
 
                             },
                             {
@@ -77,7 +77,7 @@ define([
                     }
                 ]
             };
-            
+
             return {
                 get: function () {
                     var model = _.clone(tree, true),

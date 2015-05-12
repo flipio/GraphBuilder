@@ -66,8 +66,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          */
         this.currentScale = this.model.display.canvas.zoom || 1.0;
 
-        console.log('Initialized Graph model: ', this.model);
-
         this._initCanvas();
         this._attachEvents();
         this._generateNodes();
@@ -160,6 +158,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
                 _self.createConnection(model);
 
+                _self.Event.trigger('connection:add', model);
             });
 
             $canvasArea.mousemove(function (e) {
@@ -926,6 +925,11 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
             return this.nodes[id];
         },
 
+        /**
+         * Removes node from canvas
+         *
+         * @param nodeId
+         */
         removeNode: function(nodeId) {
             var _self = this;
 
@@ -935,8 +939,10 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
             var node = this.nodes[nodeId],
                 parent = _self.nodes[node.model.parent];
-            if(parent){
-                _.remove(parent.model.childrenList, function(n) {
+
+            if (typeof parent !== "undefined") {
+
+                _.remove(parent.model.childrenList, function (n) {
                     return n === _self.model.id;
                 });
             }
@@ -996,6 +1002,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
 
         /**
+         *  Connect two nodes
          *
          * @param n1
          * @param n2
@@ -1133,7 +1140,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
         },
 
         /**
-         * Get pipeline model
+         * Get tree graph model
          *
          * @returns {*}
          */
