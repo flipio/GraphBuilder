@@ -912,6 +912,17 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
         },
 
         /**
+         * Get connections from pipeline model
+         * Used when generating pipeline json
+         *
+         * @returns {*}
+         * @private
+         */
+        getConnections: function () {
+            return this._getConnections();
+        },
+
+        /**
          * Get Node instance on canvas
          *
          * @param id
