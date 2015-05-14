@@ -1019,7 +1019,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          * @param n2
          * @param [connectionName]
          */
-        connectNodes: function (n1, n2, connectionName) {
+        connectNodes: function (n1, n2, connectionName, connectionClass) {
             var n1t = this.getNodeById(n1).getFirstTerminal('output');
             var n2t = this.getNodeById(n2).getFirstTerminal('input');
             
@@ -1029,7 +1029,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
                 end_node: n2,
                 input_name: n2t.id,
                 output_name: n1t.id,
-                connection_name : connectionName || ''
+                connection_name :  connectionName || false,
+                connection_class_name : connectionClass || false
             };
             
             this.tempConnectionRefs = {
