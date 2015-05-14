@@ -620,6 +620,24 @@ define([
                     this.Pipeline.Event.trigger('node:deselected', this.model);
                 },
 
+                /**
+                 * Set inner border style properties
+                 *
+                 * @public
+                 */
+                setStyle: function(obj) {
+
+                    if (typeof obj !== 'object') {
+                        console.error('Parametar has to be object, got: ' + typeof obj, obj);
+                        return false;
+                    }
+
+                    obj[prop] = value;
+
+                    this._innerBorder.attr(obj);
+
+                },
+
                 removeNode: function() {
 
                     var _self = this;

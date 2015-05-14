@@ -147,6 +147,34 @@ Just pass array of TreeGraph models to TreeGraph option like this:
     canvasInstance.getTreeJSON();                                                   // returns tree graph model    
     
 
+##### Default Node Constraints
+    ```
+    constraints: {
+
+        radius     : 48,
+        borderWidth: 10,
+        labelOffset: 15,
+
+        outdated: {
+            fill    : '#F5AB35',
+            gradient: ''
+        },
+
+        deleted: {
+            fill    : 'red',
+            gradient: ''
+        },
+
+        selected: {
+            fill: '#FF9800'
+        },
+
+        //defaults
+        fill    : '#424E4F',
+        stroke  : 'none'
+    }
+    ```
+
 ### Events
 
 ####`node:select` 
