@@ -645,7 +645,7 @@ define([
                         this.glow.remove();
                     }
 
-                   
+
 
                     this.destroy();
 

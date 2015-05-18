@@ -49,14 +49,9 @@ define([
                 if (setupNode.name) {
                     n.name = setupNode.name;
                 }
-                if (setupNode.URI) {
-                    console.log("setupNode",setupNode)
-                    var namefromUrl = setupNode.URI,
-                        splitName = namefromUrl.replace(setupNode.baseURI , "")
-                    n.urlLabel = splitName ;
-                }
-                if (setupNode.urlLabel) {
-                    n.urlLabel = setupNode.urlLabel;
+
+                if (setupNode.dataCategory) {
+                    n.dataCategory = setupNode.dataCategory;
                 }
                 if (setupNode.inputsName) {
                     n.inputs[0].name = setupNode.inputsName;
