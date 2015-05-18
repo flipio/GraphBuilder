@@ -210,8 +210,9 @@ define([
 
                     this.el = node;
                     this.label = label;
-                    this._innerBorder = innerBorder;
-                    this._outerBorder = outerBorder;
+                    this._innerBorder       = innerBorder;
+                    this._outerBorder       = outerBorder;
+                    this._outerDefaultColor = outerBorder;
                     this.circle = borders;
 
                     return this;
@@ -429,6 +430,7 @@ define([
                     this.Pipeline.Event.trigger('scrollbars:draw');
                     this.Pipeline.Event.trigger('pipeline:change');
                     this.Pipeline.Event.trigger('node:drag', this.model, start.x + dx, start.y + dy);
+
                 },
 
                 onMoveEnd: function() {
@@ -444,6 +446,7 @@ define([
                             this.Pipeline.Event.trigger('pipeline:change', 'display');
                         }
                     }
+
                 },
 
                 getTerminalById: function(id, type) {
@@ -611,13 +614,36 @@ define([
                     this._destroyButtons();
 
                     // Show default state
-                    this._innerBorder.attr({
-                        fill: Constraints.fill
-                    });
+
+                    if (typeof Constraints.selectedNewProp !== 'undefined') {
+                            this._innerBorder.attr({fill: Constraints.selectedNewProp.fill});
+                    } else {
+                            this._innerBorder.attr({fill: Constraints.fill});
+                    }
+
+
 
                     this.selected = false;
 
                     this.Pipeline.Event.trigger('node:deselected', this.model);
+                },
+
+                /**
+                 * Set inner border style properties
+                 *
+                 * @public
+                 */
+                setStyle: function(obj) {
+
+                    if (typeof obj !== 'object') {
+                        console.error('Parametar has to be object, got: ' + typeof obj, obj);
+                        return false;
+                    }
+
+                    //obj[prop] = value;
+                    Constraints.selectedNewProp = obj
+                    this._innerBorder.attr(obj);
+
                 },
 
                 removeNode: function() {
@@ -644,6 +670,12 @@ define([
                     if (typeof this.glow !== 'undefined') {
                         this.glow.remove();
                     }
+                    var parentId = null,  parentModel = null;
+                    if (this.model.parent ) {
+                        parentId = this.model.parent;
+                        parentModel = this.Pipeline.nodes[parentId].model;
+                    }
+
 
 
 

@@ -912,6 +912,17 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
         },
 
         /**
+         * Get connections from pipeline model
+         * Used when generating pipeline json
+         *
+         * @returns {*}
+         * @private
+         */
+        getConnections: function () {
+            return this._getConnections();
+        },
+
+        /**
          * Get Node instance on canvas
          *
          * @param id
@@ -939,12 +950,14 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
             var node = this.nodes[nodeId],
                 parent = _self.nodes[node.model.parent];
+
             if (typeof parent !== "undefined") {
 
                 _.remove(parent.model.childrenList, function (n) {
                     return n === _self.model.id;
                 });
             }
+
 
             if (node.model.childrenList && node.model.childrenList.length > 0) {
                 _.forEach(node.model.childrenList, function (child) {
@@ -1006,7 +1019,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          * @param n2
          * @param [connectionName]
          */
-        connectNodes: function (n1, n2, connectionName) {
+        connectNodes: function (n1, n2, connectionName, connectionClass) {
             var n1t = this.getNodeById(n1).getFirstTerminal('output');
             var n2t = this.getNodeById(n2).getFirstTerminal('input');
             
@@ -1016,7 +1029,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
                 end_node: n2,
                 input_name: n2t.id,
                 output_name: n1t.id,
-                connection_name : connectionName || ''
+                connection_name :  connectionName || false,
+                connection_class_name : connectionClass || false
             };
             
             this.tempConnectionRefs = {

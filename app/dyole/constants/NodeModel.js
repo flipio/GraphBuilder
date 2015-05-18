@@ -65,6 +65,16 @@ define([
                 if (typeof setupNode.hasParent !== "undefined") {
                     n.parent = setupNode.hasParent;
                 }
+                if (setupNode.instance) {
+                    n.instance = setupNode.instance;
+                }
+                if (setupNode.propertyType) {
+                    n.propertyType = setupNode.propertyType;
+                }
+
+                if (setupNode.sparqlType) {
+                    n.sparqlType = setupNode.sparqlType;
+                }
                 if (!n.childrenList) {
                     n.childrenList = [];
                 }
