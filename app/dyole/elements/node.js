@@ -210,8 +210,9 @@ define([
 
                     this.el = node;
                     this.label = label;
-                    this._innerBorder = innerBorder;
-                    this._outerBorder = outerBorder;
+                    this._innerBorder       = innerBorder;
+                    this._outerBorder       = outerBorder;
+                    this._outerDefaultColor = outerBorder;
                     this.circle = borders;
 
                     return this;
@@ -429,6 +430,7 @@ define([
                     this.Pipeline.Event.trigger('scrollbars:draw');
                     this.Pipeline.Event.trigger('pipeline:change');
                     this.Pipeline.Event.trigger('node:drag', this.model, start.x + dx, start.y + dy);
+
                 },
 
                 onMoveEnd: function() {
@@ -444,6 +446,7 @@ define([
                             this.Pipeline.Event.trigger('pipeline:change', 'display');
                         }
                     }
+
                 },
 
                 getTerminalById: function(id, type) {
@@ -612,7 +615,7 @@ define([
 
                     // Show default state
                     this._innerBorder.attr({
-                        fill: Constraints.fill
+                        //fill: Constraints.fill
                     });
 
                     this.selected = false;
@@ -632,7 +635,7 @@ define([
                         return false;
                     }
 
-                    obj[prop] = value;
+                    //obj[prop] = value;
 
                     this._innerBorder.attr(obj);
 
