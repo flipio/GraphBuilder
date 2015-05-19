@@ -75,11 +75,11 @@ define([
                     },
 
                     selected: {
-                        fill: '#FF9800'
+                        fill: '#D7EBFF'
                     },
 
                     //defaults
-                    fill    : '#424E4F',
+                    fill    : '#011E37',
                     stroke  : 'none'
                 },
 
@@ -212,7 +212,7 @@ define([
                     this.label = label;
                     this._innerBorder       = innerBorder;
                     this._outerBorder       = outerBorder;
-                    this._outerDefaultColor = outerBorder;
+
                     this.circle = borders;
 
                     return this;
@@ -601,7 +601,7 @@ define([
                     this._showButtons();
 
                     // Show selected state
-                    this._innerBorder.attr({
+                    this._outerBorder.attr({
                         fill: Constraints.selected.fill
                     });
 
@@ -615,11 +615,9 @@ define([
 
                     // Show default state
 
-                    if (typeof Constraints.selectedNewProp !== 'undefined') {
-                            this._innerBorder.attr({fill: Constraints.selectedNewProp.fill});
-                    } else {
-                            this._innerBorder.attr({fill: Constraints.fill});
-                    }
+
+                    this._outerBorder.attr({fill: "#ffffff"});
+
 
 
 
