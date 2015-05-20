@@ -60,8 +60,8 @@ define([
 
                 constraints: {
 
-                    radius     : 48,
-                    borderWidth: 10,
+                    radius     : 38,
+                    borderWidth: 7,
                     labelOffset: 15,
 
                     outdated: {
@@ -75,7 +75,7 @@ define([
                     },
 
                     selected: {
-                        fill: '#D7EBFF'
+                        fill: '#C6D4E2'
                     },
 
                     //defaults
@@ -86,12 +86,12 @@ define([
                 icons: {
                     input  : 'preview_assets/images/icon-input-2.png',
                     output : 'preview_assets/images/icon-output-2.png',
-                    default: 'preview_assets/images/icon-db.png'
+                    default: 'preview_assets/images/cloud.png'
                 },
 
                 buttons: {
-                    radius: 14,
-                    border: 4,
+                    radius: 12,
+                    border: 3,
 
                     // if you want to change buttons distance from node uncomment and change distance
                     //            distance: 5,
