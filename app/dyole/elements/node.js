@@ -62,7 +62,7 @@ define([
 
                     radius     : 38,
                     borderWidth: 7,
-                    labelOffset: 15,
+                    labelOffset: 12,
 
                     outdated: {
                         fill    : '#F5AB35',
