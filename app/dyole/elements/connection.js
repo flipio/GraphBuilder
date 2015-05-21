@@ -297,6 +297,8 @@ define([
                 }
 
                 console.log('Connection remove');
+                this.Pipeline.Event.trigger('connection:remove');
+                this.Pipeline.Event.trigger('connection:destroy');
                 this.Pipeline.Event.trigger('pipeline:change');
             },
 

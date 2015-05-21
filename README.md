@@ -297,9 +297,9 @@ example:
     });
 
 
-####`connection:add`
+####`connection:add` || `connection:create`
 
-Triggered when graph has been changed.
+Triggered when connection has been added.
 arguments:
 
 * `connection` : connection model
@@ -307,6 +307,19 @@ arguments:
 example:
 
     canvasInstance.Event.subscribe('connection:add', function (connection) {
+
+
+    });
+
+
+####`connection:remove` || `connection:destroy`
+
+Triggered when connection has been removed.
+arguments:
+
+example:
+
+    canvasInstance.Event.subscribe('connection:remove', function (connection) {
 
 
     });
