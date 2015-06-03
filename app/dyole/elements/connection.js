@@ -3,9 +3,10 @@
  */
 define([
         'jquery',
-        'lodash'
+        'lodash',
+        'dyole/helpers/common'
     ],
-    function ($, _) {
+    function ($, _, Common) {
         //@body
         var Connection = function (options) {
 
@@ -25,21 +26,27 @@ define([
 
 //            this.tempConnectionActive = false;
 
+            if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
+                Common.setConstraints(this, this.Pipeline.constraints.connection)
+            }
+
             this._createConnection(this.input, this.output);
             this._attachEvents();
         };
 
         Connection.prototype = {
 
-            baseUrl : '/',
+            constraints: {
+                baseUrl : '/',
 
-            strokeWidth: 7,
+                strokeWidth: 7,
 //            strokeColor: '#dddddd',
-            strokeColor: '#FBFCFC',
-            labelColor : '#8989FF',
+                strokeColor: '#FBFCFC',
+                labelColor : '#8989FF',
 
-            images: {
-                wirePath: 'preview_assets/images/wire-cut.png'
+                images: {
+                    wirePath: 'preview_assets/images/wire-cut.png'
+                }
             },
 
             _attachEvents: function () {
@@ -104,12 +111,12 @@ define([
                 if (!this.Pipeline.tempConnectionActive) {
 
                     var self = this,
-                        src = this.images.wirePath,
+                        src = this.constraints.images.wirePath,
                         canvasOffset = this._getOffset(this.element[0]);
 
                     this.removeWire();
 
-                    this.wire = this.canvas.image(this.baseUrl + src, x - canvasOffset.left - 15, y - canvasOffset.top - 15, 25, 25);
+                    this.wire = this.canvas.image(this.constraints.baseUrl + src, x - canvasOffset.left - 15, y - canvasOffset.top - 15, 25, 25);
 
                     this.wire.click(function () {
                         self.removeWire();
@@ -150,7 +157,7 @@ define([
 
                 coords = this._getCoords(this.input, this.output);
 
-                strokeWidth = this.strokeWidth * scale;
+                strokeWidth = this.constraints.strokeWidth * scale;
 
 
                 this.connection.redraw(coords, strokeWidth);
@@ -233,8 +240,8 @@ define([
                 coords = this._getCoords(input, output);
 
                 attr = {
-                    stroke: this.strokeColor,
-                    'stroke-width': this.strokeWidth * scale
+                    stroke: this.constraints.strokeColor,
+                    'stroke-width': this.constraints.strokeWidth * scale
                 };
 
                 this.connection = this.canvas.curve(coords, attr);

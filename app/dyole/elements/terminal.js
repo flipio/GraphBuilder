@@ -3,9 +3,10 @@
  */
 define([
         'jquery',
-        'lodash'
+        'lodash',
+        'dyole/helpers/common'
     ],
-    function ($, _) {
+    function ($, _, Common) {
         //@body
         var Terminal = function (options) {
 
@@ -26,6 +27,16 @@ define([
             this.terminals = {};
 
             this.connections = [];
+
+            if (Common.checkObjectKeys(this.Pipeline.constraints.terminal)) {
+                Common.setConstraints(this, this.Pipeline.constraints.terminal)
+            }
+
+            if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
+                if (Common.objectPropExists(this.Pipeline.constraints.connection.strokeWidth)) {
+                    this.connectionConfig.width = this.Pipeline.constraints.connection.strokeWidth;
+                }
+            }
 
         };
 
@@ -414,7 +425,7 @@ define([
                     y2: diff.y
                 };
 
-                this.tempConnection.redraw(coords, 8 * scale);
+                this.tempConnection.redraw(coords, this.connectionConfig.width * scale);
             },
 
             removeConnection: function (connectionId) {

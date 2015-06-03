@@ -8,12 +8,14 @@ define([
         'dyole/event/event',
         'dyole/constants/GraphModel',
         'dyole/elements/node',
+        'dyole/elements/terminal',
         'dyole/elements/connection',
         'dyole/helpers/sort',
+        'dyole/helpers/common',
 
         'raphael-group'
     ],
-function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
+function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Common) {
     
     //@body
 
@@ -66,6 +68,10 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          */
         this.currentScale = this.model.display.canvas.zoom || 1.0;
 
+        if (typeof options.constraints === 'object' && Object.keys(options.constraints).length  > 0) {
+            this._overrideConstraints(options.constraints);
+        }
+
         this._initCanvas();
         this._attachEvents();
         this._generateNodes();
@@ -79,6 +85,22 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
         assetsUrl : '/',
 
         constraints: {},
+
+        _overrideConstraints: function (constraints) {
+
+            if (Common.checkObjectKeys(constraints.node)) {
+                this.constraints.node = constraints.node;
+            }
+
+            if (Common.checkObjectKeys(constraints.terminal)) {
+                this.constraints.terminal = constraints.terminal;
+            }
+
+            if (Common.checkObjectKeys(constraints.connection)) {
+                this.constraints.connection = constraints.connection;
+            }
+
+        },
 
         /**
          * Attach necessary listeners/subscribers

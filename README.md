@@ -319,7 +319,7 @@ arguments:
 
 example:
 
-    canvasInstance.Event.subscribe('connection:remove', function (connection) {
+    canvasInstance.Event.subscribe('connection:remove ', function (connection) {
 
 
     });
