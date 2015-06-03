@@ -100,6 +100,14 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
                 this.constraints.connection = constraints.connection;
             }
 
+            if (Common.checkObjectKeys(constraints.buttons)) {
+                this.constraints.buttons = constraints.buttons;
+            }
+
+            if (Common.checkObjectKeys(constraints.icons)) {
+                this.constraints.icons = constraints.icons;
+            }
+
         },
 
         /**

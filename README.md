@@ -323,3 +323,145 @@ example:
 
 
     });
+
+
+### Overriding element(s) constraints
+
+Example:
+
+    var canvas = new Graph({
+            $parent: $('.graph-placeholder'),
+            assetsUrl : '/',
+            editMode: true,
+            TreeModel: tree,
+            constraints: {
+                node: {
+    
+                    radius     : 46,
+                    borderWidth: 8,
+                    labelOffset: 12,
+    
+                    selected: {
+                        fill: '#ffffff'
+                    },
+    
+                    //defaults
+                    fill    : '#011E37',
+                    stroke  : 'none'
+                },
+                connection: {
+                    strokeWidth: 7
+                },
+                terminal: {
+                    radius: 9,
+                    radiusInner: 6
+                },
+                buttons: {
+                    radius: 15
+                },
+                icons: {
+                    default: 'preview_assets/images/icon-db.png'
+                }
+            }
+        });
+
+Overriding elements add element name as key in constraints object passed in configuration and override propreties. 
+
+##### Default constraints for every element
+
+    // Node
+    {
+    
+        radius     : 38,
+        borderWidth: 7,
+        labelOffset: 12,
+
+        selected: {
+            fill: '#C6D4E2'
+        },
+
+        //defaults
+        fill    : '#011E37',
+        stroke  : 'none'
+    }
+    
+    // Terminal
+    {
+        radius: 8,
+        radiusInner: 4.4,
+    
+        available: {
+            gradiant: '',
+            fill: '#3eb157',
+            stroke: ''
+        },
+    
+        connected: {
+            gradiant: '',
+            fill: '#1E8BC3',
+            stroke: ''
+        },
+    
+        // defaults
+        gradiant: '',
+        fill: '#888888',
+        stroke: ''
+    }
+    
+    // Connection
+    {
+
+        strokeColor: '#FBFCFC',
+        labelColor : '#8989FF',
+
+        images: {
+            wirePath: 'preview_assets/images/wire-cut.png'
+        }
+    }
+    
+    // Buttons
+    {
+        radius: 12,
+        border: 3,
+    
+        distance: -nodeRadius * 1.5,
+    
+        info: {
+            fill    : '#3FC380',
+            disabled: '#ccc',
+            // must supply whole image object if you want to override it
+            image: {
+                name  : 'preview_assets/images/icon-info.png',
+                width : 6,
+                height: 11
+            }
+    
+        },
+    
+        delete: {
+            fill: '#EF4836',
+            // must supply whole image object if you want to override it
+            image: {
+                name  : 'preview_assets/images/icon-delete.png',
+                width : 10,
+                height: 10
+            }
+    
+        },
+    
+        rename: {
+            fill: 'transparent',
+            // must supply whole image object if you want to override it
+            image: {
+                name  : 'preview_assets/images/icon-pencil.png',
+                width : 12,
+                height: 12
+            }
+        }
+    }
+    // Icons
+    {
+        input  : 'preview_assets/images/icon-input-2.png',
+        output : 'preview_assets/images/icon-output-2.png',
+        default: 'preview_assets/images/cloud.png'
+    }

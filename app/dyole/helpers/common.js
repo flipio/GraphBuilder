@@ -31,17 +31,16 @@ var Common = {
     },
 
     setConstraints: function (instance, constraints) {
-        var _self = instance;
 
         _.forEach(constraints, function(constraint, prop) {
 
             if (Common.objectPropExists(constraint)) {
                 if (Common.getPropType(constraint) == 'object') {
                     _.forEach(constraint, function(value, key) {
-                        _self.constraints[prop][key] = value;
+                        instance[prop][key] = value;
                     });
                 } else {
-                    _self.constraints[prop] = constraint;
+                    instance[prop] = constraint;
                 }
             }
 

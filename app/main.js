@@ -28,6 +28,13 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
             terminal: {
                 radius: 9,
                 radiusInner: 6
+            },
+            buttons: {
+                radius: 15,
+                border: 4
+            },
+            icons: {
+                default: 'preview_assets/images/icon-db.png'
             }
         }
     });
@@ -73,18 +80,5 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
         console.log('%cnode:deselected', 'color:#acacff;background:black;', node);
 
     });
-
-    var temp = canvas.getJSON();
-    console.log(temp);
-    // reinit to test new model thats fetched
-//    canvas.destroy();
-//
-//    var canvasNew = new Graph({
-//        $parent: $('.graph-placeholder'),
-//        assetsUrl : '/',
-//        editMode: true,
-//        model: temp
-//    });
-
 
 });

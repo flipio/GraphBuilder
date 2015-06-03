@@ -29,7 +29,7 @@ define([
             this.connections = [];
 
             if (Common.checkObjectKeys(this.Pipeline.constraints.terminal)) {
-                Common.setConstraints(this, this.Pipeline.constraints.terminal)
+                Common.setConstraints(this.constraints, this.Pipeline.constraints.terminal)
             }
 
             if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {

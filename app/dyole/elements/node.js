@@ -46,7 +46,15 @@ define([
                 this.outputRefs = this.model.outputs;
 
                 if (Common.checkObjectKeys(this.Pipeline.constraints.node)) {
-                    Common.setConstraints(this, this.Pipeline.constraints.node)
+                    Common.setConstraints(this.constraints, this.Pipeline.constraints.node)
+                }
+
+                if (Common.checkObjectKeys(this.Pipeline.constraints.buttons)) {
+                    Common.setConstraints(this.buttons, this.Pipeline.constraints.buttons)
+                }
+
+                if (Common.checkObjectKeys(this.Pipeline.constraints.icons)) {
+                    Common.setConstraints(this.icons, this.Pipeline.constraints.icons)
                 }
 
                 if (typeof options.constraints !== 'undefined') {

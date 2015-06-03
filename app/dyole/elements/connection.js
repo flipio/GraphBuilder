@@ -27,7 +27,7 @@ define([
 //            this.tempConnectionActive = false;
 
             if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
-                Common.setConstraints(this, this.Pipeline.constraints.connection)
+                Common.setConstraints(this.constraints, this.Pipeline.constraints.connection)
             }
 
             this._createConnection(this.input, this.output);
