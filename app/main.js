@@ -84,8 +84,8 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
 
     $('.get-json').on('click', function () {
         var json = canvas.getTreeJSON();
-        
-        console.log(json);
+
+        $('#json-area').attr('disabled', false).val(JSON.stringify(json, null, 2));
     });
 
 });
