@@ -1078,7 +1078,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
          * @param coords {object} {x: x, y: y}
          * @param [rawCoords] {boolean}
          * @param [constraints] {object}
-         * 
+         * @param [onCreate] {function}
+         *
          * @returns {string} Node ID created
          */
         addNode: function (nodeModel, coords, rawCoords, constraints, onCreate) {
@@ -1117,12 +1118,14 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
 
             model.id = _id;
 
-
-
             this.model.schemas[model.id] = rawModel;
 
             this.Event.trigger('node:add', model, constraints);
-            onCreate(_id);
+
+            if (_.isFunction(onCreate)) {
+                onCreate(_id);
+            }
+
             return _id;
         },
 

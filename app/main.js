@@ -1,4 +1,4 @@
-require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], function ($, Graph, TreeGraphModel, _) {
+require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/constants/GraphModel', 'dyole/constants/NodeModel', 'lodash'], function ($, Graph, TreeGraphModel, GraphModel, NodeModel, _) {
     var tree = [];
     tree.push(TreeGraphModel.get());
 
@@ -6,7 +6,8 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
         $parent: $('.graph-placeholder'),
         assetsUrl : '/',
         editMode: true,
-        TreeModel: tree,
+        model: _.clone(GraphModel, true),
+//        TreeModel: tree,
         constraints: {
             node: {
 
@@ -45,11 +46,11 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
         radius:60
     };
 
-//    var n1, n2, n3, n4, n5, n6 , n7;
+    var n1, n2, n3, n4, n5, n6 , n7;
 //
-//    n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
-//    n2 = canvas.addNode(NodeModel.get(), {x: 450, y: 100}, false);
-//    n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
+    n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
+    n2 = canvas.addNode(NodeModel.get(), {x: 450, y: 100}, false);
+    n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
 //    n4 = canvas.addNode(NodeModel.get(), {x: 800, y: 200}, false);
 //    n5 = canvas.addNode(NodeModel.get(), {x: 300, y: 300}, false);
 //    n6 = canvas.addNode(NodeModel.get(), {x: 500, y: 300}, false);
