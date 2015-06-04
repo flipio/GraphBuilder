@@ -23,7 +23,8 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'lodash'], f
                 stroke  : 'none'
             },
             connection: {
-                strokeWidth: 7
+                strokeWidth: 7,
+                disableWire: true
             },
             terminal: {
                 radius: 9,

@@ -413,7 +413,8 @@ Overriding elements add element name as key in constraints object passed in conf
         strokeWidth: 7,
         strokeColor: '#FBFCFC',
         labelColor : '#8989FF',
-
+        disableWire: false,
+        
         images: {
             wirePath: 'preview_assets/images/wire-cut.png'
         }

@@ -43,6 +43,7 @@ define([
 //            strokeColor: '#dddddd',
                 strokeColor: '#FBFCFC',
                 labelColor : '#8989FF',
+                disableWire: false,
 
                 images: {
                     wirePath: 'preview_assets/images/wire-cut.png'
@@ -108,7 +109,7 @@ define([
 
             onMouseOver: function (e, x, y) {
 
-                if (!this.Pipeline.tempConnectionActive) {
+                if (!this.Pipeline.tempConnectionActive && !this.constraints.disableWire) {
 
                     var self = this,
                         src = this.constraints.images.wirePath,
