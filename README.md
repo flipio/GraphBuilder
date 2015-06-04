@@ -410,7 +410,7 @@ Overriding elements add element name as key in constraints object passed in conf
     
     // Connection
     {
-
+        strokeWidth: 7,
         strokeColor: '#FBFCFC',
         labelColor : '#8989FF',
 
