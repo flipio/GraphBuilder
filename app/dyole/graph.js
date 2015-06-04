@@ -960,7 +960,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
          */
         getNodeById: function (id) {
             if (!this.nodes[id]) {
-                throw new Error('Node with id: ' + id + ' not found');
+                console.error('Node with id: ' + id + ' not found');
             }
 
             return this.nodes[id];
@@ -970,30 +970,32 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
          * Removes node from canvas
          *
          * @param nodeId
+         * @param isChild
          */
-        removeNode: function(nodeId) {
+        removeNode: function(nodeId, isChild) {
+            isChild = isChild || false;
             var _self = this;
 
             if (typeof nodeId === 'undefined') {
                 throw Error('Node ID must be supplied to remove node');
             }
 
-            var node = this.nodes[nodeId],
-                parent = _self.nodes[node.model.parent];
+            var node = this.getNodeById(nodeId),
+                parent = this.getNodeById(node.model.parent);
 
-            if (typeof parent !== "undefined") {
+            if (typeof parent !== "undefined" && !isChild) {
 
                 _.remove(parent.model.childrenList, function (n) {
-                    return n === _self.model.id;
+                    return n === nodeId;
                 });
-            }
 
+            }
 
             if (node.model.childrenList && node.model.childrenList.length > 0) {
                 _.forEach(node.model.childrenList, function (child) {
-                    if (typeof _self.nodes[child] !== 'undefined') {
+                    if (typeof child !== 'undefined' && typeof _self.getNodeById(child) !== 'undefined') {
 
-                        _self.removeNode(child);
+                        _self.removeNode(child, true);
 
                     }
                 });
