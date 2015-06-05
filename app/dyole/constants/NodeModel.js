@@ -50,6 +50,10 @@ define([
                     n.name = setupNode.name;
                 }
 
+                if (setupNode.ubiquitousUnique) {
+                    n.ubiquitousUnique = setupNode.ubiquitousUnique;
+                }
+
                 if (setupNode.dataCategory) {
                     n.dataCategory = setupNode.dataCategory;
                 }
