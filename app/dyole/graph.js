@@ -8,12 +8,14 @@ define([
         'dyole/event/event',
         'dyole/constants/GraphModel',
         'dyole/elements/node',
+        'dyole/elements/terminal',
         'dyole/elements/connection',
         'dyole/helpers/sort',
+        'dyole/helpers/common',
 
         'raphael-group'
     ],
-function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
+function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Common) {
     
     //@body
 
@@ -66,6 +68,10 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          */
         this.currentScale = this.model.display.canvas.zoom || 1.0;
 
+        if (typeof options.constraints === 'object' && Object.keys(options.constraints).length  > 0) {
+            this._overrideConstraints(options.constraints);
+        }
+
         this._initCanvas();
         this._attachEvents();
         this._generateNodes();
@@ -79,6 +85,30 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
         assetsUrl : '/',
 
         constraints: {},
+
+        _overrideConstraints: function (constraints) {
+
+            if (Common.checkObjectKeys(constraints.node)) {
+                this.constraints.node = constraints.node;
+            }
+
+            if (Common.checkObjectKeys(constraints.terminal)) {
+                this.constraints.terminal = constraints.terminal;
+            }
+
+            if (Common.checkObjectKeys(constraints.connection)) {
+                this.constraints.connection = constraints.connection;
+            }
+
+            if (Common.checkObjectKeys(constraints.buttons)) {
+                this.constraints.buttons = constraints.buttons;
+            }
+
+            if (Common.checkObjectKeys(constraints.icons)) {
+                this.constraints.icons = constraints.icons;
+            }
+
+        },
 
         /**
          * Attach necessary listeners/subscribers
@@ -930,7 +960,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          */
         getNodeById: function (id) {
             if (!this.nodes[id]) {
-                throw new Error('Node with id: ' + id + ' not found');
+                console.error('Node with id: ' + id + ' not found');
             }
 
             return this.nodes[id];
@@ -940,30 +970,32 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          * Removes node from canvas
          *
          * @param nodeId
+         * @param isChild
          */
-        removeNode: function(nodeId) {
+        removeNode: function(nodeId, isChild) {
+            isChild = isChild || false;
             var _self = this;
 
             if (typeof nodeId === 'undefined') {
                 throw Error('Node ID must be supplied to remove node');
             }
 
-            var node = this.nodes[nodeId],
-                parent = _self.nodes[node.model.parent];
+            var node = this.getNodeById(nodeId),
+                parent = this.getNodeById(node.model.parent);
 
-            if (typeof parent !== "undefined") {
+            if (typeof parent !== "undefined" && !isChild) {
 
                 _.remove(parent.model.childrenList, function (n) {
-                    return n === _self.model.id;
+                    return n === nodeId;
                 });
-            }
 
+            }
 
             if (node.model.childrenList && node.model.childrenList.length > 0) {
                 _.forEach(node.model.childrenList, function (child) {
-                    if (typeof _self.nodes[child] !== 'undefined') {
+                    if (typeof child !== 'undefined' && typeof _self.getNodeById(child) !== 'undefined') {
 
-                        _self.removeNode(child);
+                        _self.removeNode(child, true);
 
                     }
                 });
@@ -1048,7 +1080,8 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
          * @param coords {object} {x: x, y: y}
          * @param [rawCoords] {boolean}
          * @param [constraints] {object}
-         * 
+         * @param [onCreate] {function}
+         *
          * @returns {string} Node ID created
          */
         addNode: function (nodeModel, coords, rawCoords, constraints, onCreate) {
@@ -1087,12 +1120,14 @@ function ($, _, Raphael, Event, GraphModel, Node, Connection, Sort) {
 
             model.id = _id;
 
-
-
             this.model.schemas[model.id] = rawModel;
 
             this.Event.trigger('node:add', model, constraints);
-            onCreate(_id);
+
+            if (_.isFunction(onCreate)) {
+                onCreate(_id);
+            }
+
             return _id;
         },
 

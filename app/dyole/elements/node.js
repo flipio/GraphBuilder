@@ -4,9 +4,10 @@
 define([
         'jquery',
         'lodash',
-        'dyole/elements/terminal'
+        'dyole/elements/terminal',
+        'dyole/helpers/common'
     ],
-    function($, _, Terminal) {
+    function($, _, Terminal, Common) {
 
         //@body
         var Node = (function() {
@@ -43,6 +44,18 @@ define([
                 this.inputRefs = this.model.inputs;
 
                 this.outputRefs = this.model.outputs;
+
+                if (Common.checkObjectKeys(this.Pipeline.constraints.node)) {
+                    Common.setConstraints(this.constraints, this.Pipeline.constraints.node)
+                }
+
+                if (Common.checkObjectKeys(this.Pipeline.constraints.buttons)) {
+                    Common.setConstraints(this.buttons, this.Pipeline.constraints.buttons)
+                }
+
+                if (Common.checkObjectKeys(this.Pipeline.constraints.icons)) {
+                    Common.setConstraints(this.icons, this.Pipeline.constraints.icons)
+                }
 
                 if (typeof options.constraints !== 'undefined') {
                     Constraints = _.extend({}, this.constraints, options.constraints);
@@ -669,13 +682,11 @@ define([
                         this.glow.remove();
                     }
                     var parentId = null,  parentModel = null;
+
                     if (this.model.parent ) {
                         parentId = this.model.parent;
                         parentModel = this.Pipeline.nodes[parentId].model;
                     }
-
-
-
 
                     this.destroy();
 
