@@ -88,7 +88,7 @@ define([
                     },
 
                     selected: {
-                        fill: '#C6D4E2'
+                        fill: '#D4F4FF'
                     },
 
                     //defaults
