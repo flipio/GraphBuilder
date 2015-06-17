@@ -27,11 +27,13 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
         this.assetsUrl = options.assetsUrl;
 
         this.model = options.model || _.clone(GraphModel, true);
+        this.treeGraph = options.treeGraph || false;
 
         if (options.TreeModel) {
             this.treeGraph = true;
             this._parseTreeGraphModel(options.TreeModel);
         }
+
 
         this.$parent = options.$parent;
 
