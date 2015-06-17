@@ -29,6 +29,7 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
         this.model = options.model || _.clone(GraphModel, true);
 
         if (options.TreeModel) {
+            this.treeGraph = true;
             this._parseTreeGraphModel(options.TreeModel);
         }
 
@@ -928,6 +929,78 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
          * Public Methods
          * ------------------------------------------------------
          */
+
+        alignGraph: function (gap) {
+
+            // return if not tree graph
+            if (!this.treeGraph) { console.log('[Align Graph] Tree Graph must be enabled for alignment'); return false; }
+            if (typeof gap !== 'undefined' && typeof gap !== 'number') {console.log('[Align Graph] Gap is provided as ' + typeof gap + ', and required type is number. Defaulting to 250')}
+
+            var _self = this,
+                GAP = gap || 250,
+                model = this.model,
+                levelIndex = {},
+                sorted = Sort.tsort(this.getConnections()).sorted;
+
+            var _generateCoords = function (level, index) {
+
+                var x = GAP*level,
+                    y = index*GAP/2;
+
+                return {
+                    x: x,
+                    y: y
+                };
+            };
+
+            var _fixNode = function (nodeId, lvl) {
+
+                var node = _self.getNodeById(nodeId),
+                    coords = model.display.nodes[nodeId];
+
+                levelIndex[lvl] = typeof levelIndex[lvl] === 'number' ? levelIndex[lvl] + 1 : 0;
+
+                var newCords = _generateCoords(lvl, levelIndex[lvl]);
+
+                coords.x = newCords.x;
+                coords.y = newCords.y;
+
+                node.el.translate(coords.x, coords.y);
+                node.redrawConnections();
+
+            };
+
+            var alignChildren = function (level, nodes) {
+
+                // if no nodes, break
+                if (!_.isArray(nodes) || nodes.length === 0) { return false; }
+
+                var lvl = level;
+
+                _.forEach(nodes, function(nodeId, index) {
+
+                    var node = _self.getNodeById(nodeId);
+
+                    _fixNode(nodeId, lvl);
+                    alignChildren(lvl + 1, node.model.childrenList);
+                });
+
+            };
+
+            _.forEach(sorted, function(nodeId) {
+
+                var node = _self.getNodeById(nodeId);
+
+                if (!node.model.parent) {
+                    _fixNode(nodeId, 0);
+                    alignChildren(1, node.model.childrenList);
+                }
+
+            });
+
+            this._move({x :80, y: 80});
+
+        },
 
         /**
          * Init zoom level

@@ -88,4 +88,10 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
         $('#json-area').attr('disabled', false).val(JSON.stringify(json, null, 2));
     });
 
+    $('.align-nodes').on('click', function () {
+        var json = canvas.alignGraph(300);
+
+        $('#json-area').attr('disabled', false).val(JSON.stringify(json, null, 2));
+    });
+
 });
