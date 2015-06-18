@@ -48,7 +48,17 @@ If you'd like to run the compiled version, run
         TreeModel: TreeModel,               // optional: it instantiate tree graph
         model: model,                       // optional: it instantiate DAG graph
         editMode: true                      // optional: enable edit mode; Default: false
+        treeGraph: true                     // optional: Sets flag if you want to create new tree graph
     }
+    
+    
+    *** NOTE:
+        treeGraph: boolean
+        - set this flag if you are creating empty treeGraph and you are ensuring that every node that you create via API
+          has 'parent' property on model set ( if node has parent ) and 'childrenList' property which is array and it's 
+          required ( it represents list of node id's who are direct descendants of that node )
+          'parent' : string - represents id of parent
+          'childrenList': [{string}]
 
 ### TreeModel structure
 
@@ -145,6 +155,7 @@ Just pass array of TreeGraph models to TreeGraph option like this:
     canvasInstance.destroy();                                                       // returns null; Destroys graph and its references
     canvasInstance.getJSON();                                                       // returns graph model    
     canvasInstance.getTreeJSON();                                                   // returns tree graph model    
+    canvasInstance.alignNodes(gap, rootCoords);                                     // returns boolean: Align nodes from rootCoords, only available in treeGraph mode (both params are optional)    
     
 
 ##### Default Node Constraints
@@ -279,6 +290,17 @@ arguments:
 example:
 
     canvasInstance.Event.subscribe('node:remove', function (model) {
+
+
+    });
+
+####`nodes:align`
+
+Triggered when nodes are finished aligning.
+
+example:
+
+    canvasInstance.Event.subscribe('nodes:align', function () {
 
 
     });

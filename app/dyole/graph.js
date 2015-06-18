@@ -932,6 +932,14 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
          * ------------------------------------------------------
          */
 
+        /**
+         * Align Graph
+         * Method only available while in tree graph mode
+         *
+         * @param gap
+         * @param rootCoords
+         * @returns {boolean}
+         */
         alignGraph: function (gap, rootCoords) {
 
             // return if not tree graph
