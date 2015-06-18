@@ -940,7 +940,6 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
 
             var _self = this,
                 GAP = gap || 250,
-                model = this.model,
                 levelIndex = {},
                 sorted = Sort.tsort(this.getConnections()).sorted;
 
@@ -958,16 +957,16 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
             var _fixNode = function (nodeId, lvl) {
 
                 var node = _self.getNodeById(nodeId),
-                    coords = model.display.nodes[nodeId];
+                    nodeModel = node.model;
 
                 levelIndex[lvl] = typeof levelIndex[lvl] === 'number' ? levelIndex[lvl] + 1 : 0;
 
                 var newCords = _generateCoords(lvl, levelIndex[lvl]);
 
-                coords.x = newCords.x;
-                coords.y = newCords.y;
+                nodeModel.x = newCords.x;
+                nodeModel.y = newCords.y;
 
-                node.el.translate(coords.x, coords.y);
+                node.el.translate(nodeModel.x, nodeModel.y);
                 node.redrawConnections();
 
             };
