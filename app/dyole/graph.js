@@ -932,21 +932,39 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
          * ------------------------------------------------------
          */
 
-        alignGraph: function (gap) {
+        alignGraph: function (gap, rootCoords) {
 
             // return if not tree graph
             if (!this.treeGraph) { console.log('[Align Graph] Tree Graph must be enabled for alignment'); return false; }
-            if (typeof gap !== 'undefined' && typeof gap !== 'number') {console.log('[Align Graph] Gap is provided as ' + typeof gap + ', and required type is number. Defaulting to 250')}
+            if (typeof gap !== 'undefined' && ( typeof gap !== 'number' || typeof gap !== 'object' ) ) {console.log('[Align Graph] Gap is provided as ' + typeof gap + ', and required type is number. Defaulting to 250')}
 
             var _self = this,
-                GAP = gap || 250,
+                GAP = { x: 250, y: 250 } ,
+                root = {
+                    x: 80,
+                    y: 80
+                },
                 levelIndex = {},
                 sorted = Sort.tsort(this.getConnections()).sorted;
 
+
+            if (typeof rootCoords !== 'undefined' && typeof rootCoords === 'object') {
+                _.assign(root, rootCoords);
+            }
+
+            if (typeof gap === 'object') {
+                _.assign(GAP, gap);
+            }
+
+            if (typeof gap === 'number') {
+                GAP.x = gap;
+                GAP.y = gap;
+            }
+
             var _generateCoords = function (level, index) {
 
-                var x = GAP*level,
-                    y = index*GAP/2;
+                var x = GAP.x * level,
+                    y = index*GAP.y / 2;
 
                 return {
                     x: x,
@@ -999,7 +1017,10 @@ function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Co
 
             });
 
-            this._move({x :80, y: 80});
+            this._move({x : root.x, y: root.y});
+
+            this.Event.trigger('nodes:align');
+            this.Event.trigger('pipeline:change');
 
         },
 

@@ -89,7 +89,7 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
     });
 
     $('.align-nodes').on('click', function () {
-        canvas.alignGraph(250);
+        canvas.alignGraph({x: 300, y: 100}, {x: 200, y: 200});
     });
 
 });
