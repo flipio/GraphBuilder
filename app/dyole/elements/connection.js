@@ -256,7 +256,7 @@ define([
                 var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen/2);
 
                 if( this.model.connection_name && this.model.connection_name !== '') {
-                    this.connectionLabel = this.canvas.text(labelCoords.x, labelCoords.y, this.model.connection_name).attr({fill: this.labelColor});
+                    this.connectionLabel = this.canvas.text(labelCoords.x, labelCoords.y, this.model.connection_name).attr({fill: this.constraints.labelColor});
                     this.connection.push(this.connectionLabel);
                 }
 
