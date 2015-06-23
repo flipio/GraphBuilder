@@ -2,488 +2,488 @@
  * Created by filip on 11.3.15..
  */
 define([
-        'jquery',
-        'lodash',
-        'dyole/helpers/common'
-    ],
-    function ($, _, Common) {
-        //@body
-        var Terminal = function (options) {
+    'jquery',
+    'lodash',
+    'dyole/helpers/common'
+  ],
+  function($, _, Common) {
+    //@body
+    var Terminal = function(options) {
 
-            this.options = options;
+      this.options = options;
 
-            this.parent = options.parent;
-            this.model = options.model;
-            this.canvas = options.canvas;
-            this.mouseover = false;
-            this.terminalConnected = false;
-            this.Pipeline = options.pipeline;
+      this.parent = options.parent;
+      this.model = options.model;
+      this.canvas = options.canvas;
+      this.mouseover = false;
+      this.terminalConnected = false;
+      this.Pipeline = options.pipeline;
 
-            this.pipelineWrap = options.pipelineWrap;
-            this.id = this.model.id;
+      this.pipelineWrap = options.pipelineWrap;
+      this.id = this.model.id;
 
-            this.el = null;
+      this.el = null;
 
-            this.terminals = {};
+      this.terminals = {};
 
-            this.connections = [];
+      this.connections = [];
 
-            if (Common.checkObjectKeys(this.Pipeline.constraints.terminal)) {
-                Common.setConstraints(this.constraints, this.Pipeline.constraints.terminal)
-            }
+      if (Common.checkObjectKeys(this.Pipeline.constraints.terminal)) {
+        Common.setConstraints(this.constraints, this.Pipeline.constraints.terminal)
+      }
 
-            if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
-                if (Common.objectPropExists(this.Pipeline.constraints.connection.strokeWidth)) {
-                    this.connectionConfig.width = this.Pipeline.constraints.connection.strokeWidth;
-                }
-            }
+      if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
+        if (Common.objectPropExists(this.Pipeline.constraints.connection.strokeWidth)) {
+          this.connectionConfig.width = this.Pipeline.constraints.connection.strokeWidth;
+        }
+      }
+
+    };
+
+    Terminal.prototype = {
+
+      constraints: {
+        radius     : 8,
+        radiusInner: 4.4,
+
+        available: {
+          gradiant: '',
+          fill    : '#3eb157',
+          stroke  : ''
+        },
+
+        connected: {
+          gradiant: '',
+          fill    : '#1E8BC3',
+          stroke  : ''
+        },
+
+        // defaults
+        gradiant: '',
+        fill    : '#888888',
+        stroke  : ''
+      },
+
+      connectionConfig: {
+        width: 7,
+        color: '#dddddd'
+      },
+
+      initHandlers: function() {
+        var _self = this;
+
+        this.mousedown = false;
+
+        if (this.Pipeline.editMode) {
+
+          this.terminal.mousedown(function(e) {
+            var translation;
+
+            translation = _self._getElTranslation();
+
+            _self.startCoords = translation;
+
+            _self.mousedown = true;
+
+            _self.Pipeline.Event.trigger('terminal:selectAvailable', _self.model, _self.parent.model.id);
+
+            e.preventDefault();
+            e.stopPropagation();
+          });
+
+        }
+
+        this.terminal.mouseup(function() {
+          _self.Pipeline.Event.trigger('terminal:deselectAvailable');
+
+          _self._removeTempConnection(_self.onMouseUpCallback);
+
+          _self.mousedown = false;
+        });
+
+        var terMouseOver = function(terminal) {
+
+          if (_self.mousedown && _self.tempConnection) {
+            _self.mouseoverTerminal = terminal;
+            _self.Pipeline.mouseoverTerminal = terminal;
+          }
+
+        }, terMouseOut = function() {
+
+          _self.mouseoverTerminal = null;
+          _self.Pipeline.mouseoverTerminal = null;
+
+        }, terSelectAvail = function(terminal, nodeId) {
+
+          _self.checkAvailibility(terminal, nodeId);
+
+        }, terDeselectAvail = function() {
+
+          _self.setDefaultState();
 
         };
 
-        Terminal.prototype = {
+        var events = [];
 
-            constraints: {
-                radius: 8,
-                radiusInner: 4.4,
+        this.Pipeline.Event.subscribe('terminal:mouseover', terMouseOver);
 
-                available: {
-                    gradiant: '',
-                    fill: '#3eb157',
-                    stroke: ''
-                },
+        events.push({
+          event  : 'terminal:mouseover',
+          handler: terMouseOver
+        });
 
-                connected: {
-                    gradiant: '',
-                    fill: '#1E8BC3',
-                    stroke: ''
-                },
+        this.Pipeline.Event.subscribe('terminal:mouseout', terMouseOut);
 
-                // defaults
-                gradiant: '',
-                fill: '#888888',
-                stroke: ''
-            },
+        events.push({
+          event  : 'terminal:mouseout',
+          handler: terMouseOut
+        });
 
-            connectionConfig: {
-                width: 7,
-                color: '#dddddd'
-            },
+        this.Pipeline.Event.subscribe('terminal:selectAvailable', terSelectAvail);
 
-            initHandlers: function () {
-                var _self = this;
+        events.push({
+          event  : 'terminal:selectAvailable',
+          handler: terSelectAvail
+        });
 
-                this.mousedown = false;
+        this.Pipeline.Event.subscribe('terminal:deselectAvailable', terDeselectAvail);
 
-                if (this.Pipeline.editMode) {
+        events.push({
+          event  : 'terminal:deselectAvailable',
+          handler: terDeselectAvail
+        });
 
-                    this.terminal.mousedown(function (e) {
-                        var translation;
+        this.events = events;
 
-                        translation = _self._getElTranslation();
+      },
 
-                        _self.startCoords = translation;
+      onMouseUpCallback: function() {
+        var _self = this,
+          available;
 
-                        _self.mousedown = true;
+        if (_self.mouseoverTerminal) {
+          available = this.checkAvailibility(this.mouseoverTerminal.model, this.mouseoverTerminal.parent.model.id);
 
-                        _self.Pipeline.Event.trigger('terminal:selectAvailable', _self.model, _self.parent.model.id);
+          if (available.status) {
+            _self.Pipeline.Event.trigger('connection:create', _self.mouseoverTerminal, _self);
 
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
+            _self.mouseoverTerminal = null;
+          } else {
+            console.error('Node cannot connect');
+          }
 
-                }
+        }
 
-                this.terminal.mouseup(function () {
-                    _self.Pipeline.Event.trigger('terminal:deselectAvailable');
+      },
 
-                    _self._removeTempConnection(_self.onMouseUpCallback);
+      checkAvailibility: function(terminal, nodeId) {
+        var available = false;
 
-                    _self.mousedown = false;
-                });
+        var start_node = this.parent.model,
+          end_node = this.Pipeline.nodes[nodeId].model,
+          output_name = this.model.id,
+          input_name = terminal.id;
 
-                var terMouseOver = function (terminal) {
-
-                    if (_self.mousedown && _self.tempConnection) {
-                        _self.mouseoverTerminal = terminal;
-                        _self.Pipeline.mouseoverTerminal = terminal;
-                    }
-
-                }, terMouseOut = function () {
-
-                    _self.mouseoverTerminal = null;
-                    _self.Pipeline.mouseoverTerminal = null;
-
-                }, terSelectAvail = function (terminal, nodeId) {
-
-                    _self.checkAvailibility(terminal, nodeId);
-
-                }, terDeselectAvail = function () {
-
-                    _self.setDefaultState();
-
-                };
-
-                var events = [];
-
-                this.Pipeline.Event.subscribe('terminal:mouseover', terMouseOver);
-
-                events.push({
-                    event: 'terminal:mouseover',
-                    handler: terMouseOver
-                });
-
-                this.Pipeline.Event.subscribe('terminal:mouseout', terMouseOut);
-
-                events.push({
-                    event: 'terminal:mouseout',
-                    handler: terMouseOut
-                });
-
-                this.Pipeline.Event.subscribe('terminal:selectAvailable', terSelectAvail);
-
-                events.push({
-                    event: 'terminal:selectAvailable',
-                    handler: terSelectAvail
-                });
-
-                this.Pipeline.Event.subscribe('terminal:deselectAvailable', terDeselectAvail);
-
-                events.push({
-                    event: 'terminal:deselectAvailable',
-                    handler: terDeselectAvail
-                });
-
-                this.events = events;
-
-            },
-
-            onMouseUpCallback: function () {
-                var _self = this,
-                    available;
-
-                if (_self.mouseoverTerminal) {
-                    available = this.checkAvailibility(this.mouseoverTerminal.model, this.mouseoverTerminal.parent.model.id);
-
-                    if (available.status) {
-                        _self.Pipeline.Event.trigger('connection:create', _self.mouseoverTerminal, _self);
-
-                        _self.mouseoverTerminal = null;
-                    } else {
-                        console.error('Node cannot connect');
-                    }
-
-                }
-
-            },
-
-            checkAvailibility: function (terminal, nodeId) {
-                var available = false;
-
-                var start_node = this.parent.model,
-                    end_node = this.Pipeline.nodes[nodeId].model,
-                    output_name = this.model.id,
-                    input_name = terminal.id;
-
-                if (terminal.input !== this.model.input && nodeId !== this.parent.model.id) {
+        if (terminal.input !== this.model.input && nodeId !== this.parent.model.id) {
 
 //                    console.log('Input name: %s, Output name: %s, start_node: %s, end_node: %s', input_name, output_name, start_node.name, end_node.name);
-                    var check = _.filter(this.Pipeline.connections, function (connection) {
-                        var rel = connection.model;
+          var check = _.filter(this.Pipeline.connections, function(connection) {
+            var rel = connection.model;
 
-                        var check = rel.start_node === start_node.id && rel.end_node === end_node.id,
-                            portCheck = rel.input_name === input_name && rel.output_name === output_name,
-                            reverseCheck, reversePortCheck;
+            var check = rel.start_node === start_node.id && rel.end_node === end_node.id,
+              portCheck = rel.input_name === input_name && rel.output_name === output_name,
+              reverseCheck, reversePortCheck;
 
-                        reverseCheck = rel.start_node === end_node.id && rel.end_node === start_node.id;
-                        reversePortCheck = rel.input_name === output_name && rel.output_name === input_name;
+            reverseCheck = rel.start_node === end_node.id && rel.end_node === start_node.id;
+            reversePortCheck = rel.input_name === output_name && rel.output_name === input_name;
 
-                        return (check && portCheck) || ( reverseCheck && reversePortCheck);
-                    });
+            return (check && portCheck) || ( reverseCheck && reversePortCheck);
+          });
 
-                    if (check.length === 0) {
+          if (check.length === 0) {
 
-                        this.showAvailableState();
+            this.showAvailableState();
 
-                        available = true;
+            available = true;
 
-                    }
+          }
 
-                }
+        }
 
-                return {
-                    status: available
-                };
-            },
+        return {
+          status: available
+        };
+      },
 
-            render: function () {
+      render: function() {
 
-                var _self = this,
-                    model = this.model,
-                    canvas = this.canvas,
-                    xOffset = 12,
-                    el, terminalBorder, terminalInner, label, labelXOffset, borders,
-                    required = this.model.required ? '(required)' : '';
+        var _self = this,
+          model = this.model,
+          canvas = this.canvas,
+          xOffset = 12,
+          el, terminalBorder, terminalInner, label, labelXOffset, borders,
+          required = this.model.required ? '(required)': '';
 
-                el = canvas.group();
+        el = canvas.group();
 
-                terminalBorder = canvas.circle(0, 0, this.constraints.radius);
-                terminalBorder.attr({
-                    fill: this.model.required ? '#f4d794' : '90-#F4F4F4-#F4F4F4:50-#F4F4F4:50-#F4F4F4',
+        terminalBorder = canvas.circle(0, 0, this.constraints.radius);
+        terminalBorder.attr({
+          fill  : this.model.required ? '#f4d794': '90-#F4F4F4-#F4F4F4:50-#F4F4F4:50-#F4F4F4',
 //                stroke: '#cccccc'
-                    stroke: this.model.required ? '#cbac6f' : '#cccccc'
-                });
+          stroke: this.model.required ? '#cbac6f': '#cccccc'
+        });
 
-                terminalInner = canvas.circle(0, 0, this.constraints.radiusInner);
-                terminalInner.attr({
-                    fill: this.constraints.fill,
-                    stroke: this.constraints.stroke
-                });
+        terminalInner = canvas.circle(0, 0, this.constraints.radiusInner);
+        terminalInner.attr({
+          fill  : this.constraints.fill,
+          stroke: this.constraints.stroke
+        });
 
-                label = canvas.text(0, 0, model.name || model.id + ' ' + required);
+        label = canvas.text(0, 0, model.name || model.id + ' ' + required);
 
-                label.attr({
-                    'font-size': '12px'
-                });
+        label.attr({
+          'font-size': '12px'
+        });
 
-                if (model.input) {
-                    labelXOffset = -1 * (label.getBBox().width / 2) - xOffset;
-                } else { // output
-                    labelXOffset = (label.getBBox().width / 2) + xOffset;
-                }
+        if (model.input) {
+          labelXOffset = -1 * (label.getBBox().width / 2) - xOffset;
+        } else { // output
+          labelXOffset = (label.getBBox().width / 2) + xOffset;
+        }
 
-                label.translate(labelXOffset, 0);
+        label.translate(labelXOffset, 0);
 
-                label.attr('fill', 'none');
+        label.attr('fill', 'none');
 
-                borders = canvas.group();
+        borders = canvas.group();
 
-                borders.push(terminalBorder).push(terminalInner);
+        borders.push(terminalBorder).push(terminalInner);
 
-                borders.hover(function () {
-                    _self.mouseover = true;
+        borders.hover(function() {
+          _self.mouseover = true;
 
-                    if (!_self.Pipeline.tempConnectionActive) {
-                        _self.showTerminalName();
-                    }
+          if (!_self.Pipeline.tempConnectionActive) {
+            _self.showTerminalName();
+          }
 
-                    _self.Pipeline.Event.trigger('terminal:mouseover', _self);
-                }, function () {
-                    _self.mouseover = false;
-                    _self.hideTerminalName();
-                    _self.Pipeline.Event.trigger('terminal:mouseout');
-                });
+          _self.Pipeline.Event.trigger('terminal:mouseover', _self);
+        }, function() {
+          _self.mouseover = false;
+          _self.hideTerminalName();
+          _self.Pipeline.Event.trigger('terminal:mouseout');
+        });
 
-                el.push(borders).push(label);
+        el.push(borders).push(label);
 
-                el.translate(model.x, model.y);
+        el.translate(model.x, model.y);
 
-                this.el = el;
-                this.terminal = borders;
-                this.label = label;
-                this.terminalInner = terminalInner;
-                this.terminalBorder = terminalBorder;
+        this.el = el;
+        this.terminal = borders;
+        this.label = label;
+        this.terminalInner = terminalInner;
+        this.terminalBorder = terminalBorder;
 
-                this.initHandlers();
+        this.initHandlers();
 
-                return this;
-            },
+        return this;
+      },
 
-            showTerminalName: function () {
+      showTerminalName: function() {
 
-                this.label.attr('fill', '#666');
-            },
+        this.label.attr('fill', '#666');
+      },
 
-            hideTerminalName: function () {
+      hideTerminalName: function() {
 
-                if (!this.mouseover) {
-                    this.label.attr('fill', 'none');
-                }
+        if (!this.mouseover) {
+          this.label.attr('fill', 'none');
+        }
 
-            },
+      },
 
-            setConnectedState: function () {
-                this.terminalConnected = true;
-                this.terminalInner.attr({
-                    gradient: this.constraints.connected.gradiant,
-                    fill: this.constraints.connected.fill,
-                    stroke: this.constraints.connected.stroke
-                });
+      setConnectedState: function() {
+        this.terminalConnected = true;
+        this.terminalInner.attr({
+          gradient: this.constraints.connected.gradiant,
+          fill    : this.constraints.connected.fill,
+          stroke  : this.constraints.connected.stroke
+        });
 
-                if (this.model.required) {
-                    this.terminalBorder.attr({
-                        fill: '90-#F4F4F4-#F4F4F4:50-#F4F4F4:50-#F4F4F4',
-                        stroke: '#cccccc'
-                    });
-                }
+        if (this.model.required) {
+          this.terminalBorder.attr({
+            fill  : '90-#F4F4F4-#F4F4F4:50-#F4F4F4:50-#F4F4F4',
+            stroke: '#cccccc'
+          });
+        }
 
-            },
+      },
 
-            showAvailableState: function () {
-                this.terminalInner.attr({
-                    gradient: 'none',
-                    fill: this.constraints.available.fill,
-                    stroke: this.constraints.available.stroke
-                });
-            },
+      showAvailableState: function() {
+        this.terminalInner.attr({
+          gradient: 'none',
+          fill    : this.constraints.available.fill,
+          stroke  : this.constraints.available.stroke
+        });
+      },
 
-            setDefaultState: function () {
+      setDefaultState: function() {
 
-                this.terminalInner.attr({
-                    gradient: this.constraints.gradient,
-                    fill: this.constraints.fill,
-                    stroke: this.constraints.stroke
-                });
+        this.terminalInner.attr({
+          gradient: this.constraints.gradient,
+          fill    : this.constraints.fill,
+          stroke  : this.constraints.stroke
+        });
 
-                if (this.model.required) {
-                    this.terminalBorder.attr({
-                        fill: '#f4d794',
+        if (this.model.required) {
+          this.terminalBorder.attr({
+            fill  : '#f4d794',
 //                stroke: '#cccccc'
-                        stroke: '#cbac6f'
-                    });
-                }
+            stroke: '#cbac6f'
+          });
+        }
 
-                if (this.terminalConnected) {
-                    this.setConnectedState();
-                } else {
-                    this.terminalConnected = false;
-                }
+        if (this.terminalConnected) {
+          this.setConnectedState();
+        } else {
+          this.terminalConnected = false;
+        }
 
-            },
+      },
 
-            addConnection: function (connectionId) {
-                this.connections.push(connectionId);
-            },
+      addConnection: function(connectionId) {
+        this.connections.push(connectionId);
+      },
 
-            _getElTranslation: function () {
-                var scale, translation, parent, pipeline;
+      _getElTranslation: function() {
+        var scale, translation, parent, pipeline;
 
-                scale = this.Pipeline.getEl().getScale();
-                parent = this.parent.el.getTranslation();
-                pipeline = this.Pipeline.pipelineWrap.getTranslation();
-                translation = this.el.getTranslation();
+        scale = this.Pipeline.getEl().getScale();
+        parent = this.parent.el.getTranslation();
+        pipeline = this.Pipeline.pipelineWrap.getTranslation();
+        translation = this.el.getTranslation();
 
-                translation.x += parent.x;
-                translation.y += parent.y;
+        translation.x += parent.x;
+        translation.y += parent.y;
 
-                translation.x += pipeline.x / scale.x;
-                translation.y += pipeline.y / scale.y;
+        translation.x += pipeline.x / scale.x;
+        translation.y += pipeline.y / scale.y;
 
-                translation.x = translation.x * scale.x;
-                translation.y = translation.y * scale.y;
+        translation.x = translation.x * scale.x;
+        translation.y = translation.y * scale.y;
 
-                return translation;
-            },
+        return translation;
+      },
 
-            _getConnectionCoordsDiff: function (e) {
-                var diff = {},
-                    ctm = this.terminal.node.getScreenCTM(),
-                    translation;
+      _getConnectionCoordsDiff: function(e) {
+        var diff = {},
+          ctm = this.terminal.node.getScreenCTM(),
+          translation;
 
-                translation = this._getElTranslation();
+        translation = this._getElTranslation();
 
-                diff.x = e.clientX - ( ctm.e - translation.x);
-                diff.y = e.clientY - ( ctm.f - translation.y);
+        diff.x = e.clientX - ( ctm.e - translation.x);
+        diff.y = e.clientY - ( ctm.f - translation.y);
 
-                return diff;
-            },
+        return diff;
+      },
 
-            drawConnection: function (e) {
+      drawConnection: function(e) {
 
-                var attr, coords,
-                    diff = this._getConnectionCoordsDiff(e),
-                    scale = this.pipelineWrap.getScale().x;
+        var attr, coords,
+          diff = this._getConnectionCoordsDiff(e),
+          scale = this.pipelineWrap.getScale().x;
 
-                coords = {
-                    x1: this.startCoords.x,
-                    y1: this.startCoords.y,
-                    x2: diff.x,
-                    y2: diff.y
-                };
-
-                attr = {
-                    stroke: '#FBFCFC',
-                    'stroke-width': this.connectionConfig.width * scale
-                };
-
-                this.tempConnection = this.canvas.curve(coords, attr);
-                this.tempConnection.toBack();
-
-                this.Pipeline.Event.trigger('temp:connection:state', true);
-
-
-            },
-
-            redrawConnection: function (e) {
-                var coords,
-                    scale = this.pipelineWrap.getScale().x,
-                    diff = this._getConnectionCoordsDiff(e);
-
-                coords = {
-                    x1: this.startCoords.x,
-                    y1: this.startCoords.y,
-                    x2: diff.x,
-                    y2: diff.y
-                };
-
-                this.tempConnection.redraw(coords, this.connectionConfig.width * scale);
-            },
-
-            removeConnection: function (connectionId) {
-                var index;
-
-                _.each(this.connections, function (id, ind) {
-                    if (id === connectionId) {
-                        index = ind;
-                    }
-                });
-
-                delete this.terminals[this.connections[index]];
-
-                this.connections.splice(index, 1);
-
-                return this.connections.length !== 0;
-            },
-
-            _removeTempConnection: function (callback) {
-
-                if (this.tempConnection) {
-
-                    this.tempConnection.remove();
-                    this.tempConnection = null;
-
-                    if (callback && typeof callback === 'function') {
-                        callback();
-                    }
-
-                    this.Pipeline.Event.trigger('temp:connection:state', false);
-                }
-
-            },
-
-            changeTerminalName: function (name) {
-                this.model.name = name;
-                this.label.attr('text', this.model.name);
-            },
-
-            destroy: function () {
-                var _self = this;
-
-                _.each(this.events, function (ev) {
-                    _self.Pipeline.Event.unsubscribe(ev.event, ev.handler);
-                });
-
-                this.terminal.unbindMouse().unhover().unclick().unkeyup();
-
-                this.el.remove();
-                this.el = null;
-                this.terminal = null;
-                this.label = null;
-                this.terminalInner = null;
-                this.terminalBorder = null;
-            }
-
+        coords = {
+          x1: this.startCoords.x,
+          y1: this.startCoords.y,
+          x2: diff.x,
+          y2: diff.y
         };
 
-        //@body
-        return Terminal;
-    });
+        attr = {
+          stroke        : '#FBFCFC',
+          'stroke-width': this.connectionConfig.width * scale
+        };
+
+        this.tempConnection = this.canvas.curve(coords, attr);
+        this.tempConnection.toBack();
+
+        this.Pipeline.Event.trigger('temp:connection:state', true);
+
+
+      },
+
+      redrawConnection: function(e) {
+        var coords,
+          scale = this.pipelineWrap.getScale().x,
+          diff = this._getConnectionCoordsDiff(e);
+
+        coords = {
+          x1: this.startCoords.x,
+          y1: this.startCoords.y,
+          x2: diff.x,
+          y2: diff.y
+        };
+
+        this.tempConnection.redraw(coords, this.connectionConfig.width * scale);
+      },
+
+      removeConnection: function(connectionId) {
+        var index;
+
+        _.each(this.connections, function(id, ind) {
+          if (id === connectionId) {
+            index = ind;
+          }
+        });
+
+        delete this.terminals[this.connections[index]];
+
+        this.connections.splice(index, 1);
+
+        return this.connections.length !== 0;
+      },
+
+      _removeTempConnection: function(callback) {
+
+        if (this.tempConnection) {
+
+          this.tempConnection.remove();
+          this.tempConnection = null;
+
+          if (callback && typeof callback === 'function') {
+            callback();
+          }
+
+          this.Pipeline.Event.trigger('temp:connection:state', false);
+        }
+
+      },
+
+      changeTerminalName: function(name) {
+        this.model.name = name;
+        this.label.attr('text', this.model.name);
+      },
+
+      destroy: function() {
+        var _self = this;
+
+        _.each(this.events, function(ev) {
+          _self.Pipeline.Event.unsubscribe(ev.event, ev.handler);
+        });
+
+        this.terminal.unbindMouse().unhover().unclick().unkeyup();
+
+        this.el.remove();
+        this.el = null;
+        this.terminal = null;
+        this.label = null;
+        this.terminalInner = null;
+        this.terminalBorder = null;
+      }
+
+    };
+
+    //@body
+    return Terminal;
+  });

@@ -2,107 +2,107 @@
  * Created by filip on 11.3.15..
  */
 define([
-        'lodash',
-        'dyole/constants/NodeModel'
-    ],
-    function (_, NodeModel) {
-        //@body
-        var TreeGraphModel = (function () {
+    'lodash',
+    'dyole/constants/NodeModel'
+  ],
+  function(_, NodeModel) {
+    //@body
+    var TreeGraphModel = (function() {
 
-            var tree = {
-                "model": NodeModel.get(),
+      var tree = {
+        "model"   : NodeModel.get(),
+        "children": [
+          {
+            "model"   : NodeModel.get(),
+            "children": [
+              {
+                "model"   : NodeModel.get(),
                 "children": [
-                    {
-                        "model": NodeModel.get(),
+                  {
+                    "model": NodeModel.get()
+                  },
+                  {
+                    "model"   : NodeModel.get(),
+                    "children": [
+                      {
+                        "model": NodeModel.get()
+                      },
+                      {
+                        "model"   : NodeModel.get(),
                         "children": [
-                            {
-                                "model": NodeModel.get(),
-                                "children": [
-                                    {
-                                        "model": NodeModel.get()
-                                    },
-                                    {
-                                        "model": NodeModel.get(),
-                                        "children": [
-                                            {
-                                                "model": NodeModel.get()
-                                            },
-                                            {
-                                                "model": NodeModel.get(),
-                                                "children": [
-                                                    {
-                                                        "model": NodeModel.get()
-                                                    },
-                                                    {
-                                                        "model": NodeModel.get()
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "model": NodeModel.get(),
-                                "children": [
-                                    {
-                                        "model": NodeModel.get(),
-                                        "children": [
-                                            {
-                                                "model": NodeModel.get()
-                                            },
-                                            {
-                                                "model": NodeModel.get()
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "model": NodeModel.get()
-                                    }
-                                ]
-
-                            },
-                            {
-                                "model": NodeModel.get(),
-                                "children": [
-                                    {
-                                        "model": NodeModel.get()
-                                    },
-                                    {
-                                        "model": NodeModel.get()
-                                    }
-                                ]
-                            }
+                          {
+                            "model": NodeModel.get()
+                          },
+                          {
+                            "model": NodeModel.get()
+                          }
                         ]
-                    }
+                      }
+                    ]
+                  }
                 ]
-            };
+              },
+              {
+                "model"   : NodeModel.get(),
+                "children": [
+                  {
+                    "model"   : NodeModel.get(),
+                    "children": [
+                      {
+                        "model": NodeModel.get()
+                      },
+                      {
+                        "model": NodeModel.get()
+                      }
+                    ]
+                  },
+                  {
+                    "model": NodeModel.get()
+                  }
+                ]
 
-            return {
-                get: function () {
-                    var model = _.clone(tree, true),
-                        temp = [model];
+              },
+              {
+                "model"   : NodeModel.get(),
+                "children": [
+                  {
+                    "model": NodeModel.get()
+                  },
+                  {
+                    "model": NodeModel.get()
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
 
-                    var _do = function (arr) {
-                        _.forEach(arr, function (node) {
+      return {
+        get: function() {
+          var model = _.clone(tree, true),
+            temp = [model];
 
-                            node.model = NodeModel.set({});
+          var _do = function(arr) {
+            _.forEach(arr, function(node) {
 
-                            if (typeof node.children !== 'undefined' && _.isArray(node.children) && node.children.length > 0) {
-                                _do(node.children);
-                            }
+              node.model = NodeModel.set({});
 
-                        });
-                    };
+              if (typeof node.children !== 'undefined' && _.isArray(node.children) && node.children.length > 0) {
+                _do(node.children);
+              }
 
-                    _do(temp);
+            });
+          };
 
-                    return model;
-                }
-            }
-        })();
+          _do(temp);
 
-        //@body
+          return model;
+        }
+      }
+    })();
 
-        return TreeGraphModel;
-    });
+    //@body
+
+    return TreeGraphModel;
+  });
