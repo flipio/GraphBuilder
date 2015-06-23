@@ -7,12 +7,12 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
     assetsUrl  : '/',
     editMode   : true,
     model      : _.clone(GraphModel, true),
-//        TreeModel: tree,
+    //TreeModel: tree,
     constraints: {
       node      : {
 
         radius     : 46,
-        borderWidth: 8,
+        borderWidth: 15,
         labelOffset: 12,
 
         selected: {
@@ -27,10 +27,10 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
         strokeWidth: 7,
         disableWire: true
       },
-//            terminal: {
-//                radius: 9,
-//                radiusInner: 6
-//            },
+      //terminal  : {
+      //  radius     : 9,
+      //  radiusInner: 6
+      //},
       buttons   : {
         radius: 15,
         border: 4
@@ -42,17 +42,18 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
   });
 
   var constraints = {
-    labelOffset: 40,
-    radius     : 60
+    labelOffset : 40,
+    radius      : 40,
+    borderWidth : 2,
+    borderRadius: 2
   };
 
   var n1, n2, n3, n4, n5, n6, n7, squareNode;
-//
   n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
   n2 = canvas.addNode(NodeModel.get(), {x: 450, y: 100}, false);
-  n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
+  n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false, constraints);
 
-  squareNode = canvas.addNode(NodeModel.get({type: 'square'}), {x: 450, y: 300}, false);
+  squareNode = canvas.addNode(NodeModel.get({type: 'square'}), {x: 450, y: 300}, false, constraints);
 
 //    n4 = canvas.addNode(NodeModel.get(), {x: 800, y: 200}, false);
 //    n5 = canvas.addNode(NodeModel.get(), {x: 300, y: 300}, false);

@@ -95,7 +95,7 @@ define([
         squareConstraints: {
           width       : 100,
           height      : 50,
-          border      : 5,
+          borderWidt  : 5,
           borderRadius: 5,
           labelOffset : 12,
 
@@ -176,7 +176,7 @@ define([
 
         renderSquare: function() {
           var self = this,
-            constraints = this.squareConstraints,
+            constraints = _.extend({}, this.squareConstraints, Constraints),
             model = this.model,
             canvas = this.canvas,
             labelOffset = constraints.labelOffset,
@@ -184,7 +184,7 @@ define([
             outputs = this.outputs,
 
             radius = constraints.borderRadius,
-            border = constraints.border,
+            border = constraints.borderWidth,
             width = constraints.width,
             height = constraints.height,
 
