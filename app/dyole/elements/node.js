@@ -63,13 +63,9 @@ define([
                     Constraints = this.constraints;
                 }
 
-                this._initTerminals();
-
             };
 
             Node.prototype = {
-
-
 
                 constraints: {
 
@@ -95,6 +91,18 @@ define([
                     fill    : '#011E37',
                     stroke  : 'none'
                 },
+				
+				squareConstraints: {
+					width: 100,
+					height: 50,
+					border: 5,
+					borderRadius: 5,
+					labelOffset: 12,
+
+					fill    : '#011E37',
+					stroke  : 'none'
+
+				},
 
                 icons: {
                     input  : 'preview_assets/images/icon-input-2.png',
@@ -146,8 +154,110 @@ define([
                 getFirstTerminal: function(type) {
                     return this[type + 's'][0];
                 },
+				
+				render: function () {
+					var renderFn,
+						initTerminalFn;
 
-                render: function() {
+					switch(this.model.nodeType) {
+						case 'square':
+							initTerminalFn = this.initSquareTerminals;
+							renderFn = this.renderSquare;
+							break;
+						default:
+							initTerminalFn = this.initCircleTerminals;
+							renderFn = this.renderCircle;
+							break;
+					}
+					
+					initTerminalFn.call(this);
+					return renderFn.call(this);
+				},
+				
+				renderSquare: function () {
+					var self = this,
+						constraints = this.squareConstraints,
+						model = this.model,
+						canvas = this.canvas,
+						labelOffset = constraints.labelOffset,
+						inputs = this.inputs,
+						outputs = this.outputs,
+
+						radius = constraints.borderRadius,
+						border = constraints.border,
+						width = constraints.width,
+						height = constraints.height,
+
+						node, outerBorder, innerBorder, borders, label, icon, img,
+						imgUrl;
+
+					node = canvas.group();
+					
+					outerBorder = canvas.rect(-width/2, 0, width, height, radius);
+					outerBorder.attr({
+						fill  : '#FBFCFC',
+						stroke: '#dddddd'
+					});
+
+					innerBorder = canvas.rect(border-width/2, border, width - border*2, height - border*2, radius);
+					innerBorder.attr({
+						fill  : constraints.fill,
+						stroke: constraints.stroke
+					});
+
+					borders = canvas.group();
+					borders.push(outerBorder).push(innerBorder);
+
+					var name = model.label ? model.label: model.name || model['id'];
+
+					label = canvas.text(0, height + labelOffset, name);
+
+					label.attr({
+						'font-size': 14
+					});
+
+					imgUrl = this.icons.default;
+
+					img = new Image();
+					imgUrl = self.baseUrl + imgUrl;
+					img.src = imgUrl;
+
+					$(img).load(function() {
+						icon = canvas.image(imgUrl, -img.width / 2, height/2 - img.height / 2, img.width, img.height);
+						borders.push(icon);
+
+						self._attachEvents();
+					});
+
+
+					// add all elements to the group container
+					node.push(borders).push(label);
+
+					// render input terminals
+					_.each(inputs, function(terminal) {
+						node.push(terminal.render().el);
+					});
+
+					// render output terminals
+					_.each(outputs, function(terminal) {
+						node.push(terminal.render().el);
+					});
+
+					// move node to the coordinates written in it's model
+					node.translate(model.x, model.y);
+
+					this.el = node;
+					this.label = label;
+					this._innerBorder       = innerBorder;
+					this._outerBorder       = outerBorder;
+
+					this.circle = borders;
+
+					return this;
+
+				},
+
+                renderCircle: function() {
 
                     var self = this,
                         constraints = Constraints,
@@ -180,7 +290,7 @@ define([
                     borders = canvas.group();
                     borders.push(outerBorder).push(innerBorder);
 
-                    var name = model.label ? model.label: model.name || model['@id'];
+                    var name = model.label ? model.label: model.name || model['id'];
                     label = canvas.text(0, radius + labelOffset, ((model.softwareDescription && model.softwareDescription.name) ? model.softwareDescription.name: name));
 
                     label.attr({
@@ -230,8 +340,51 @@ define([
 
                     return this;
                 },
+				
+				/**
+				 * For now initialization of square node type supports only one input and output terminal
+				 */
+				// TODO: Enable more then one terminal calculation
+				initSquareTerminals: function () {
+					var canvas = this.canvas,
+						constraints = this.squareConstraints,
+						inputs = this.inputs,
+						outputs = this.outputs,
+						modelInputs = this.inputRefs,
+						modelOutputs = this.outputRefs,
+						dataIn, dataOut;
+					
+					dataIn = _.extend({
+						x    : -constraints.width/2,
+						y    : constraints.height/2,
+						input: true
+					}, modelInputs[0]);
 
-                _initTerminals: function() {
+					inputs.push(new Terminal({
+						model       : dataIn,
+						parent      : this,
+						canvas      : canvas,
+						pipeline    : this.Pipeline,
+						pipelineWrap: this.parent
+					}));
+
+					dataOut = _.extend({
+						x    : constraints.width/2,
+						y    : constraints.height/2,
+						input: false
+					}, modelOutputs[0]);
+
+					outputs.push(new Terminal({
+						model       : dataOut,
+						parent      : this,
+						canvas      : canvas,
+						pipeline    : this.Pipeline,
+						pipelineWrap: this.parent
+					}));
+
+				},
+
+                initCircleTerminals: function() {
                     var canvas = this.canvas,
                         inputs = this.inputs,
                         outputs = this.outputs,

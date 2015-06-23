@@ -28,8 +28,20 @@ define([
         };
 
         return {
-            get: function() {
+            get: function(options) {
                 var m = _.clone(model, true);
+
+				
+				if (typeof options === 'object') {
+					switch(options.type) {
+						case 'square':
+							m.nodeType = 'square';
+							break;
+						default:
+							m.nodeType = 'circle';
+							break;
+					}
+				}
 
                 m.id = _.random(100000, 999999) + '';
                 m.inputs[0].id = _.random(100000, 999999) + '';

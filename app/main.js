@@ -27,10 +27,10 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
                 strokeWidth: 7,
                 disableWire: true
             },
-            terminal: {
-                radius: 9,
-                radiusInner: 6
-            },
+//            terminal: {
+//                radius: 9,
+//                radiusInner: 6
+//            },
             buttons: {
                 radius: 15,
                 border: 4
@@ -46,18 +46,23 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
         radius:60
     };
 
-    var n1, n2, n3, n4, n5, n6 , n7;
+    var n1, n2, n3, n4, n5, n6 , n7, squareNode;
 //
     n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
     n2 = canvas.addNode(NodeModel.get(), {x: 450, y: 100}, false);
     n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
+	
+    squareNode = canvas.addNode(NodeModel.get({type: 'square'}), {x: 450, y: 300}, false);
+	
 //    n4 = canvas.addNode(NodeModel.get(), {x: 800, y: 200}, false);
 //    n5 = canvas.addNode(NodeModel.get(), {x: 300, y: 300}, false);
 //    n6 = canvas.addNode(NodeModel.get(), {x: 500, y: 300}, false);
 //    n7 = canvas.addNode(NodeModel.get(), {x: 700, y: 300}, false);
 //
     canvas.connectNodes(n1, n2, 'labelName');
+    canvas.connectNodes(n1, squareNode, 'labelName');
     canvas.connectNodes(n2, n3);
+    canvas.connectNodes(squareNode, n3);
 //    canvas.connectNodes(n3, n4);
 //    canvas.connectNodes(n5, n2);
 //    canvas.connectNodes(n6, n3);
