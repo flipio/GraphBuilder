@@ -44,8 +44,9 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
   var constraints = {
     labelOffset : 40,
     radius      : 40,
-    borderWidth : 2,
-    borderRadius: 2
+    //width       : 250,
+    borderWidth : 4,
+    borderRadius: 4
   };
 
   var n1, n2, n3, n4, n5, n6, n7, squareNode;
