@@ -59,6 +59,7 @@ define([
 
         if (typeof options.constraints !== 'undefined') {
           Constraints = _.extend({}, this.constraints, options.constraints);
+		  this.squareConstraints = _.extend({}, this.squareConstraints, Constraints)
         } else {
           Constraints = this.constraints;
         }
@@ -95,7 +96,7 @@ define([
         squareConstraints: {
           width       : 100,
           height      : 50,
-          borderWidt  : 5,
+          borderWidth  : 5,
           borderRadius: 5,
           labelOffset : 12,
 
@@ -176,7 +177,7 @@ define([
 
         renderSquare: function() {
           var self = this,
-            constraints = _.extend({}, this.squareConstraints, Constraints),
+            constraints = this.squareConstraints,
             model = this.model,
             canvas = this.canvas,
             labelOffset = constraints.labelOffset,
