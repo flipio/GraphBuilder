@@ -49,6 +49,7 @@ If you'd like to run the compiled version, run
         model: model,                       // optional: it instantiate DAG graph
         editMode: true                      // optional: enable edit mode; Default: false
         treeGraph: true                     // optional: Sets flag if you want to create new tree graph
+        constraints: {}                     // optional: Override global constraitns for elements
     }
     
     
@@ -59,6 +60,44 @@ If you'd like to run the compiled version, run
           required ( it represents list of node id's who are direct descendants of that node )
           'parent' : string - represents id of parent
           'childrenList': [{string}]
+          
+### Element Models
+    
+##### Node:
+    
+    var NodeModel = {
+        id        : _.random(100000, 999999) + '',
+        name      : 'Test node',
+        inputs    : [
+        // Array of terminal models
+            {
+               id  : _.random(100000, 999999) + '',
+               name: 'input'
+            }
+        ],
+        outputs   : [
+        // Array of terminal models
+            {
+               id  : _.random(100000, 999999) + '',
+               name: 'output'
+            }
+        ],
+        // additional properties stored in node instance model
+        properties: {}
+    };
+    
+##### Connection:
+
+    var ConnectionModel = {
+        id: _.random(100000, 999999) + '', // it has to be a string
+        start_node: n1_id,
+        end_node: n2_id,
+        input_name: n2t.id,
+        output_name: n1t.id,
+        connection_name: connectionName || false, // optional 
+        connection_class_name: connectionClass || false // optional
+    };
+     
 
 ### TreeModel structure
 
