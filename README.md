@@ -357,6 +357,42 @@ example:
 
     });
 
+####`canvas:drag:start`
+
+Triggered when whole canvas has been moved.
+arguments:
+
+example:
+
+    canvasInstance.Event.subscribe('canvas:drag:start', function (startCoords) {
+
+
+    });
+
+####`canvas:drag:move`
+
+Triggered when whole canvas has been moved.
+arguments:
+
+example:
+
+    canvasInstance.Event.subscribe('canvas:drag:move', function (currentCoords) {
+
+
+    });
+
+####`canvas:drag:end`
+
+Triggered when whole canvas has been moved.
+arguments:
+
+example:
+
+    canvasInstance.Event.subscribe('canvas:drag:end', function (endCoords) {
+
+
+    });
+
 
 ####`connection:add` || `connection:create`
 
