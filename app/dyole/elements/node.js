@@ -2,812 +2,828 @@
  * Created by filip on 11.3.15..
  */
 define([
-	'jquery', 
-	'lodash', 
-	'dyole/elements/terminal', 
-	'dyole/helpers/common'
-], function ($, _, Terminal, Common) {
+    'jquery',
+    'lodash',
+    'dyole/elements/terminal',
+    'dyole/helpers/common'
+], function($, _, Terminal, Common) {
 
-	//@body
-	var Node = (function () {
+    //@body
+    var Node = (function() {
 
-		var CONSTRAINTS = {
+        var CONSTRAINTS = {
 
-			radius: 38,
-			borderWidth: 7,
-			labelOffset: 12,
+            radius     : 38,
+            borderWidth: 7,
+            labelOffset: 12,
 
-			outdated: {
-				fill: '#F5AB35',
-				gradient: ''
-			},
+            outdated: {
+                fill    : '#F5AB35',
+                gradient: ''
+            },
 
-			deleted: {
-				fill: 'red',
-				gradient: ''
-			},
+            deleted: {
+                fill    : 'red',
+                gradient: ''
+            },
 
-			selected: {
-				fill: '#D4F4FF'
-			},
+            selected: {
+                fill: '#D4F4FF'
+            },
 
-			//defaults
-			fill: '#011E37',
-			stroke: 'none'
+            //defaults
+            fill  : '#011E37',
+            stroke: 'none'
 
-		};
+        };
 
-		var SQUARE_CONSTRAINTS = {
-			width: 100,
-			height: 50,
-			borderWidth: 5,
-			borderRadius: 5,
-			labelOffset: 12,
+        var SQUARE_CONSTRAINTS = {
+            width       : 100,
+            height      : 50,
+            borderWidth : 5,
+            borderRadius: 5,
+            labelOffset : 12,
 
-			fill: '#011E37',
-			stroke: 'none'
-		};
+            fill  : '#011E37',
+            stroke: 'none'
+        };
 
-		var ICONS = {
-			input: 'preview_assets/images/icon-input-2.png',
-			output: 'preview_assets/images/icon-output-2.png',
-			default: 'preview_assets/images/cloud.png'
-		};
-		
-		var BUTTONS = {
-			radius: 12, border: 3,
+        var ICONS = {
+            input  : 'preview_assets/images/icon-input-2.png',
+            output : 'preview_assets/images/icon-output-2.png',
+            default: 'preview_assets/images/cloud.png'
+        };
 
-			// if you want to change buttons distance from node uncomment and change distance
-			//            distance: 5,
+        var BUTTONS = {
+            radius: 12, border: 3,
 
-			info: {
-				fill: '#3FC380', disabled: '#ccc',
+            // if you want to change buttons distance from node uncomment and change distance
+            //            distance: 5,
 
-				image: {
-					name: 'preview_assets/images/icon-info.png', width: 6, height: 11
-				}
+            info: {
+                fill: '#3FC380', disabled: '#ccc',
 
-			},
+                image: {
+                    name: 'preview_assets/images/icon-info.png', width: 6, height: 11
+                }
 
-			delete: {
-				fill: '#EF4836',
+            },
 
-				image: {
-					name: 'preview_assets/images/icon-delete.png', width: 10, height: 10
-				}
+            delete: {
+                fill: '#EF4836',
 
-			},
+                image: {
+                    name: 'preview_assets/images/icon-delete.png', width: 10, height: 10
+                }
 
-			rename: {
-				fill: 'transparent',
+            },
 
-				image: {
-					name: 'preview_assets/images/icon-pencil.png', width: 12, height: 12
-				}
-			}
-		};
+            rename: {
+                fill: 'transparent',
 
-		var Node = function (options) {
+                image: {
+                    name: 'preview_assets/images/icon-pencil.png', width: 12, height: 12
+                }
+            }
+        };
 
-			var Constraints = _.clone(CONSTRAINTS, true), 
-				SquareConstraints = _.clone(SQUARE_CONSTRAINTS, true), 
-				Buttons = _.clone(BUTTONS, true), 
-				Icons = _.clone(ICONS, true);
+        var Node = function(options) {
 
-			// cache options
-			this.options = options;
+            var Constraints = _.clone(CONSTRAINTS, true),
+                SquareConstraints = _.clone(SQUARE_CONSTRAINTS, true),
+                Buttons = _.clone(BUTTONS, true),
+                Icons = _.clone(ICONS, true);
 
-			this.canvas = options.canvas;
+            // cache options
+            this.options = options;
 
-			this.parent = options.pipelineWrap;
-			this.Pipeline = options.pipeline;
-			this.baseUrl = this.Pipeline.assetsUrl;
+            this.canvas = options.canvas;
 
-			// node instance on canvas
-			this.el = null;
-			this.model = options.model;
+            this.parent = options.pipelineWrap;
+            this.Pipeline = options.pipeline;
+            this.baseUrl = this.Pipeline.assetsUrl;
 
-			this.inputs = [];
-			this.outputs = [];
+            // node instance on canvas
+            this.el = null;
+            this.model = options.model;
 
-			this.id = this.model.id;
+            this.inputs = [];
+            this.outputs = [];
 
-			// map of connections connected to current node
-			this.connections = {};
+            this.id = this.model.id;
 
-			// dragged flag
-			this.dragged = false;
+            // map of connections connected to current node
+            this.connections = {};
 
-			this.selected = false;
+            // dragged flag
+            this.dragged = false;
 
-			this.inputRefs = this.model.inputs;
+            this.selected = false;
 
-			this.outputRefs = this.model.outputs;
+            this.inputRefs = this.model.inputs;
 
-			this.constraints = Constraints;
-			this.icons = Icons;
-			this.buttons = Buttons;
-			this.squareConstraints = SquareConstraints;
+            this.outputRefs = this.model.outputs;
 
-			if (Common.checkObjectKeys(this.Pipeline.constraints.node)) {
-				Common.setConstraints(this.constraints, this.Pipeline.constraints.node)
-			}
+            this.constraints = Constraints;
+            this.icons = Icons;
+            this.buttons = Buttons;
+            this.squareConstraints = SquareConstraints;
 
-			if (Common.checkObjectKeys(this.Pipeline.constraints.buttons)) {
-				Common.setConstraints(this.buttons, this.Pipeline.constraints.buttons)
-			}
+            if (Common.checkObjectKeys(this.Pipeline.constraints.node)) {
+                Common.setConstraints(this.constraints, this.Pipeline.constraints.node)
+            }
 
-			if (Common.checkObjectKeys(this.Pipeline.constraints.icons)) {
-				Common.setConstraints(this.icons, this.Pipeline.constraints.icons)
-			}
+            if (Common.checkObjectKeys(this.Pipeline.constraints.buttons)) {
+                Common.setConstraints(this.buttons, this.Pipeline.constraints.buttons)
+            }
 
-			if (typeof options.constraints === 'object') {
-				this.constraints = _.extend({}, this.constraints, options.constraints);
-				this.squareConstraints = _.extend({}, this.squareConstraints, this.constraints);
-			}
+            if (Common.checkObjectKeys(this.Pipeline.constraints.icons)) {
+                Common.setConstraints(this.icons, this.Pipeline.constraints.icons)
+            }
 
+            if (typeof options.constraints === 'object') {
+                this.constraints = _.extend({}, this.constraints, options.constraints);
+                this.squareConstraints = _.extend({}, this.squareConstraints, this.constraints);
+            }
 
-		};
 
-		Node.prototype = {
+        };
 
-			getFirstTerminal: function (type) {
-				return this[type + 's'][0];
-			},
+        Node.prototype = {
 
-			render: function () {
-				var renderFn, initTerminalFn;
+            getFirstTerminal: function(type) {
+                return this[type + 's'][0];
+            },
 
-				switch (this.model.nodeType) {
-					case 'square':
-						initTerminalFn = this.initSquareTerminals;
-						renderFn = this.renderSquare;
-						break;
-					default:
-						initTerminalFn = this.initCircleTerminals;
-						renderFn = this.renderCircle;
-						break;
-				}
+            render: function() {
+                var renderFn, initTerminalFn;
 
-				initTerminalFn.call(this);
-				return renderFn.call(this);
-			},
+                switch (this.model.nodeType) {
+                    case 'square':
+                        initTerminalFn = this.initSquareTerminals;
+                        renderFn = this.renderSquare;
+                        break;
+                    default:
+                        initTerminalFn = this.initCircleTerminals;
+                        renderFn = this.renderCircle;
+                        break;
+                }
 
-			renderSquare: function () {
-				var self = this, 
-					constraints = this.squareConstraints, 
-					model = this.model, 
-					canvas = this.canvas, 
-					labelOffset = constraints.labelOffset, 
-					inputs = this.inputs, 
-					outputs = this.outputs,
+                initTerminalFn.call(this);
+                return renderFn.call(this);
+            },
 
-					radius = constraints.borderRadius, 
-					border = constraints.borderWidth, 
-					width = constraints.width, 
-					height = constraints.height,
+            renderSquare: function() {
+                var self = this,
+                    constraints = this.squareConstraints,
+                    model = this.model,
+                    canvas = this.canvas,
+                    labelOffset = constraints.labelOffset,
+                    inputs = this.inputs,
+                    outputs = this.outputs,
 
-					node, outerBorder, innerBorder, borders, label, icon, img, imgUrl;
+                    radius = constraints.borderRadius,
+                    border = constraints.borderWidth,
+                    width = constraints.width,
+                    height = constraints.height,
 
-				node = canvas.group();
+                    node, outerBorder, innerBorder, borders, label, icon, img, imgUrl;
 
-				outerBorder = canvas.rect(-width / 2, 0, width, height, radius);
-				outerBorder.attr({
-					fill: '#FBFCFC',
-					stroke: '#dddddd'
-				});
+                node = canvas.group();
 
-				innerBorder = canvas.rect(border - width / 2, border, width - border * 2, height - border * 2, radius);
-				innerBorder.attr({
-					fill: constraints.fill,
-					stroke: constraints.stroke
-				});
+                outerBorder = canvas.rect(-width / 2, 0, width, height, radius);
+                outerBorder.attr({
+                    fill  : '#FBFCFC',
+                    stroke: '#dddddd'
+                });
 
-				borders = canvas.group();
-				borders.push(outerBorder).push(innerBorder);
+                innerBorder = canvas.rect(border - width / 2, border, width - border * 2, height - border * 2, radius);
+                innerBorder.attr({
+                    fill  : constraints.fill,
+                    stroke: constraints.stroke
+                });
 
-				var name = model.label ? model.label : model.name || model['id'];
+                borders = canvas.group();
+                borders.push(outerBorder).push(innerBorder);
 
-				label = canvas.text(0, height + labelOffset, name);
+                var name = model.label ? model.label: model.name || model['id'];
 
-				label.attr({
-					'font-size': 14
-				});
+                label = canvas.text(0, height + labelOffset, name);
 
-				imgUrl = this.icons.default;
+                label.attr({
+                    'font-size': 14
+                });
 
-				img = new Image();
-				imgUrl = self.baseUrl + imgUrl;
-				img.src = imgUrl;
+                imgUrl = this.icons.default;
 
-				$(img).load(function () {
-					icon = canvas.image(imgUrl, -img.width / 2, height / 2 - img.height / 2, img.width, img.height);
-					borders.push(icon);
+                img = new Image();
+                imgUrl = self.baseUrl + imgUrl;
+                img.src = imgUrl;
 
-					self._attachEvents();
-				});
+                $(img).load(function() {
+                    icon = canvas.image(imgUrl, -img.width / 2, height / 2 - img.height / 2, img.width, img.height);
+                    borders.push(icon);
 
-				// add all elements to the group container
-				node.push(borders).push(label);
+                    self._attachEvents();
+                });
 
-				// render input terminals
-				_.each(inputs, function (terminal) {
-					node.push(terminal.render().el);
-				});
+                // add all elements to the group container
+                node.push(borders).push(label);
 
-				// render output terminals
-				_.each(outputs, function (terminal) {
-					node.push(terminal.render().el);
-				});
+                // render input terminals
+                _.each(inputs, function(terminal) {
+                    node.push(terminal.render().el);
+                });
 
-				// move node to the coordinates written in it's model
-				node.translate(model.x, model.y);
+                // render output terminals
+                _.each(outputs, function(terminal) {
+                    node.push(terminal.render().el);
+                });
 
-				this.el = node;
-				this.label = label;
-				this._innerBorder = innerBorder;
-				this._outerBorder = outerBorder;
+                // move node to the coordinates written in it's model
+                node.translate(model.x, model.y);
 
-				this.circle = borders;
+                this.el = node;
+                this.label = label;
+                this._innerBorder = innerBorder;
+                this._outerBorder = outerBorder;
 
-				return this;
+                this.circle = borders;
 
-			},
+                return this;
 
-			renderCircle: function () {
+            },
 
-				var self = this, 
-					constraints = this.constraints, 
-					model = this.model, 
-					canvas = this.canvas, 
-					radius = constraints.radius, 
-					borderWidth = constraints.borderWidth, 
-					labelOffset = constraints.labelOffset, 
-					inputs = this.inputs, 
-					outputs = this.outputs,
+            renderCircle: function() {
 
-					node, outerBorder, innerBorder, borders, label, icon, img, imgUrl;
+                var self = this,
+                    constraints = this.constraints,
+                    model = this.model,
+                    canvas = this.canvas,
+                    radius = constraints.radius,
+                    borderWidth = constraints.borderWidth,
+                    labelOffset = constraints.labelOffset,
+                    inputs = this.inputs,
+                    outputs = this.outputs,
 
-				node = canvas.group();
+                    node, outerBorder, innerBorder, borders, label, icon, img, imgUrl;
 
-				outerBorder = canvas.circle(0, 0, radius);
-				outerBorder.attr({
-					fill: '#FBFCFC',
-					stroke: '#dddddd'
-				});
+                node = canvas.group();
 
-				innerBorder = canvas.circle(0, 0, radius - borderWidth);
-				innerBorder.attr({
-					fill: constraints.fill,
-					stroke: constraints.stroke
-					//                    gradient: constraints.gradient
-				});
+                outerBorder = canvas.circle(0, 0, radius);
+                outerBorder.attr({
+                    fill  : '#FBFCFC',
+                    stroke: '#dddddd'
+                });
 
-				borders = canvas.group();
-				borders.push(outerBorder).push(innerBorder);
+                innerBorder = canvas.circle(0, 0, radius - borderWidth);
+                innerBorder.attr({
+                    fill  : constraints.fill,
+                    stroke: constraints.stroke
+                    //                    gradient: constraints.gradient
+                });
 
-				var name = model.label ? model.label : model.name || model['id'];
-				label = canvas.text(0, radius + labelOffset, ((model.softwareDescription && model.softwareDescription.name) ? model.softwareDescription.name : name));
+                borders = canvas.group();
+                borders.push(outerBorder).push(innerBorder);
 
-				label.attr({
-					'font-size': 14
-				});
+                var name = model.label ? model.label: model.name || model['id'];
+                label = canvas.text(0, radius + labelOffset, ((model.softwareDescription && model.softwareDescription.name) ? model.softwareDescription.name: name));
 
-				imgUrl = this.icons.default;
+                label.attr({
+                    'font-size': 14
+                });
 
-				if (model.type === 'workflow') {
-					imgUrl = this.icons.workflow;
-				}
+                imgUrl = this.icons.default;
 
-				img = new Image();
-				imgUrl = self.baseUrl + imgUrl;
-				img.src = imgUrl;
+                if (model.type === 'workflow') {
+                    imgUrl = this.icons.workflow;
+                }
 
-				$(img).load(function () {
-					icon = canvas.image(imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
-					borders.push(icon);
+                img = new Image();
+                imgUrl = self.baseUrl + imgUrl;
+                img.src = imgUrl;
 
-					self._attachEvents();
-				});
+                $(img).load(function() {
+                    icon = canvas.image(imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
+                    borders.push(icon);
 
-				// add all elements to the group container
-				node.push(borders).push(label);
+                    self._attachEvents();
+                });
 
-				// render input terminals
-				_.each(inputs, function (terminal) {
-					node.push(terminal.render().el);
-				});
-
-				// render output terminals
-				_.each(outputs, function (terminal) {
-					node.push(terminal.render().el);
-				});
+                // add all elements to the group container
+                node.push(borders).push(label);
 
-				// move node to the coordinates written in it's model
-				node.translate(model.x, model.y);
+                // render input terminals
+                _.each(inputs, function(terminal) {
+                    node.push(terminal.render().el);
+                });
+
+                // render output terminals
+                _.each(outputs, function(terminal) {
+                    node.push(terminal.render().el);
+                });
 
-				this.el = node;
-				this.label = label;
-				this._innerBorder = innerBorder;
-				this._outerBorder = outerBorder;
+                // move node to the coordinates written in it's model
+                node.translate(model.x, model.y);
 
-				this.circle = borders;
+                this.el = node;
+                this.label = label;
+                this._innerBorder = innerBorder;
+                this._outerBorder = outerBorder;
 
-				return this;
-			},
+                this.circle = borders;
 
-			/**
-			 * For now initialization of square node type supports only one input and output terminal
-			 */
-			// TODO: Enable more then one terminal calculation
-			initSquareTerminals: function () {
-				var canvas = this.canvas, constraints = this.squareConstraints, inputs = this.inputs, outputs = this.outputs, modelInputs = this.inputRefs, modelOutputs = this.outputRefs, dataIn, dataOut;
+                return this;
+            },
 
-				dataIn = _.extend({
-					x: -constraints.width / 2,
-					y: constraints.height / 2,
-					input: true
-				}, modelInputs[0]);
+            /**
+             * For now initialization of square node type supports only one input and output terminal
+             */
+            // TODO: Enable more then one terminal calculation
+            initSquareTerminals: function() {
+                var canvas = this.canvas, constraints = this.squareConstraints, inputs = this.inputs, outputs = this.outputs, modelInputs = this.inputRefs, modelOutputs = this.outputRefs, dataIn, dataOut;
 
-				inputs.push(new Terminal({
-					model: dataIn,
-					parent: this,
-					canvas: canvas,
-					pipeline: this.Pipeline,
-					pipelineWrap: this.parent
-				}));
-
-				dataOut = _.extend({
-					x: constraints.width / 2,
-					y: constraints.height / 2,
-					input: false
-				}, modelOutputs[0]);
+                dataIn = _.extend({
+                    x    : -constraints.width / 2,
+                    y    : constraints.height / 2,
+                    input: true
+                }, modelInputs[0]);
 
-				outputs.push(new Terminal({
-					model: dataOut,
-					parent: this,
-					canvas: canvas,
-					pipeline: this.Pipeline,
-					pipelineWrap: this.parent
-				}));
+                inputs.push(new Terminal({
+                    model       : dataIn,
+                    parent      : this,
+                    canvas      : canvas,
+                    pipeline    : this.Pipeline,
+                    pipelineWrap: this.parent
+                }));
+
+                dataOut = _.extend({
+                    x    : constraints.width / 2,
+                    y    : constraints.height / 2,
+                    input: false
+                }, modelOutputs[0]);
 
-			},
+                outputs.push(new Terminal({
+                    model       : dataOut,
+                    parent      : this,
+                    canvas      : canvas,
+                    pipeline    : this.Pipeline,
+                    pipelineWrap: this.parent
+                }));
 
-			initCircleTerminals: function () {
-				var canvas = this.canvas, inputs = this.inputs, outputs = this.outputs, modelInputs = this.inputRefs, modelOutputs = this.outputRefs, radius = this.constraints.radius, inputStartingAngle = 120, outputStartingAngle = -60, inputsLen = modelInputs.length, outputsLen = modelOutputs.length, i, inputsAngles, data, outputsAngles;
+            },
 
-				if (inputsLen > 0) {
-					inputsAngles = this._calculateTerminalAngles(inputsLen, inputStartingAngle, radius, true);
-				}
-
-				for (i = 0; i < inputsLen; i++) {
+            initCircleTerminals: function() {
+                var canvas = this.canvas, inputs = this.inputs, outputs = this.outputs, modelInputs = this.inputRefs, modelOutputs = this.outputRefs, radius = this.constraints.radius, inputStartingAngle = 120, outputStartingAngle = -60, inputsLen = modelInputs.length, outputsLen = modelOutputs.length, i, inputsAngles, data, outputsAngles;
 
-					data = _.extend({
-						x: inputsAngles[i].x,
-						y: inputsAngles[i].y,
-						input: true
-					}, modelInputs[i]);
+                if (inputsLen > 0) {
+                    inputsAngles = this._calculateTerminalAngles(inputsLen, inputStartingAngle, radius, true);
+                }
+
+                for (i = 0; i < inputsLen; i++) {
 
-					inputs.push(new Terminal({
-						model: data,
-						parent: this,
-						canvas: canvas,
-						pipeline: this.Pipeline,
-						pipelineWrap: this.parent
-					}));
-				}
-
-				if (outputsLen > 0) {
-					outputsAngles = this._calculateTerminalAngles(outputsLen, outputStartingAngle, radius, false);
-				}
-
-				for (i = 0; i < outputsLen; i++) {
+                    data = _.extend({
+                        x    : inputsAngles[i].x,
+                        y    : inputsAngles[i].y,
+                        input: true
+                    }, modelInputs[i]);
 
-					data = _.extend({
-						x: outputsAngles[i].x,
-						y: outputsAngles[i].y,
-						input: false
-					}, modelOutputs[i]);
+                    inputs.push(new Terminal({
+                        model       : data,
+                        parent      : this,
+                        canvas      : canvas,
+                        pipeline    : this.Pipeline,
+                        pipelineWrap: this.parent
+                    }));
+                }
+
+                if (outputsLen > 0) {
+                    outputsAngles = this._calculateTerminalAngles(outputsLen, outputStartingAngle, radius, false);
+                }
+
+                for (i = 0; i < outputsLen; i++) {
 
-					outputs.push(new Terminal({
-						model: data,
-						parent: this,
-						canvas: canvas,
-						pipeline: this.Pipeline,
-						pipelineWrap: this.parent
-					}));
-				}
+                    data = _.extend({
+                        x    : outputsAngles[i].x,
+                        y    : outputsAngles[i].y,
+                        input: false
+                    }, modelOutputs[i]);
 
-			},
+                    outputs.push(new Terminal({
+                        model       : data,
+                        parent      : this,
+                        canvas      : canvas,
+                        pipeline    : this.Pipeline,
+                        pipelineWrap: this.parent
+                    }));
+                }
 
-			_calculateTerminalAngles: function (count, offset, r, isInput) {
+            },
 
-				var toRadians, floor = Math.floor, sin = Math.sin, cos = Math.cos, range = 120, step = range / count, halfStep = step / 2, coords = [], i, stepDeg, deg, rad;
+            _calculateTerminalAngles: function(count, offset, r, isInput) {
 
-				toRadians = function (deg) {
-					return deg * Math.PI / 180;
-				};
+                var toRadians, floor = Math.floor, sin = Math.sin, cos = Math.cos, range = 120, step = range / count, halfStep = step / 2, coords = [], i, stepDeg, deg, rad;
 
-				if (isInput) {
-					while (count--) {
+                toRadians = function(deg) {
+                    return deg * Math.PI / 180;
+                };
 
-						stepDeg = count * step;
-						deg = stepDeg + halfStep + offset;
-						rad = toRadians(deg);
+                if (isInput) {
+                    while (count--) {
 
-						coords.push({
-							x: floor(cos(rad) * (r)),
-							y: floor(sin(rad) * (r))
-						});
-					}
-				} else {
-					for (i = 0; i < count; i++) {
+                        stepDeg = count * step;
+                        deg = stepDeg + halfStep + offset;
+                        rad = toRadians(deg);
 
-						stepDeg = i * step;
-						deg = stepDeg + halfStep + offset;
-						rad = toRadians(deg);
+                        coords.push({
+                            x: floor(cos(rad) * (r)),
+                            y: floor(sin(rad) * (r))
+                        });
+                    }
+                } else {
+                    for (i = 0; i < count; i++) {
 
-						coords.push({
-							x: floor(cos(rad) * (r)),
-							y: floor(sin(rad) * (r))
-						});
-					}
-				}
+                        stepDeg = i * step;
+                        deg = stepDeg + halfStep + offset;
+                        rad = toRadians(deg);
 
-				return coords;
-			},
+                        coords.push({
+                            x: floor(cos(rad) * (r)),
+                            y: floor(sin(rad) * (r))
+                        });
+                    }
+                }
 
-			_attachEvents: function () {
+                return coords;
+            },
 
-				var _self = this, node = this.el, borders = this.circle, outerBorder = this._outerBorder, inputs = this.inputs, outputs = this.outputs;
+            _attachEvents: function() {
 
-				borders.mouseover(function () {
+                var _self = this, node = this.el, borders = this.circle, outerBorder = this._outerBorder, inputs = this.inputs, outputs = this.outputs;
 
-					node.toFront();
+                borders.mouseover(function() {
 
-					_self.glow = outerBorder.glow({
-						width: 15,
-						filled: true,
-						opacity: 0.3
-					}).attr({
-						stroke: '#9b9b9b'
-					});
+                    node.toFront();
 
-					// show input and output terminals' labels
-					_.each(inputs, function (input) {
-						input.showTerminalName();
-					});
-					_.each(outputs, function (output) {
-						output.showTerminalName();
-					});
+                    _self.glow = outerBorder.glow({
+                        width  : 15,
+                        filled : true,
+                        opacity: 0.3
+                    }).attr({
+                        stroke: '#9b9b9b'
+                    });
 
-				});
+                    // show input and output terminals' labels
+                    _.each(inputs, function(input) {
+                        input.showTerminalName();
+                    });
+                    _.each(outputs, function(output) {
+                        output.showTerminalName();
+                    });
 
-				node.mouseout(function () {
+                });
 
-					if (typeof _self.glow !== 'undefined') {
-						_self.glow.remove();
-					}
-					// hide input and output terminals' labels
-					_.each(inputs, function (input) {
-						input.hideTerminalName();
-					});
-					_.each(outputs, function (output) {
-						output.hideTerminalName();
-					});
+                node.mouseout(function() {
 
-					//_self.hideTooltip();
-				});
+                    if (typeof _self.glow !== 'undefined') {
+                        _self.glow.remove();
+                    }
+                    // hide input and output terminals' labels
+                    _.each(inputs, function(input) {
+                        input.hideTerminalName();
+                    });
+                    _.each(outputs, function(output) {
+                        output.hideTerminalName();
+                    });
 
-				borders.click(function () {
+                    //_self.hideTooltip();
+                });
 
-					var dragged = this.dragged;
+                borders.click(function() {
 
-					if (typeof dragged !== 'undefined' && !dragged) {
+                    var dragged = this.dragged;
 
-						this.Pipeline.Event.trigger('node:deselect');
+                    if (typeof dragged !== 'undefined' && !dragged) {
 
-						if (this.Pipeline.editMode) {
-							this._select();
-						} else {
-							this._showInfo();
-						}
+                        this.Pipeline.Event.trigger('node:deselect');
 
-						// }
-					}
+                        if (this.Pipeline.editMode) {
+                            this._select();
+                        } else {
+                            this._showInfo();
+                        }
 
-					this.dragged = false;
-				}, this);
+                        // }
+                    }
 
-				borders.drag(this.onMove, this.onMoveStart, this.onMoveEnd, this, this, this);
+                    this.dragged = false;
+                }, this);
 
-			},
+                borders.drag(this.onMove, this.onMoveStart, this.onMoveEnd, this, this, this);
 
-			onMoveStart: function (x, y, event, startCoords) {
+            },
 
-				var parent = this.parent, parentCoords = parent.node.getCTM(), scale = parent.getScale();
+            onMoveStart: function(x, y, event, startCoords) {
 
-				startCoords.x -= parentCoords.e;
-				startCoords.y -= parentCoords.f;
+                var parent = this.parent, parentCoords = parent.node.getCTM(), scale = parent.getScale();
 
-				// if canvas iz zoomed ( scaled ) you also need to adjust starting coordinates according to zoom level
-				startCoords.x = startCoords.x / scale.x;
-				startCoords.y = startCoords.y / scale.y;
+                startCoords.x -= parentCoords.e;
+                startCoords.y -= parentCoords.f;
 
-			},
+                // if canvas iz zoomed ( scaled ) you also need to adjust starting coordinates according to zoom level
+                startCoords.x = startCoords.x / scale.x;
+                startCoords.y = startCoords.y / scale.y;
 
-			onMove: function (dx, dy, x, y, event, start) {
+            },
 
-				var parent = this.parent, node = this.el, scale = parent.getScale();
+            onMove: function(dx, dy, x, y, event, start) {
 
-				// divide movement proportionally
-				// so you get equal movement in zoom state
-				// if scale is 1 it wont matter
-				dx = dx / scale.x;
-				dy = dy / scale.y;
+                var parent = this.parent, node = this.el, scale = parent.getScale();
 
-				node.translate(start.x + dx, start.y + dy);
+                // divide movement proportionally
+                // so you get equal movement in zoom state
+                // if scale is 1 it wont matter
+                dx = dx / scale.x;
+                dy = dy / scale.y;
 
-				this.redrawConnections();
+                node.translate(start.x + dx, start.y + dy);
 
-				this.dragged = true;
+                this.redrawConnections();
 
-				this.Pipeline.Event.trigger('scrollbars:draw');
-				this.Pipeline.Event.trigger('pipeline:change');
-				this.Pipeline.Event.trigger('node:drag', this.model, start.x + dx, start.y + dy);
+                this.dragged = true;
 
-			},
+                this.Pipeline.Event.trigger('scrollbars:draw');
+                this.Pipeline.Event.trigger('pipeline:change');
+                this.Pipeline.Event.trigger('node:drag', this.model, start.x + dx, start.y + dy);
 
-			onMoveEnd: function () {
+            },
 
-				var position = this.el.getTranslation(), model = this.model;
+            onMoveEnd: function() {
 
-				if (model.x !== position.x || model.y !== position.y) {
-					model.x = position.x;
-					model.y = position.y;
+                var position = this.el.getTranslation(), model = this.model;
 
-					if (this.dragged) {
-						this.Pipeline.Event.trigger('pipeline:change', 'display');
-					}
-				}
+                if (model.x !== position.x || model.y !== position.y) {
+                    model.x = position.x;
+                    model.y = position.y;
 
-			},
+                    if (this.dragged) {
+                        this.Pipeline.Event.trigger('pipeline:change', 'display');
+                    }
+                }
 
-			getTerminalById: function (id, type) {
+            },
 
-				var terminal;
+            getTerminalById: function(id, type) {
 
-				terminal = _.find(this[type + 's'], function (term) {
-					var terId = term.model['@id'] || term.model.id;
-					return terId === id;
-				});
+                var terminal;
 
-				return terminal;
-			},
+                terminal = _.find(this[type + 's'], function(term) {
+                    var terId = term.model['@id'] || term.model.id;
+                    return terId === id;
+                });
 
-			redrawConnections: function () {
-				_.each(this.connections, function (connection, id) {
-					if (connection) {
-						connection.draw();
-					}
-				});
+                return terminal;
+            },
 
-			},
+            redrawConnections: function() {
+                _.each(this.connections, function(connection, id) {
+                    if (connection) {
+                        connection.draw();
+                    }
+                });
 
-			addConnection: function (connection) {
-				this.connections[connection.id] = connection;
+            },
 
-				// recalculate file types only for regular input node
-				//            if (this.model.type.indexOf('input/') !== -1) {
-				//                this._recalculateFileTypes();
-				//            }
-			},
+            addConnection: function(connection) {
+                this.connections[connection.id] = connection;
 
-			removeConnection: function (connection) {
-				if (this.connections[connection.id]) {
+                // recalculate file types only for regular input node
+                //            if (this.model.type.indexOf('input/') !== -1) {
+                //                this._recalculateFileTypes();
+                //            }
+            },
 
-					this.connections[connection.id] = null;
+            removeConnection: function(connection) {
+                if (this.connections[connection.id]) {
 
-					delete this.connections[connection.id];
+                    this.connections[connection.id] = null;
 
-					this.Pipeline.removeConnection(connection);
-				}
+                    delete this.connections[connection.id];
 
-				// recalculate file types only for input nodes
-				//            if (this.model.type.indexOf('input/') !== -1) {
-				//                this._recalculateFileTypes();
-				//            }
-			},
+                    this.Pipeline.removeConnection(connection);
+                }
 
-			deselectAvailableTerminals: function () {
+                // recalculate file types only for input nodes
+                //            if (this.model.type.indexOf('input/') !== -1) {
+                //                this._recalculateFileTypes();
+                //            }
+            },
 
-				_.each(this.inputs, function (terminal) {
-					terminal.setDefaultState();
-				});
+            deselectAvailableTerminals: function() {
 
-				_.each(this.outputs, function (terminal) {
-					terminal.setDefaultState();
-				});
+                _.each(this.inputs, function(terminal) {
+                    terminal.setDefaultState();
+                });
 
-			},
+                _.each(this.outputs, function(terminal) {
+                    terminal.setDefaultState();
+                });
 
-			_showButtons: function () {
-				var _self = this, bbox, nodeRadius = Constraints.radius, buttonDistance = typeof this.buttons.distance !== 'undefined' ? -this.buttons.distance - nodeRadius - this.buttons.radius : -nodeRadius * 1.5;
+            },
 
-				if (!this.infoButton && !this.removeNodeButton) {
+            _showButtons: function() {
+                var _self = this;
+                var bbox;
+                var nodeRadius = this.constraints.radius;
+                var buttonDistance;
 
-					this.buttons.rename.image.url = this.baseUrl + this.buttons.rename.image.name;
+                if (this.model.nodeType === 'square') {
 
-					this.infoButton = this.canvas.button({
-						fill: this.buttons.info.fill,
-						x: +16,
-						y: buttonDistance,
-						radius: this.buttons.radius,
-						border: this.buttons.border,
-						image: {
-							url: this.baseUrl + this.buttons.info.image.name,
-							width: 14,
-							height: 14
-						}
-					}, {
-						onClick: this._showInfo,
-						scope: this
-					});
+                    nodeRadius = this.squareConstraints.height;
 
-					this.removeNodeButton = this.canvas.button({
-						fill: this.buttons.delete.fill,
-						x: -16,
-						y: buttonDistance,
-						radius: this.buttons.radius,
-						border: this.buttons.border,
-						image: {
-							url: this.baseUrl + this.buttons.delete.image.name,
-							width: 14,
-							height: 14
-						}
-					}, {
-						onClick: this._removeNodeButtonClick,
-						scope: this
-					});
+                    buttonDistance =  - 0.5 * nodeRadius;
+                }  else {
+                    buttonDistance = typeof this.buttons.distance !== 'undefined' ? -this.buttons.distance - nodeRadius - this.buttons.radius: - nodeRadius * 1.5;
+                }
 
-					_self.el.push(_self.infoButton.getEl()).push(_self.removeNodeButton.getEl());
 
-				}
 
-			},
 
-			_destroyButtons: function () {
 
-				if (this.infoButton) {
-					this.infoButton.remove();
-					this.infoButton = null;
-				}
+                if (!this.infoButton && !this.removeNodeButton) {
 
-				if (this.removeNodeButton) {
-					this.removeNodeButton.remove();
-					this.removeNodeButton = null;
-				}
+                    this.buttons.rename.image.url = this.baseUrl + this.buttons.rename.image.name;
 
-			},
+                    this.infoButton = this.canvas.button({
+                        fill  : this.buttons.info.fill,
+                        x     : +16,
+                        y     : buttonDistance,
+                        radius: this.buttons.radius,
+                        border: this.buttons.border,
+                        image : {
+                            url   : this.baseUrl + this.buttons.info.image.name,
+                            width : 14,
+                            height: 14
+                        }
+                    }, {
+                        onClick: this._showInfo,
+                        scope  : this
+                    });
 
-			_removeNodeButtonClick: function () {
-				this._destroyButtons();
-				this.Pipeline.removeNode(this.model.id);
-			},
+                    this.removeNodeButton = this.canvas.button({
+                        fill  : this.buttons.delete.fill,
+                        x     : -16,
+                        y     : buttonDistance,
+                        radius: this.buttons.radius,
+                        border: this.buttons.border,
+                        image : {
+                            url   : this.baseUrl + this.buttons.delete.image.name,
+                            width : 14,
+                            height: 14
+                        }
+                    }, {
+                        onClick: this._removeNodeButtonClick,
+                        scope  : this
+                    });
 
-			/**
-			 * Lunch modal box with node description
-			 *
-			 * @private
-			 */
-			_showInfo: function () {
-				//show info node info
+                    _self.el.push(_self.infoButton.getEl()).push(_self.removeNodeButton.getEl());
 
-				this.Pipeline.Event.trigger('node:showInfo', this.model);
-			},
+                }
 
-			_select: function () {
+            },
 
-				if (!this.Pipeline.editMode) {
-					return;
-				}
+            _destroyButtons: function() {
 
-				this.Pipeline.selectedNodes.push(this);
+                if (this.infoButton) {
+                    this.infoButton.remove();
+                    this.infoButton = null;
+                }
 
-				this._showButtons();
+                if (this.removeNodeButton) {
+                    this.removeNodeButton.remove();
+                    this.removeNodeButton = null;
+                }
 
-				// Show selected state
-				this._outerBorder.attr({
-					fill: Constraints.selected.fill
-				});
+            },
 
-				this.selected = true;
+            _removeNodeButtonClick: function() {
+                this._destroyButtons();
+                this.Pipeline.removeNode(this.model.id);
+            },
 
-				this.Pipeline.Event.trigger('node:select', this.model);
-			},
+            /**
+             * Lunch modal box with node description
+             *
+             * @private
+             */
+            _showInfo: function() {
+                //show info node info
 
-			_deselect: function () {
-				this._destroyButtons();
+                this.Pipeline.Event.trigger('node:showInfo', this.model);
+            },
 
-				// Show default state
+            _select: function() {
 
-				this._outerBorder.attr({fill: "#ffffff"});
+                if (!this.Pipeline.editMode) {
+                    return;
+                }
 
-				this.selected = false;
+                this.Pipeline.selectedNodes.push(this);
 
-				this.Pipeline.Event.trigger('node:deselected', this.model);
-			},
+                this._showButtons();
 
-			/**
-			 * Set inner border style properties
-			 *
-			 * @public
-			 */
-			setStyle: function (obj) {
+                // Show selected state
+                this._outerBorder.attr({
+                    fill: this.constraints.selected.fill
+                });
 
-				if (typeof obj !== 'object') {
-					console.error('Parametar has to be object, got: ' + typeof obj, obj);
-					return false;
-				}
+                this.selected = true;
 
-				//obj[prop] = value;
-				Constraints.selectedNewProp = obj
-				this._innerBorder.attr(obj);
+                this.Pipeline.Event.trigger('node:select', this.model);
+            },
 
-			},
+            _deselect: function() {
+                this._destroyButtons();
 
-			removeNode: function () {
+                // Show default state
 
-				var _self = this;
+                this._outerBorder.attr({fill: "#ffffff"});
 
-				_.each(this.connections, function (connection) {
-					if (connection) {
-						connection.destroyConnection();
-					}
-				});
+                this.selected = false;
 
-				_.each(this.inputs, function (t) {
-					t.destroy();
-				});
+                this.Pipeline.Event.trigger('node:deselected', this.model);
+            },
 
-				_.each(this.outputs, function (t) {
-					t.destroy();
-				});
+            /**
+             * Set inner border style properties
+             *
+             * @public
+             */
+            setStyle: function(obj) {
 
-				this.connections = {};
+                if (typeof obj !== 'object') {
+                    console.error('Parametar has to be object, got: ' + typeof obj, obj);
+                    return false;
+                }
 
-				if (typeof this.glow !== 'undefined') {
-					this.glow.remove();
-				}
-				var parentId = null, parentModel = null;
+                //obj[prop] = value;
+                this.constraints.selectedNewProp = obj
+                this._innerBorder.attr(obj);
 
-				if (this.model.parent) {
-					parentId = this.model.parent;
-					parentModel = this.Pipeline.nodes[parentId].model;
-				}
+            },
 
-				this.destroy();
+            removeNode: function() {
 
-				delete this.Pipeline.model.schemas[this.model.id];
-				delete this.Pipeline.nodes[this.model.id];
+                var _self = this;
 
-				this.Pipeline.Event.trigger('node:remove', this.model);
-			},
+                _.each(this.connections, function(connection) {
+                    if (connection) {
+                        connection.destroyConnection();
+                    }
+                });
 
-			destroy: function () {
+                _.each(this.inputs, function(t) {
+                    t.destroy();
+                });
 
-				this.circle.unbindMouse().unhover().unclick().unkeyup();
-				// remove element which has events attached to it, safety purposes :)
-				this.circle.remove();
+                _.each(this.outputs, function(t) {
+                    t.destroy();
+                });
 
-				this.el.remove();
-			}
-		};
+                this.connections = {};
 
-		return Node;
-	})();
+                if (typeof this.glow !== 'undefined') {
+                    this.glow.remove();
+                }
+                var parentId = null, parentModel = null;
+
+                if (this.model.parent) {
+                    parentId = this.model.parent;
+                    parentModel = this.Pipeline.nodes[parentId].model;
+                }
+
+                this.destroy();
+
+                delete this.Pipeline.model.schemas[this.model.id];
+                delete this.Pipeline.nodes[this.model.id];
+
+                this.Pipeline.Event.trigger('node:remove', this.model);
+            },
+
+            destroy: function() {
+
+                this.circle.unbindMouse().unhover().unclick().unkeyup();
+                // remove element which has events attached to it, safety purposes :)
+                this.circle.remove();
+
+                this.el.remove();
+            }
+        };
+
+        return Node;
+    })();
 
 //@body
 
-	return Node;
+    return Node;
 });
