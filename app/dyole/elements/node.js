@@ -214,18 +214,6 @@ define([
                     'font-size': 14
                 });
 
-                imgUrl = this.icons.default;
-
-                img = new Image();
-                imgUrl = self.baseUrl + imgUrl;
-                img.src = imgUrl;
-
-                $(img).load(function() {
-                    icon = canvas.image(imgUrl, -img.width / 2, height / 2 - img.height / 2, img.width, img.height);
-                    borders.push(icon);
-
-                    self._attachEvents();
-                });
 
                 // add all elements to the group container
                 node.push(borders).push(label);
@@ -249,6 +237,25 @@ define([
                 this._outerBorder = outerBorder;
 
                 this.circle = borders;
+
+                if(this.icons.default === false) {
+                    self._attachEvents();
+                } else{
+
+
+                    imgUrl = this.icons.default;
+
+                    img = new Image();
+                    imgUrl = self.baseUrl + imgUrl;
+                    img.src = imgUrl;
+
+                    $(img).load(function() {
+                        icon = canvas.image(imgUrl, -img.width / 2, height / 2 - img.height / 2, img.width, img.height);
+                        borders.push(icon);
+
+                        self._attachEvents();
+                    });
+                }
 
                 return this;
 
@@ -293,22 +300,7 @@ define([
                     'font-size': 14
                 });
 
-                imgUrl = this.icons.default;
 
-                if (model.type === 'workflow') {
-                    imgUrl = this.icons.workflow;
-                }
-
-                img = new Image();
-                imgUrl = self.baseUrl + imgUrl;
-                img.src = imgUrl;
-
-                $(img).load(function() {
-                    icon = canvas.image(imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
-                    borders.push(icon);
-
-                    self._attachEvents();
-                });
 
                 // add all elements to the group container
                 node.push(borders).push(label);
@@ -332,6 +324,30 @@ define([
                 this._outerBorder = outerBorder;
 
                 this.circle = borders;
+
+                if(this.icons.default === false) {
+                    self._attachEvents();
+                } else{
+
+
+                    imgUrl = this.icons.default;
+
+                    if (model.type === 'workflow') {
+                        imgUrl = this.icons.workflow;
+                    }
+
+                    img = new Image();
+                    imgUrl = self.baseUrl + imgUrl;
+                    img.src = imgUrl;
+
+                    $(img).load(function() {
+                        icon = canvas.image(imgUrl, -img.width / 2, -img.height / 2, img.width, img.height);
+                        borders.push(icon);
+
+                        self._attachEvents();
+                    });
+                }
+
 
                 return this;
             },
