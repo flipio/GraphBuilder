@@ -1058,9 +1058,12 @@ define([
                     throw Error('Node ID must be supplied to remove node');
                 }
 
-                var node = this.getNodeById(nodeId), parent = this.getNodeById(node.model.parent);
-
-                if (typeof parent !== "undefined" && !isChild) {
+                var node = this.getNodeById(nodeId),
+                    parent = null;
+                if (node.model.parent !== false) {
+                    this.getNodeById(node.model.parent);
+                }
+                if (typeof parent !== "undefined" && parent !== null && !isChild ) {
 
                     _.remove(parent.model.childrenList, function(n) {
                         return n === nodeId;
