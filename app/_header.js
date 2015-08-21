@@ -9,4 +9,4 @@
         // Browser globals
         global.Graph = factory();
     }
-}(this, function() {
+}(this, function() {})

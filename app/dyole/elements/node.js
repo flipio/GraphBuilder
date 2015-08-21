@@ -28,12 +28,12 @@ define([
             },
 
             selected: {
-                fill: '#D4F4FF'
+                fill: '#bb200a'
             },
 
             //defaults
-            fill  : '#011E37',
-            stroke: 'none'
+            fill  : 'none',
+            stroke: '#bb200a'
 
         };
 
