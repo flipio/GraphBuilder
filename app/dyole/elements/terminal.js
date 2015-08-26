@@ -82,7 +82,7 @@ define([
 
                 this.mousedown = false;
 
-                if (this.Pipeline.editMode && !this.Pipeline.constraints.disableConnectionCreation) {
+                if (this.Pipeline.editMode && !this.Pipeline.disableConnectionCreation) {
 
                     this.terminal.mousedown(function(e) {
                         var translation;

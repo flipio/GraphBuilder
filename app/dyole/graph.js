@@ -45,6 +45,7 @@ define([
              * @type {.scope.editMode|*|Pipeline.editMode|$scope.view.editMode}
              */
             this.editMode = options.editMode;
+            this.disableConnectionCreation = options.disableConnectionCreation;
 
             /**
              * Cache selected nodes
