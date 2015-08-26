@@ -144,6 +144,7 @@ define([
             if (typeof options.constraints === 'object') {
                 this.constraints = _.extend({}, this.constraints, options.constraints);
                 this.squareConstraints = _.extend({}, this.squareConstraints, this.constraints);
+                this.icons = _.extend({}, this.icons, this.constraints.icons);
             }
 
 
