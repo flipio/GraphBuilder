@@ -1038,7 +1038,8 @@ define([
              * @returns {{}|*}
              */
             getNodeById: function(id) {
-                if (!this.nodes[id]) {
+
+                if (!this.nodes[id] && id !== false ) {
                     console.error('Node with id: ' + id + ' not found');
                 }
 
