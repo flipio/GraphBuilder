@@ -88,9 +88,6 @@ define([
                     n.propertyType = setupNode.propertyType;
                 }
 
-                if (typeof setupNode.hasFilterString !== "undefined" ) {
-                    n.hasFilterString = setupNode.hasFilterString;
-                }
                 if (typeof setupNode.hasAsaNodeFilter !== "undefined" ) {
                     n.hasAsaNodeFilter = setupNode.hasAsaNodeFilter;
                 }
