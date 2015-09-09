@@ -88,13 +88,19 @@ define([
                     n.propertyType = setupNode.propertyType;
                 }
 
-                if (setupNode.sparqlType) {
-                    n.sparqlType = setupNode.sparqlType;
+                if (typeof setupNode.hasFilterString !== "undefined" ) {
+                    n.hasFilterString = setupNode.hasFilterString;
                 }
-
+                if (typeof setupNode.hasAsaNodeFilter !== "undefined" ) {
+                    n.hasAsaNodeFilter = setupNode.hasAsaNodeFilter;
+                }
+                if (typeof setupNode.hasFilterInstances !== "undefined") {
+                    n.hasFilterInstances = setupNode.hasFilterInstances;
+                }
                 if (setupNode.nodeType) {
                     n.nodeType = setupNode.nodeType;
                 }
+
 
                 if (!n.childrenList) {
                     n.childrenList = [];
