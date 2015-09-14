@@ -94,6 +94,9 @@ define([
                 if (typeof setupNode.hasFilterInstances !== "undefined") {
                     n.hasFilterInstances = setupNode.hasFilterInstances;
                 }
+                if (setupNode.selected) {
+                    n.selected = setupNode.selected;
+                }
                 if (setupNode.nodeType) {
                     n.nodeType = setupNode.nodeType;
                 }
