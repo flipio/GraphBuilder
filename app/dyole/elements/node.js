@@ -130,7 +130,8 @@ define([
             this.squareConstraints = SquareConstraints;
 
             if (Common.checkObjectKeys(this.Pipeline.constraints.node)) {
-                Common.setConstraints(this.constraints, this.Pipeline.constraints.node)
+                Common.setConstraints(this.constraints, this.Pipeline.constraints.node);
+                Common.setConstraints(this.squareConstraints, this.Pipeline.constraints.node);
             }
 
             if (Common.checkObjectKeys(this.Pipeline.constraints.buttons)) {
@@ -146,6 +147,8 @@ define([
                 this.squareConstraints = _.extend({}, this.squareConstraints, this.constraints);
                 this.icons = _.extend({}, this.icons, this.constraints.icons);
             }
+
+            console.log(this.squareConstraints, this.constraints);
 
 
         };
