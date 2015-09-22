@@ -164,9 +164,6 @@ define([
 
             }
 
-            console.log(this.squareConstraints, this.constraints);
-
-
         };
 
         Node.prototype = {
