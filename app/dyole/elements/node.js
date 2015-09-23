@@ -148,9 +148,6 @@ define([
                 this.icons = _.extend({}, this.icons, this.constraints.icons);
             }
 
-            console.log(this.squareConstraints, this.constraints);
-
-
         };
 
         Node.prototype = {
