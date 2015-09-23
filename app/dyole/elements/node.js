@@ -136,11 +136,11 @@ define([
                 }
 
                 if (typeof options.display.constraints === 'object') {
-                    this.constraints = _.extend(this.squareConstraints, options.display.squareConstraints);
+                    this.squareConstraints = _.extend(this.squareConstraints, options.display.squareConstraints);
                 }
 
                 if (typeof options.display.constraints === 'object') {
-                    this.constraints = _.extend(this.icons, options.display.icons);
+                    this.icons = _.extend(this.icons, options.display.icons);
                 }
 
             }
