@@ -425,13 +425,18 @@ define([
                     var nodeId = nodeModel['@id'] || nodeModel.id;
                     // schema is not merged because nodes is a copy of schema with modified inputs and outputs for displaying on canvas
                     // schema is only used for tool execution
-                    var model = _.extend(nodeModel, _self.model.display.nodes[nodeId]);
+                    var model = nodeModel;
+
+                    model.x = _self.model.display.nodes[nodeId].x;
+                    model.y = _self.model.display.nodes[nodeId].y;
+
 
                     _self.nodes[nodeId] = new Node({
                         pipeline    : _self,
                         model       : model,
                         canvas      : _self.canvas,
-                        pipelineWrap: _self.pipelineWrap
+                        pipelineWrap: _self.pipelineWrap,
+                        display: _self.model.display.nodes[nodeId]
                     });
                 });
 
@@ -1239,7 +1244,8 @@ define([
              * @returns {*}
              */
             getJSON: function() {
-                var json = _.clone(this.model, true);
+                var _self = this,
+                    json = _.clone(this.model, true);
 
                 json.relations = this._getConnections();
                 json.nodes = this._getNodes();
@@ -1248,10 +1254,14 @@ define([
 
                 _.each(json.nodes, function(node) {
                     var nodeId = node.id || node['@id'];
+                    var nodeInstance = _self.getNode(nodeId);
 
                     json.display.nodes[nodeId] = {
                         x: node.x,
-                        y: node.y
+                        y: node.y,
+                        constraints: nodeInstance.constraints,
+                        squareConstraints: nodeInstance.squareConstraints,
+                        icons: nodeInstance.icons
                     };
 
                     delete node.x;

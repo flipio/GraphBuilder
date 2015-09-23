@@ -148,6 +148,22 @@ define([
                 this.icons = _.extend({}, this.icons, this.constraints.icons);
             }
 
+            if (typeof options.display !== 'undefined') {
+
+                if (typeof options.display.constraints === 'object') {
+                    this.constraints = _.extend(this.constraints, options.display.constraints);
+                }
+
+                if (typeof options.display.constraints === 'object') {
+                    this.constraints = _.extend(this.squareConstraints, options.display.squareConstraints);
+                }
+
+                if (typeof options.display.constraints === 'object') {
+                    this.constraints = _.extend(this.icons, options.display.icons);
+                }
+
+            }
+
         };
 
         Node.prototype = {
