@@ -1254,7 +1254,7 @@ define([
 
                 _.each(json.nodes, function(node) {
                     var nodeId = node.id || node['@id'];
-                    var nodeInstance = _self.getNode(nodeId);
+                    var nodeInstance = _self.getNodeById(nodeId);
 
                     json.display.nodes[nodeId] = {
                         x: node.x,
