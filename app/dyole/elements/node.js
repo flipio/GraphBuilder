@@ -129,22 +129,6 @@ define([
             this.buttons = Buttons;
             this.squareConstraints = SquareConstraints;
 
-            if (typeof options.display !== 'undefined') {
-
-                if (typeof options.display.constraints === 'object') {
-                    this.constraints = _.extend(this.constraints, options.display.constraints);
-                }
-
-                if (typeof options.display.constraints === 'object') {
-                    this.squareConstraints = _.extend(this.squareConstraints, options.display.squareConstraints);
-                }
-
-                if (typeof options.display.constraints === 'object') {
-                    this.icons = _.extend(this.icons, options.display.icons);
-                }
-
-            }
-
             if (Common.checkObjectKeys(this.Pipeline.constraints.node)) {
                 Common.setConstraints(this.constraints, this.Pipeline.constraints.node);
                 Common.setConstraints(this.squareConstraints, this.Pipeline.constraints.node);
@@ -162,6 +146,22 @@ define([
                 this.constraints = _.extend({}, this.constraints, options.constraints);
                 this.squareConstraints = _.extend({}, this.squareConstraints, this.constraints);
                 this.icons = _.extend({}, this.icons, this.constraints.icons);
+            }
+
+            if (typeof options.display !== 'undefined') {
+
+                if (typeof options.display.constraints === 'object') {
+                    this.constraints = _.extend(this.constraints, options.display.constraints);
+                }
+
+                if (typeof options.display.constraints === 'object') {
+                    this.squareConstraints = _.extend(this.squareConstraints, options.display.squareConstraints);
+                }
+
+                if (typeof options.display.constraints === 'object') {
+                    this.icons = _.extend(this.icons, options.display.icons);
+                }
+
             }
 
         };
