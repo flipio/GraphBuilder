@@ -236,12 +236,12 @@ define([
                 node.push(borders).push(label);
 
                 // render input terminals
-                _.each(inputs, function(terminal) {
+                _.forEach(inputs, function(terminal) {
                     node.push(terminal.render().el);
                 });
 
                 // render output terminals
-                _.each(outputs, function(terminal) {
+                _.forEach(outputs, function(terminal) {
                     node.push(terminal.render().el);
                 });
 
@@ -317,8 +317,6 @@ define([
                     'font-size': 14
                 });
 
-
-
                 // add all elements to the group container
                 node.push(borders).push(label);
 
@@ -374,7 +372,13 @@ define([
              */
             // TODO: Enable more then one terminal calculation
             initSquareTerminals: function() {
-                var canvas = this.canvas, constraints = this.squareConstraints, inputs = this.inputs, outputs = this.outputs, modelInputs = this.inputRefs, modelOutputs = this.outputRefs, dataIn, dataOut;
+                var canvas = this.canvas,
+                    constraints = this.squareConstraints,
+                    inputs = this.inputs,
+                    outputs = this.outputs,
+                    modelInputs = this.inputRefs,
+                    modelOutputs = this.outputRefs,
+                    dataIn, dataOut;
 
                 dataIn = _.extend({
                     x    : -constraints.width / 2,
@@ -492,7 +496,10 @@ define([
 
             _attachEvents: function() {
 
-                var _self = this, node = this.el, borders = this.circle, outerBorder = this._outerBorder, inputs = this.inputs, outputs = this.outputs;
+                var _self = this,
+                    node = this.el,
+                    borders = this.circle,
+                    outerBorder = this._outerBorder;
 
                 borders.mouseover(function() {
 
@@ -506,13 +513,7 @@ define([
                         stroke: '#9b9b9b'
                     });
 
-                    // show input and output terminals' labels
-                    _.each(inputs, function(input) {
-                        input.showTerminalName();
-                    });
-                    _.each(outputs, function(output) {
-                        output.showTerminalName();
-                    });
+                    _self.showTerminalNames();
 
                 });
 
@@ -521,15 +522,9 @@ define([
                     if (typeof _self.glow !== 'undefined') {
                         _self.glow.remove();
                     }
-                    // hide input and output terminals' labels
-                    _.each(inputs, function(input) {
-                        input.hideTerminalName();
-                    });
-                    _.each(outputs, function(output) {
-                        output.hideTerminalName();
-                    });
 
-                    //_self.hideTooltip();
+                    _self.hideTerminalNames();
+
                 });
 
                 borders.click(function() {
@@ -546,7 +541,6 @@ define([
                             this._showInfo();
                         }
 
-                        // }
                     }
 
                     this.dragged = false;
@@ -554,6 +548,31 @@ define([
 
                 borders.drag(this.onMove, this.onMoveStart, this.onMoveEnd, this, this, this);
 
+            },
+            
+            showTerminalNames: function () {
+                var inputs = this.inputs,
+                    outputs = this.outputs;
+
+                // show input and output terminals' labels
+                _.each(inputs, function(input) {
+                    input.showTerminalName();
+                });
+                _.each(outputs, function(output) {
+                    output.showTerminalName();
+                });
+            },
+            
+            hideTerminalNames: function () {
+                var inputs = this.inputs,
+                    outputs = this.outputs;
+                // hide input and output terminals' labels
+                _.each(inputs, function(input) {
+                    input.hideTerminalName();
+                });
+                _.each(outputs, function(output) {
+                    output.hideTerminalName();
+                });
             },
 
             onMoveStart: function(x, y, event, startCoords) {
@@ -773,6 +792,7 @@ define([
                 this.selected = true;
 
                 this.Pipeline.Event.trigger('node:select', this.model);
+
             },
 
             _deselect: function() {
@@ -795,31 +815,29 @@ define([
             setStyle: function(obj) {
 
                 if (typeof obj !== 'object') {
-                    console.error('Parametar has to be object, got: ' + typeof obj, obj);
+                    console.error('Parameter has to be object, got: ' + typeof obj, obj);
                     return false;
                 }
 
                 //obj[prop] = value;
-                this.constraints.selectedNewProp = obj
+                this.constraints.selectedNewProp = obj;
                 this._innerBorder.attr(obj);
 
             },
 
             removeNode: function() {
 
-                var _self = this;
-
-                _.each(this.connections, function(connection) {
+                _.forEach(this.connections, function(connection) {
                     if (connection) {
                         connection.destroyConnection();
                     }
                 });
 
-                _.each(this.inputs, function(t) {
+                _.forEach(this.inputs, function(t) {
                     t.destroy();
                 });
 
-                _.each(this.outputs, function(t) {
+                _.forEach(this.outputs, function(t) {
                     t.destroy();
                 });
 
