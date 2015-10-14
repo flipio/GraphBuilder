@@ -3,105 +3,109 @@
  */
 
 'use strict';
-define(['jquery', 'raphael'], function($, Raphael) {
+define(['jquery', 'raphael'], function ($, Raphael) {
 
-  Raphael.fn.button = function(config, cb) {
-    var r = this,
-      callbacks = {};
+    //@body
 
-    config.border = config.border || 4;
+    Raphael.fn.button = function (config, cb) {
+        var r = this,
+            callbacks = {};
 
-    callbacks.onClick = (cb && typeof cb.onClick === 'function') ? cb.onClick: null;
-    callbacks.scope = (typeof cb.scope !== 'undefined') ? cb.scope: this;
+        config.border = config.border || 4;
 
-    function Button(conf, callbacks) {
+        callbacks.onClick = (cb && typeof cb.onClick === 'function') ? cb.onClick : null;
+        callbacks.scope = (typeof cb.scope !== 'undefined') ? cb.scope : this;
 
-      var pub, button, click = callbacks.onClick;
+        function Button(conf, callbacks) {
 
-      function initialize() {
-        var group = r.group(),
-          outer, inner;
+            var pub, button, click = callbacks.onClick;
 
-        outer = r.circle(0, 0, conf.radius);
-        outer.attr({
-          fill  : conf.borderFill || '#EBEBEB',
-          stroke: conf.borderStroke || '#C8C8C8'
-        });
+            function initialize() {
+                var group = r.group(),
+                    outer, inner;
 
-        inner = r.circle(0, 0, conf.radius - conf.border);
-        inner.attr({
-          fill  : conf.fill,
-          stroke: 'none'
-        });
+                outer = r.circle(0, 0, conf.radius);
+                outer.attr({
+                    fill: conf.borderFill || '#EBEBEB',
+                    stroke: conf.borderStroke || '#C8C8C8'
+                });
 
-        if (typeof conf.image !== 'undefined') {
+                inner = r.circle(0, 0, conf.radius - conf.border);
+                inner.attr({
+                    fill: conf.fill,
+                    stroke: 'none'
+                });
 
-          var x, y, img, fake, width, height;
+                if (typeof conf.image !== 'undefined') {
 
-          fake = new Image();
-          fake.src = conf.image.url;
+                    var x, y, img, fake, width, height;
+
+                    fake = new Image();
+                    fake.src = conf.image.url;
 
 
-          $(fake).load(function() {
-            if (group) {
-              console.log(fake.width, fake.height);
-              width = conf.image.width || fake.width;
-              height = conf.image.height || fake.height;
+                    $(fake).load(function () {
+                        if (group) {
+                            console.log(fake.width, fake.height);
+                            width = conf.image.width || fake.width;
+                            height = conf.image.height || fake.height;
 
-              x = -width / 2;
-              y = -height / 2;
+                            x = -width / 2;
+                            y = -height / 2;
 
 //                        x = - conf.image.width / 2;
 //                        y =  - conf.image.height / 2;
 
-              img = r.image(conf.image.url, x, y, width, height);
-              group.push(img)
+                            img = r.image(conf.image.url, x, y, width, height);
+                            group.push(img)
+                        }
+                    })
+
+                }
+
+                group.push(outer).push(inner);
+
+                group.translate(conf.x, conf.y);
+
+                group.node.setAttribute('class', 'svg-buttons');
+
+                button = group;
+
+                initHandlers();
             }
-          })
 
+            function initHandlers() {
+                if (callbacks.onClick) {
+                    button.click(callbacks.onClick, callbacks.scope);
+                }
+            }
+
+            initialize();
+
+            pub = {
+
+                remove: function () {
+                    if (click) {
+                        button.unclick();
+                    }
+                    button.remove();
+                },
+
+                translateX: function (x) {
+                    button.setTranslation(x, button.getTranslation().y);
+                },
+
+                getEl: function () {
+                    return button;
+                }
+
+            };
+
+            return pub;
         }
 
-        group.push(outer).push(inner);
+        return new Button(config, callbacks);
+    };
 
-        group.translate(conf.x, conf.y);
-
-        group.node.setAttribute('class', 'svg-buttons');
-
-        button = group;
-
-        initHandlers();
-      }
-
-      function initHandlers() {
-        if (callbacks.onClick) {
-          button.click(callbacks.onClick, callbacks.scope);
-        }
-      }
-
-      initialize();
-
-      pub = {
-
-        remove: function() {
-          if (click) {
-            button.unclick();
-          }
-          button.remove();
-        },
-
-        translateX: function(x) {
-          button.setTranslation(x, button.getTranslation().y);
-        },
-
-        getEl: function() {
-          return button;
-        }
-
-      };
-
-      return pub;
-    }
-
-    return new Button(config, callbacks);
-  };
+    //@body
 });

@@ -4,7 +4,7 @@
 
 'use strict';
 define(['jquery', 'raphael'], function ($, Raphael) {
-
+    //@body
     /**
      * Helper element for drawing Bezier Curves for terminal connections
      *
@@ -247,4 +247,5 @@ define(['jquery', 'raphael'], function ($, Raphael) {
 
         return new Curve(config, attributes);
     };
+    //@body
 });

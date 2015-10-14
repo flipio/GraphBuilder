@@ -29,7 +29,7 @@ module.exports = function(grunt) {
       },
       dist   : {
         files: {
-          "dist/temp-graph.js": ['app/dyole/**/*.js']
+          "dist/temp-graph.js": ['vendor/raphael/raphael.group.js', 'vendor/raphael/raphael.button.js', 'vendor/raphael/raphael.curve.js', 'app/dyole/**/*.js']
         }
       },
       wrap   : {
