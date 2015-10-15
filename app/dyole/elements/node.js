@@ -372,41 +372,60 @@ define([
              */
             // TODO: Enable more then one terminal calculation
             initSquareTerminals: function() {
-                var canvas = this.canvas,
+                var _self = this,
+                    canvas = this.canvas,
                     constraints = this.squareConstraints,
                     inputs = this.inputs,
                     outputs = this.outputs,
                     modelInputs = this.inputRefs,
                     modelOutputs = this.outputRefs,
+                    inputsLength = modelInputs.length,
+                    outputsLength = modelOutputs.length,
                     dataIn, dataOut;
 
-                dataIn = _.extend({
-                    x    : -constraints.width / 2,
-                    y    : constraints.height / 2,
-                    input: true
-                }, modelInputs[0]);
+                _.forEach(modelInputs, function (modelInput, index) {
 
-                inputs.push(new Terminal({
-                    model       : dataIn,
-                    parent      : this,
-                    canvas      : canvas,
-                    pipeline    : this.Pipeline,
-                    pipelineWrap: this.parent
-                }));
+                    var y = constraints.height / (inputsLength + 1);
 
-                dataOut = _.extend({
-                    x    : constraints.width / 2,
-                    y    : constraints.height / 2,
-                    input: false
-                }, modelOutputs[0]);
+                    y = y + y * (index);
 
-                outputs.push(new Terminal({
-                    model       : dataOut,
-                    parent      : this,
-                    canvas      : canvas,
-                    pipeline    : this.Pipeline,
-                    pipelineWrap: this.parent
-                }));
+                    dataIn = _.extend({
+                        x    : -constraints.width / 2,
+                        y    : y,
+                        input: true
+                    }, modelInput);
+
+                    inputs.push(new Terminal({
+                        model       : dataIn,
+                        parent      : _self,
+                        canvas      : canvas,
+                        pipeline    : _self.Pipeline,
+                        pipelineWrap: _self.parent
+                    }));
+
+                });
+
+                _.forEach(modelOutputs, function (modelOutput, index) {
+
+                    var y = constraints.height / (outputsLength + 1);
+
+                    y = y + y * (index);
+
+                    dataOut = _.extend({
+                        x    : constraints.width / 2,
+                        y    : y,
+                        input: false
+                    }, modelOutput);
+
+                    outputs.push(new Terminal({
+                        model       : dataOut,
+                        parent      : _self,
+                        canvas      : canvas,
+                        pipeline    : _self.Pipeline,
+                        pipelineWrap: _self.parent
+                    }));
+
+                });
 
             },
 
