@@ -1,0 +1,87 @@
+<!Doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>An awesome requirejs app</title>
+    <link rel="stylesheet" href="preview_assets/css/main.css"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+
+    <script src="vendor/raphael/raphael.js"></script>
+    <script src="dist/graph.min.js"></script>
+</head>
+<body>
+<h1>GraphEditor running!</h1>
+
+<button type="button" class="get-json">Get JSON</button>
+<button type="button" class="align-nodes">Align nodes</button>
+
+<div class="graph-placeholder"></div>
+
+<textarea name="json" id="json-area" cols="80" rows="20" disabled></textarea>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var canvas = new Graph({
+            $parent    : $('.graph-placeholder'),
+            assetsUrl  : '/',
+            editMode   : true,
+            //TreeModel: tree,
+            constraints: {
+                node      : {
+
+                    radius     : 60,
+                    borderWidth: 7,
+                    labelOffset: 12,
+
+                    selected: {
+                        fill: '#ffffff'
+                    },
+
+                    //defaults
+                    fill  : '#011E37',
+                    stroke: 'none'
+                },
+                connection: {
+                    strokeWidth: 7,
+                    disableWire: true
+                },
+                //terminal  : {
+                //  radius     : 9,
+                //  radiusInner: 6
+                //},
+                buttons   : {
+                    radius: 15,
+                    border: 4
+                },
+                icons     : {
+                    default: 'preview_assets/images/icon-db.png'
+                }
+            }
+        });
+
+        var model = {
+            id        : _.random(100000, 999999) + '',
+            name      : 'Test node',
+            inputs    : [
+                {
+                    id  : _.random(100000, 999999) + '',
+                    name: 'input'
+                }
+            ],
+            outputs   : [
+                {
+                    id  : _.random(100000, 999999) + '',
+                    name: 'output'
+                }
+            ],
+            properties: {}
+        };
+
+        var node = canvas.addNode(model, {x: 450, y: 100}, false);
+
+    });
+</script>
+</body>
+</html>

@@ -37,7 +37,9 @@ define(['lodash'], function(_) {
                 if (Common.objectPropExists(constraint)) {
                     if (Common.getPropType(constraint) == 'object') {
                         _.forEach(constraint, function(value, key) {
-                            instance[prop][key] = value;
+                            if (typeof instance[prop] === 'object' && typeof instance[prop][key] !== 'undefined') {
+                                instance[prop][key] = value;
+                            }
                         });
                     } else {
                         instance[prop] = constraint;

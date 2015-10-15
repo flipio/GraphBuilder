@@ -7,6 +7,8 @@
         module.exports = factory();
     } else {
         // Browser globals
+        console.log('Globals', global);
+        
         global.Graph = factory();
     }
 }(this, function() {
