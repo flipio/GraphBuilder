@@ -1033,7 +1033,7 @@ define([
              * @private
              */
             getConnections: function() {
-                return this._getConnections();
+                return _.toArray(this.connections);
             },
 
             /**

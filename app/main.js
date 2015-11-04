@@ -31,8 +31,8 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
             //  radiusInner: 6
             //},
             buttons   : {
-                radius: 15,
-                border: 4
+                radius: 8,
+                border: 2
             },
             icons     : {
                 default: 'preview_assets/images/icon-db.png'

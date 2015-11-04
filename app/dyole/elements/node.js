@@ -724,10 +724,6 @@ define([
                     buttonDistance = typeof this.buttons.distance !== 'undefined' ? -this.buttons.distance - nodeRadius - this.buttons.radius: - nodeRadius * 1.5;
                 }
 
-
-
-
-
                 if (!this.infoButton && !this.removeNodeButton) {
 
                     this.buttons.rename.image.url = this.baseUrl + this.buttons.rename.image.name;
@@ -740,8 +736,8 @@ define([
                         border: this.buttons.border,
                         image : {
                             url   : this.baseUrl + this.buttons.info.image.name,
-                            width : 14,
-                            height: 14
+                            width : this.buttons.radius,
+                            height: this.buttons.radius
                         }
                     }, {
                         onClick: this._showInfo,
@@ -756,8 +752,8 @@ define([
                         border: this.buttons.border,
                         image : {
                             url   : this.baseUrl + this.buttons.delete.image.name,
-                            width : 14,
-                            height: 14
+                            width : this.buttons.radius,
+                            height: this.buttons.radius
                         }
                     }, {
                         onClick: this._removeNodeButtonClick,
