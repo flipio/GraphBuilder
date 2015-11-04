@@ -524,23 +524,14 @@ define([
 
                     node.toFront();
 
-                    _self.glow = outerBorder.glow({
-                        width  : 15,
-                        filled : true,
-                        opacity: 0.3
-                    }).attr({
-                        stroke: '#9b9b9b'
-                    });
-
+                    _self.glow();
                     _self.showTerminalNames();
 
                 });
 
                 node.mouseout(function() {
 
-                    if (typeof _self.glow !== 'undefined') {
-                        _self.glow.remove();
-                    }
+                    _self.removeGlow();
 
                     _self.hideTerminalNames();
 
@@ -567,6 +558,22 @@ define([
 
                 borders.drag(this.onMove, this.onMoveStart, this.onMoveEnd, this, this, this);
 
+            },
+
+            glow: function (options) {
+                this._glow = this._outerBorder.glow({
+                    width  : 15,
+                    filled : true,
+                    opacity: 0.3
+                }).attr({
+                    stroke: '#9b9b9b'
+                });
+            },
+            
+            removeGlow: function () {
+                if (typeof this._glow !== 'undefined') {
+                    this._glow.remove();
+                }
             },
             
             showTerminalNames: function () {
@@ -861,10 +868,7 @@ define([
                 });
 
                 this.connections = {};
-
-                if (typeof this.glow !== 'undefined') {
-                    this.glow.remove();
-                }
+                this.removeGlow();
                 var parentId = null, parentModel = null;
 
                 if (this.model.parent) {
