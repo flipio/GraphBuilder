@@ -88,7 +88,7 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
 
     canvas.Event.subscribe('node:select', function(node) {
         _.forEach(canvas.connections, function (c) {
-            c.glow({opacity: 0.2})
+            c.glow({opacity: 0.9, color: 'red', width: 25})
         });
 
         console.log('%cnode:select', 'color:#acacff;background:black;', node);

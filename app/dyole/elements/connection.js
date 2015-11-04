@@ -24,6 +24,8 @@ define([
 
             this.id = this.model.id;
 
+            this._glowOptions = {};
+
 //            this.tempConnectionActive = false;
 
             if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
@@ -177,9 +179,7 @@ define([
                 this.removeWire();
 
                 if (this._glow) {
-                    console.log('Glow: ', this._glow);
-                    this.removeGlow();
-                    this.glow();
+                    this.reDrawGlow();
                 } else {
                     this.removeGlow()
                 }
@@ -189,7 +189,13 @@ define([
 
             glow: function(options) {
 
-                this._glow = this.connection.getPathOuter().glow(options);
+                if (typeof options === 'object') {
+                    this._glowOptions = options || this._glowOptions;
+                } else {
+                    console.error('[glow()] ', 'expected object, got : ', typeof options);
+                }
+
+                this._glow = this.connection.getPathOuter().glow(this._glowOptions);
                 this.connection.push(this._glow);
 
                 this._glow.toBack();
@@ -200,9 +206,19 @@ define([
             removeGlow: function() {
 
                 if (this._glow) {
+                    this._glowOptions = {};
                     this._glow.remove();
                     this._glow = null;
                 }
+
+                return this;
+            },
+
+            reDrawGlow: function () {
+
+                var opts = _.clone(this._glowOptions, true);
+                this.removeGlow();
+                this.glow(opts);
 
                 return this;
             },
