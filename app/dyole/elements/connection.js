@@ -187,9 +187,9 @@ define([
                 return this;
             },
 
-            glow: function() {
+            glow: function(options) {
 
-                this._glow = this.connection.getPathOuter().glow();
+                this._glow = this.connection.getPathOuter().glow(options);
                 this.connection.push(this._glow);
 
                 this._glow.toBack();

@@ -49,9 +49,9 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
 //    };
 //
     var n1, n2, n3, n4, n5, n6, n7, squareNode;
-//    n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false, constraints);
-//    n2 = canvas.addNode(NodeModel.get(), {x: 450, y: 100}, false);
-//    n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false, constraints);
+    n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false);
+    n2 = canvas.addNode(NodeModel.get(), {x: 450, y: 100}, false);
+    n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
 
     var m = NodeModel.get({type: 'square'});
 
@@ -71,7 +71,7 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
 ////    n6 = canvas.addNode(NodeModel.get(), {x: 500, y: 300}, false);
 ////    n7 = canvas.addNode(NodeModel.get(), {x: 700, y: 300}, false);
 ////
-//    canvas.connectNodes(n1, n2, 'labelName');
+    canvas.connectNodes(n1, n2, 'labelName');
 //    canvas.connectNodes(n1, squareNode, 'labelName');
 //    canvas.connectNodes(n2, n3);
 //    canvas.connectNodes(squareNode, n3);
@@ -87,13 +87,18 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
     });
 
     canvas.Event.subscribe('node:select', function(node) {
+        _.forEach(canvas.connections, function (c) {
+            c.glow({opacity: 0.2})
+        });
 
         console.log('%cnode:select', 'color:#acacff;background:black;', node);
 
     });
 
     canvas.Event.subscribe('node:deselected', function(node) {
-
+        _.forEach(canvas.connections, function (c) {
+            c.removeGlow()
+        });
         console.log('%cnode:deselected', 'color:#acacff;background:black;', node);
 
     });
