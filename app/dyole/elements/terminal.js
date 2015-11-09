@@ -226,8 +226,7 @@ define([
                 var _self = this,
                     model = this.model,
                     canvas = this.canvas,
-                    xOffset = 12,
-                    el, terminalBorder, terminalInner, label, labelXOffset, borders,
+                    el, terminalBorder, terminalInner, label, borders,
                     required = this.model.required ? '(required)': '';
 
                 el = canvas.group();
@@ -245,21 +244,11 @@ define([
                     stroke: this.constraints.stroke
                 });
 
-                label = canvas.text(0, 0, model.name || model.id + ' ' + required);
+                if (typeof model.name === 'string' && model.name !== '') {
 
-                label.attr({
-                    'font-size': '12px'
-                });
+                    label = this._createLabel(model);
 
-                if (model.input) {
-                    labelXOffset = -1 * (label.getBBox().width / 2) - xOffset;
-                } else { // output
-                    labelXOffset = (label.getBBox().width / 2) + xOffset;
                 }
-
-                label.translate(labelXOffset, 0);
-
-                label.attr('fill', 'none');
 
                 borders = canvas.group();
 
@@ -285,7 +274,6 @@ define([
 
                 this.el = el;
                 this.terminal = borders;
-                this.label = label;
                 this.terminalInner = terminalInner;
                 this.terminalBorder = terminalBorder;
 
@@ -294,14 +282,43 @@ define([
                 return this;
             },
 
+            _createLabel: function (model) {
+
+                var labelXOffset,
+                    xOffset = 12,
+                    label = this.canvas.text(0, 0, model.name);
+
+                label.attr({
+                    'font-size': '12px'
+                });
+
+                if (model.input) {
+                    labelXOffset = -1 * (label.getBBox().width / 2) - xOffset;
+                } else { // output
+                    labelXOffset = (label.getBBox().width / 2) + xOffset;
+                }
+
+                label.translate(labelXOffset, 0);
+
+                label.attr('fill', 'none');
+
+                this.label = label;
+
+                return label;
+            },
+
             showTerminalName: function() {
 
-                this.label.attr('fill', '#666');
+                if (this.label) {
+                    this.label.attr('fill', '#666');
+                }
+
+                return this;
             },
 
             hideTerminalName: function() {
 
-                if (!this.mouseover) {
+                if (!this.mouseover && this.label) {
                     this.label.attr('fill', 'none');
                 }
 
@@ -467,7 +484,12 @@ define([
 
             changeTerminalName: function(name) {
                 this.model.name = name;
-                this.label.attr('text', this.model.name);
+
+                if (this.label) {
+                    this.label.attr('text', this.model.name);
+                } else {
+                    this._createLabel(this.model);
+                }
             },
 
             destroy: function() {
