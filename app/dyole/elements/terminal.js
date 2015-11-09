@@ -268,7 +268,11 @@ define([
                     _self.Pipeline.Event.trigger('terminal:mouseout');
                 });
 
-                el.push(borders).push(label);
+                el.push(borders);
+
+                if (label) {
+                    el.push(label);
+                }
 
                 el.translate(model.x, model.y);
 
