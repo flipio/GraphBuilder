@@ -11,7 +11,8 @@ module.exports = function(grunt) {
     banner   : '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %>\n' + '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' + '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> (<%= pkg.author.email %>);' + ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
     // Task configuration.
     clean    : {
-      files: ['dist']
+      files: ['dist'],
+      tempBuild: ['dist/temp-graph.js']
     },
     concat   : {
       options: {
@@ -141,7 +142,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
 
   // Default task.
-  grunt.registerTask('default', ['clean', 'concat', 'uglify']);
+  grunt.registerTask('default', ['clean', 'concat', 'uglify', 'clean:tempBuild']);
+  grunt.registerTask('build', ['default']);
   grunt.registerTask('preview', ['connect:development']);
   grunt.registerTask('serve', ['connect:development', 'watch:js']);
   grunt.registerTask('preview-live', ['default', 'connect:production']);

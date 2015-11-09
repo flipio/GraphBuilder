@@ -5,15 +5,15 @@ define([
     'jquery', 'lodash', 'raphael', 'dyole/event/event', 'dyole/constants/GraphModel', 'dyole/elements/node', 'dyole/elements/terminal', 'dyole/elements/connection', 'dyole/helpers/sort', 'dyole/helpers/common',
 
     'raphael-group'
-], function($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Common) {
+], function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Common) {
 
     //@body
 
 
-    var Graph = (function() {
+    var Graph = (function () {
         var SCROLLBAR_COLOR = '#B6B6B6';
 
-        var Graph = function(options) {
+        var Graph = function (options) {
 
             // cache options
             this.options = options;
@@ -81,7 +81,7 @@ define([
 
         Graph.prototype = {
 
-            _overrideConstraints: function(constraints) {
+            _overrideConstraints: function (constraints) {
 
                 if (Common.checkObjectKeys(constraints.node)) {
                     this.constraints.node = constraints.node;
@@ -110,33 +110,33 @@ define([
              *
              * @private
              */
-            _attachEvents: function() {
+            _attachEvents: function () {
                 var _self = this,
                     $canvasArea = this.$parent;
 
-                this.Event.subscribe('temp:connection:state', function(state) {
+                this.Event.subscribe('temp:connection:state', function (state) {
                     _self.tempConnectionActive = state;
                 });
 
-                this.Event.subscribe('scrollbars:draw', function() {
+                this.Event.subscribe('scrollbars:draw', function () {
                     _self._drawScrollbars();
                 });
 
                 /**
                  * @param type {string}
                  */
-                this.Event.subscribe('pipeline:change', function() {
+                this.Event.subscribe('pipeline:change', function () {
                     // on graph change
                 });
 
-                this.Event.subscribe('node:add', function(model, constraints) {
+                this.Event.subscribe('node:add', function (model, constraints) {
 
                     var node = new Node({
-                        pipeline    : _self,
-                        model       : model,
-                        canvas      : _self.canvas,
+                        pipeline: _self,
+                        model: model,
+                        canvas: _self.canvas,
                         pipelineWrap: _self.pipelineWrap,
-                        constraints : constraints
+                        constraints: constraints
                     });
 
                     _self.nodes[model.id] = node;
@@ -145,8 +145,8 @@ define([
 
                 });
 
-                this.Event.subscribe('node:deselect', function() {
-                    _.each(_self.selectedNodes, function(node) {
+                this.Event.subscribe('node:deselect', function () {
+                    _.each(_self.selectedNodes, function (node) {
                         if (node.selected) {
                             node._deselect();
                         }
@@ -154,27 +154,27 @@ define([
 
                 });
 
-                this.Event.subscribe('node:select', function(model) {
+                this.Event.subscribe('node:select', function (model) {
 
                     //@todo add handler for this event
 
                 });
 
-                this.Event.subscribe('connection:create', function(endTerminal, startTerminal) {
-                    var end = endTerminal.model.input ? endTerminal: startTerminal, start = endTerminal.model.input ? startTerminal: endTerminal;
+                this.Event.subscribe('connection:create', function (endTerminal, startTerminal) {
+                    var end = endTerminal.model.input ? endTerminal : startTerminal, start = endTerminal.model.input ? startTerminal : endTerminal;
 
                     _self.tempConnectionRefs = {
-                        end  : end,
+                        end: end,
                         start: start
                     };
 
                     // connection id has to be set here because of dynamic connection creation
                     var model = {
-                        id             : _.random(100000, 999999) + '', // it has to be a string
-                        start_node     : start.parent.model.id,
-                        end_node       : end.parent.model.id,
-                        input_name     : end.id,
-                        output_name    : start.id,
+                        id: _.random(100000, 999999) + '', // it has to be a string
+                        start_node: start.parent.model.id,
+                        end_node: end.parent.model.id,
+                        input_name: end.id,
+                        output_name: start.id,
                         connection_name: ''
                     };
 
@@ -183,10 +183,10 @@ define([
                     _self.Event.trigger('connection:add', model);
                 });
 
-                $canvasArea.mousemove(function(e) {
-                    _.each(_self.nodes, function(node) {
+                $canvasArea.mousemove(function (e) {
+                    _.each(_self.nodes, function (node) {
 
-                        _.each(node.inputs, function(i) {
+                        _.each(node.inputs, function (i) {
                             e.preventDefault();
                             // e.stopPropagation();
 
@@ -199,7 +199,7 @@ define([
                             }
                         });
 
-                        _.each(node.outputs, function(o) {
+                        _.each(node.outputs, function (o) {
                             e.preventDefault();
                             // e.stopPropagation();
 
@@ -215,11 +215,11 @@ define([
                     });
                 });
 
-                $('body').on('mouseup', function(e) {
+                $('body').on('mouseup', function (e) {
 
-                    _.each(_self.nodes, function(node) {
+                    _.each(_self.nodes, function (node) {
 
-                        _.each(node.inputs, function(i) {
+                        _.each(node.inputs, function (i) {
                             i.parent.deselectAvailableTerminals();
                             i._removeTempConnection();
 
@@ -229,7 +229,7 @@ define([
                             i.mousedown = false;
                         });
 
-                        _.each(node.outputs, function(o) {
+                        _.each(node.outputs, function (o) {
                             o.parent.deselectAvailableTerminals();
                             o._removeTempConnection();
 
@@ -248,12 +248,12 @@ define([
              *
              * @private
              */
-            _initCanvas: function() {
+            _initCanvas: function () {
                 var width = 600,
                     height = 600,
                     $parent = this.$parent,
                     $parentDim = {
-                        width : $parent[0].offsetWidth - 10,
+                        width: $parent[0].offsetWidth - 10,
                         height: $parent[0].offsetHeight || $parent[0].parentNode.offsetHeight
                     };
 
@@ -277,7 +277,7 @@ define([
              *
              * @private
              */
-            _initCanvasPosition: function() {
+            _initCanvasPosition: function () {
                 this._move(this.model.display.canvas);
             },
 
@@ -289,14 +289,14 @@ define([
              * @param height
              * @private
              */
-            _initRect: function(canvas, width, height) {
+            _initRect: function (canvas, width, height) {
 
                 this.rect = canvas.rect(0, 0, width, height);
                 this.rect.dragged = false;
 
                 this.rect.attr({
-                    stroke : 'none',
-                    fill   : '#fff',
+                    stroke: 'none',
+                    fill: '#fff',
                     opacity: '0'
                 });
 
@@ -308,7 +308,7 @@ define([
              * @param step
              * @private
              */
-            _initZoomLevel: function(step) {
+            _initZoomLevel: function (step) {
 
                 this.getEl().scale(step, step);
 
@@ -322,7 +322,7 @@ define([
              * @param position
              * @private
              */
-            _move: function(position) {
+            _move: function (position) {
                 this.getEl().translate(position.x, position.y);
             },
 
@@ -331,7 +331,7 @@ define([
              *
              * @private
              */
-            _initCanvasMove: function() {
+            _initCanvasMove: function () {
 
                 var _self = this,
                     canvas = this.getEl(),
@@ -397,7 +397,7 @@ define([
                 };
 
                 this.rect.drag(move, start, end);
-                this.rect.click(function() {
+                this.rect.click(function () {
                     if (!_self.rect.dragged) {
                         _self.Event.trigger('node:deselect');
                     }
@@ -405,7 +405,7 @@ define([
                     _self.rect.dragged = false;
                 });
 
-                this.rect.mouseover(function() {
+                this.rect.mouseover(function () {
                     _self.Event.trigger('remove:wire');
                 });
 
@@ -416,11 +416,11 @@ define([
              *
              * @private
              */
-            _generateNodes: function() {
+            _generateNodes: function () {
 
                 var _self = this;
 
-                _.each(_self.model.nodes, function(nodeModel, index) {
+                _.each(_self.model.nodes, function (nodeModel, index) {
 
                     var nodeId = nodeModel['@id'] || nodeModel.id;
                     // schema is not merged because nodes is a copy of schema with modified inputs and outputs for displaying on canvas
@@ -432,15 +432,15 @@ define([
 
 
                     _self.nodes[nodeId] = new Node({
-                        pipeline    : _self,
-                        model       : model,
-                        canvas      : _self.canvas,
+                        pipeline: _self,
+                        model: model,
+                        canvas: _self.canvas,
                         pipelineWrap: _self.pipelineWrap,
                         display: _self.model.display.nodes[nodeId]
                     });
                 });
 
-                _.each(_self.nodes, function(node) {
+                _.each(_self.nodes, function (node) {
                     _self.pipelineWrap.push(node.render().el);
                 });
 
@@ -454,10 +454,10 @@ define([
              *
              * @private
              */
-            _generateConnections: function() {
+            _generateConnections: function () {
                 var _self = this;
 
-                _.each(this.model.relations, function(connection) {
+                _.each(this.model.relations, function (connection) {
 
                     _self._createConnection(connection);
 
@@ -471,20 +471,20 @@ define([
              * @param connection
              * @private
              */
-            _createConnection: function(connection) {
+            _createConnection: function (connection) {
                 var _self = this,
                     input = _self.nodes[connection.start_node].getTerminalById(connection.output_name, 'output'),
                     output = _self.nodes[connection.end_node].getTerminalById(connection.input_name, 'input');
 
                 _self.connections[connection.id] = new Connection({
-                    model   : connection,
-                    canvas  : _self.canvas,
-                    parent  : _self.pipelineWrap,
-                    nodes   : _self.nodes,
+                    model: connection,
+                    canvas: _self.canvas,
+                    parent: _self.pipelineWrap,
+                    nodes: _self.nodes,
                     pipeline: _self,
-                    input   : input,
-                    output  : output,
-                    element : _self.$parent
+                    input: input,
+                    output: output,
+                    element: _self.$parent
                 });
 
                 _self.nodes[connection.start_node].addConnection(_self.connections[
@@ -501,9 +501,9 @@ define([
              * @returns {string}
              * @private
              */
-            _generateNodeId: function(model) {
+            _generateNodeId: function (model) {
                 var _id, check = true,
-                    name = (model.softwareDescription && model.softwareDescription.label) ? model.softwareDescription.label: model.label || model.name, n = 0;
+                    name = (model.softwareDescription && model.softwareDescription.label) ? model.softwareDescription.label : model.label || model.name, n = 0;
 
                 if (name.charAt(0) !== '#') {
                     name = '#' + name;
@@ -517,7 +517,7 @@ define([
                         check = this._checkIdAvailable(name + '_' + n);
                     }
 
-                    n = check ? n + 1: n;
+                    n = check ? n + 1 : n;
                 }
 
                 if (n === 0) {
@@ -536,7 +536,7 @@ define([
              * @returns {boolean}
              * @private
              */
-            _checkIdAvailable: function(id) {
+            _checkIdAvailable: function (id) {
                 return !!this.nodes[id];
             },
 
@@ -546,7 +546,7 @@ define([
              * @param isInput
              * @private
              */
-            _markCreateArea: function(isInput) {
+            _markCreateArea: function (isInput) {
 
                 var rect, areaWidth = this.constraints.dropArea.width;
 
@@ -557,23 +557,23 @@ define([
                 }
 
                 rect.attr({
-                    stroke : 'none',
-                    fill   : '#f0ad4e',
+                    stroke: 'none',
+                    fill: '#f0ad4e',
                     opacity: '0.3'
                 });
 
                 rect.toBack().animate({
                     opacity: 0
-                }, 600, function() {
+                }, 600, function () {
                     this.animate({
                         opacity: 0.3
-                    }, 600, function() {
+                    }, 600, function () {
                         this.animate({
                             opacity: 0
-                        }, 600, function() {
+                        }, 600, function () {
                             this.animate({
                                 opacity: 0.3
-                            }, 600, function() {
+                            }, 600, function () {
 
                             });
                         });
@@ -592,7 +592,7 @@ define([
              *
              * @private
              */
-            _drawScrollbars: function() {
+            _drawScrollbars: function () {
 
                 var canvas = this.getEl(),
                     canvasBox = canvas.node.getBBox(),
@@ -613,7 +613,7 @@ define([
                 canvasTranslation = canvas.getTranslation();
                 surface = this.canvas;
                 surfaceDimensions = {
-                    width : surface.width,
+                    width: surface.width,
                     height: surface.height
                 };
 
@@ -645,7 +645,7 @@ define([
                         ratioR = surfaceWidth / canvasBox.r;
                     }
 
-                    hX = (canvasBox.l < 0 ? surfaceWidth - surfaceWidth * ratioL: 0) + size / 2;
+                    hX = (canvasBox.l < 0 ? surfaceWidth - surfaceWidth * ratioL : 0) + size / 2;
                     hY = surfaceHeight - size * 1.5;
                     hW = surfaceWidth * (ratioR * ratioL) - doubleSize;
 
@@ -657,7 +657,7 @@ define([
                     }
 
                     hBar = this.canvas.rect(hX, hY, hW, size, edgesRadius).attr({
-                        fill  : color,
+                        fill: color,
                         stroke: 'none'
                     });
 
@@ -677,7 +677,7 @@ define([
                     }
 
                     vX = surfaceWidth - size * 1.5;
-                    vY = (canvasBox.t < 0 ? surfaceHeight * (1 - ratioT): 0) + size / 2;
+                    vY = (canvasBox.t < 0 ? surfaceHeight * (1 - ratioT) : 0) + size / 2;
                     vH = surfaceHeight * (ratioB * ratioT) - doubleSize;
 
                     if (vY > surfaceHeight - doubleSize * 2) {
@@ -688,7 +688,7 @@ define([
                     }
 
                     vBar = this.canvas.rect(vX, vY, size, vH, edgesRadius).attr({
-                        fill  : color,
+                        fill: color,
                         stroke: 'none'
                     });
                     vBar.toFront();
@@ -703,16 +703,16 @@ define([
              * @returns {*}
              * @private
              */
-            _transformModel: function(nodeModel) {
+            _transformModel: function (nodeModel) {
 
                 var model = nodeModel.json || nodeModel;
 
-                _.forEach(model.inputs.properties, function(input, name) {
+                _.forEach(model.inputs.properties, function (input, name) {
                     input.name = name;
                     input.id = input.id || name;
                 });
 
-                _.forEach(model.outputs.properties, function(output, name) {
+                _.forEach(model.outputs.properties, function (output, name) {
                     output.name = name;
                     output.id = output.id || name;
 
@@ -729,7 +729,7 @@ define([
              * @returns {*}
              * @private
              */
-            _transformWorkflowModel: function(nodeModel) {
+            _transformWorkflowModel: function (nodeModel) {
                 var model = nodeModel.json;
 
                 return model;
@@ -742,7 +742,7 @@ define([
              * @returns {{top: number, left: number}}
              * @private
              */
-            _getOffset: function(element) {
+            _getOffset: function (element) {
 
                 var bodyRect = document.body.getBoundingClientRect();
                 var elemRect = element.getBoundingClientRect();
@@ -750,7 +750,7 @@ define([
                 var left = elemRect.left - bodyRect.left;
 
                 return {
-                    top : top,
+                    top: top,
                     left: left
                 };
             },
@@ -762,7 +762,7 @@ define([
              * @returns {*}
              * @private
              */
-            _getConnections: function() {
+            _getConnections: function () {
                 return _.pluck(this.connections, 'model');
             },
 
@@ -773,7 +773,7 @@ define([
              * @returns {*}
              * @private
              */
-            _getNodes: function() {
+            _getNodes: function () {
                 return _.clone(_.pluck(this.nodes, 'model'), true);
             },
 
@@ -783,7 +783,7 @@ define([
              *
              * @param connectionModel
              */
-            createConnection: function(connectionModel) {
+            createConnection: function (connectionModel) {
                 var _self = this, input, output;
 
                 if (!this.tempConnectionRefs) {
@@ -794,14 +794,14 @@ define([
                 output = this.tempConnectionRefs.start;
 
                 _self.connections[connectionModel.id] = new Connection({
-                    model   : connectionModel,
-                    canvas  : _self.canvas,
-                    parent  : _self.pipelineWrap,
-                    nodes   : _self.nodes,
+                    model: connectionModel,
+                    canvas: _self.canvas,
+                    parent: _self.pipelineWrap,
+                    nodes: _self.nodes,
                     pipeline: _self,
-                    input   : input,
-                    output  : output,
-                    element : _self.$parent
+                    input: input,
+                    output: output,
+                    element: _self.$parent
                 });
 
                 _self.nodes[connectionModel.start_node].addConnection(_self.connections[connectionModel.id]);
@@ -816,7 +816,7 @@ define([
              *
              * @returns {*|Pipeline.pipelineWrap}
              */
-            getEl: function() {
+            getEl: function () {
                 return this.pipelineWrap;
             },
 
@@ -825,7 +825,7 @@ define([
              *
              * @param connection
              */
-            removeConnection: function(connection) {
+            removeConnection: function (connection) {
 
                 if (this.connections[connection.id]) {
                     this.connections[connection.id] = null;
@@ -839,35 +839,35 @@ define([
              *
              * @private
              */
-            _zoomingFinish: function() {
+            _zoomingFinish: function () {
                 this._drawScrollbars();
                 this.model.display.canvas.zoom = this.currentScale;
             },
 
-            _parseTreeGraphModel: function(TreeGraph) {
+            _parseTreeGraphModel: function (TreeGraph) {
                 var model = this.model, GAP = 250;
 
                 var levelIndex = {};
 
-                var _parseTree = function(node, level, parent) {
+                var _parseTree = function (node, level, parent) {
 
-                    node.model.parent = level === 0 ? false: parent.model.id;
+                    node.model.parent = level === 0 ? false : parent.model.id;
 
                     model.nodes.push(node.model);
                     model.schemas[node.model.id] = node.model;
 
-                    levelIndex[level] = typeof levelIndex[level] === 'number' ? levelIndex[level] + 1: 0;
+                    levelIndex[level] = typeof levelIndex[level] === 'number' ? levelIndex[level] + 1 : 0;
 
                     model.display.nodes[node.model.id] = model.display.nodes[node.model.id] || _generateCoords(level, levelIndex[level]);
 
                     if (parent) {
 
                         var relation = {
-                            'id'         : _.random(100000, 999999) + '',
-                            'start_node' : parent.model.id,
+                            'id': _.random(100000, 999999) + '',
+                            'start_node': parent.model.id,
                             'output_name': parent.model.outputs[0].id,
-                            'end_node'   : node.model.id,
-                            'input_name' : node.model.inputs[0].id
+                            'end_node': node.model.id,
+                            'input_name': node.model.inputs[0].id
                         };
 
                         model.relations.push(relation);
@@ -877,19 +877,19 @@ define([
                         level++;
                         var list = [];
 
-                        _.forEach(node.children, function(c) {
+                        _.forEach(node.children, function (c) {
                             list.push(c.model.id);
                         });
 
                         node.model.childrenList = list;
 
-                        _.forEach(node.children, function(n, index) {
+                        _.forEach(node.children, function (n, index) {
                             _parseTree(n, level, node, index);
                         });
                     }
                 };
 
-                var _generateCoords = function(level, index, numOfItems) {
+                var _generateCoords = function (level, index, numOfItems) {
                     var x = GAP * level, y = index * GAP / 2;
 
                     return {
@@ -899,7 +899,7 @@ define([
                 };
 
                 if (_.isArray(TreeGraph)) {
-                    _.forEach(TreeGraph, function(Graph) {
+                    _.forEach(TreeGraph, function (Graph) {
                         _parseTree(Graph, 0, false, 0);
                     });
                 } else {
@@ -921,7 +921,7 @@ define([
              * @param rootCoords
              * @returns {boolean}
              */
-            alignGraph: function(gap, rootCoords) {
+            alignGraph: function (gap, rootCoords) {
 
                 // return if not tree graph
                 if (!this.treeGraph) {
@@ -932,10 +932,14 @@ define([
                     console.log('[Align Graph] Gap is provided as ' + typeof gap + ', and required type is number. Defaulting to 250')
                 }
 
-                var _self = this, GAP = {x: 250, y: 250}, root = {
-                    x: 80,
-                    y: 80
-                }, levelIndex = {}, sorted = Sort.tsort(this.getConnections()).sorted;
+                var _self = this,
+                    GAP = {x: 250, y: 250},
+                    root = {
+                        x: 80,
+                        y: 80
+                    },
+                    levelIndex = {},
+                    sorted = Sort.tsort(_.pluck(this.getConnections(), 'model')).sorted;
 
                 if (typeof rootCoords !== 'undefined' && typeof rootCoords === 'object') {
                     _.assign(root, rootCoords);
@@ -950,7 +954,7 @@ define([
                     GAP.y = gap;
                 }
 
-                var _generateCoords = function(level, index) {
+                var _generateCoords = function (level, index) {
 
                     var x = GAP.x * level, y = index * GAP.y / 2;
 
@@ -960,11 +964,11 @@ define([
                     };
                 };
 
-                var _fixNode = function(nodeId, lvl) {
+                var _fixNode = function (nodeId, lvl) {
 
                     var node = _self.getNodeById(nodeId), nodeModel = node.model;
 
-                    levelIndex[lvl] = typeof levelIndex[lvl] === 'number' ? levelIndex[lvl] + 1: 0;
+                    levelIndex[lvl] = typeof levelIndex[lvl] === 'number' ? levelIndex[lvl] + 1 : 0;
 
                     var newCords = _generateCoords(lvl, levelIndex[lvl]);
 
@@ -976,7 +980,7 @@ define([
 
                 };
 
-                var alignChildren = function(level, nodes) {
+                var alignChildren = function (level, nodes) {
 
                     // if no nodes, break
                     if (!_.isArray(nodes) || nodes.length === 0) {
@@ -985,7 +989,7 @@ define([
 
                     var lvl = level;
 
-                    _.forEach(nodes, function(nodeId, index) {
+                    _.forEach(nodes, function (nodeId, index) {
 
                         var node = _self.getNodeById(nodeId);
 
@@ -995,7 +999,7 @@ define([
 
                 };
 
-                _.forEach(sorted, function(nodeId) {
+                _.forEach(sorted, function (nodeId) {
 
                     var node = _self.getNodeById(nodeId);
 
@@ -1019,7 +1023,7 @@ define([
              *
              * @returns {*|number}
              */
-            initZoom: function() {
+            initZoom: function () {
                 this._initZoomLevel(this.currentScale);
 
                 return this.currentScale;
@@ -1032,7 +1036,7 @@ define([
              * @returns {*}
              * @private
              */
-            getConnections: function() {
+            getConnections: function () {
                 return _.toArray(this.connections);
             },
 
@@ -1042,9 +1046,9 @@ define([
              * @param id
              * @returns {{}|*}
              */
-            getNodeById: function(id) {
+            getNodeById: function (id) {
 
-                if (!this.nodes[id] && id !== false ) {
+                if (!this.nodes[id] && id !== false) {
                     console.error('Node with id: ' + id + ' not found');
                 }
 
@@ -1057,7 +1061,7 @@ define([
              * @param nodeId
              * @param isChild
              */
-            removeNode: function(nodeId, isChild) {
+            removeNode: function (nodeId, isChild) {
                 isChild = isChild || false;
                 var _self = this;
 
@@ -1069,14 +1073,14 @@ define([
 
                 if (typeof parent !== "undefined" && !isChild) {
 
-                    _.remove(parent.model.childrenList, function(n) {
+                    _.remove(parent.model.childrenList, function (n) {
                         return n === nodeId;
                     });
 
                 }
 
                 if (node.model.childrenList && node.model.childrenList.length > 0) {
-                    _.forEach(node.model.childrenList, function(child) {
+                    _.forEach(node.model.childrenList, function (child) {
                         if (typeof child !== 'undefined' && typeof _self.getNodeById(child) !== 'undefined') {
 
                             _self.removeNode(child, true);
@@ -1091,7 +1095,7 @@ define([
             /**
              * Destroys pipeline and its references
              */
-            destroy: function() {
+            destroy: function () {
 
                 var _self = this, events = ['connection:create', 'scrollbars:draw', 'node:add', 'node:deselect'];
 
@@ -1100,17 +1104,17 @@ define([
 
                 this.$parent.find('svg').remove();
 
-                _.each(this.connections, function(connection) {
+                _.each(this.connections, function (connection) {
                     connection.destroy();
                 });
 
-                _.each(this.nodes, function(node) {
+                _.each(this.nodes, function (node) {
                     node.destroy();
                 });
 
                 this.nodes = null;
 
-                _.each(events, function(event) {
+                _.each(events, function (event) {
                     _self.Event.unsubscribe(event);
                 });
 
@@ -1132,22 +1136,22 @@ define([
              * @param n2
              * @param [connectionName]
              */
-            connectNodes: function(n1, n2, connectionName, connectionClass) {
+            connectNodes: function (n1, n2, connectionName, connectionClass) {
                 var n1t = this.getNodeById(n1).getFirstTerminal('output');
                 var n2t = this.getNodeById(n2).getFirstTerminal('input');
 
                 var connectionModel = {
-                    id                   : _.random(100000, 999999) + '', // it has to be a string
-                    start_node           : n1,
-                    end_node             : n2,
-                    input_name           : n2t.id,
-                    output_name          : n1t.id,
-                    connection_name      : connectionName || false,
+                    id: _.random(100000, 999999) + '', // it has to be a string
+                    start_node: n1,
+                    end_node: n2,
+                    input_name: n2t.id,
+                    output_name: n1t.id,
+                    connection_name: connectionName || false,
                     connection_class_name: connectionClass || false
                 };
 
                 this.tempConnectionRefs = {
-                    end  : n2t,
+                    end: n2t,
                     start: n1t
                 };
 
@@ -1165,7 +1169,7 @@ define([
              *
              * @returns {string} Node ID created
              */
-            addNode: function(nodeModel, coords, rawCoords, constraints, onCreate) {
+            addNode: function (nodeModel, coords, rawCoords, constraints, onCreate) {
 
                 var rawModel = _.clone(nodeModel, true), model;
 
@@ -1213,7 +1217,7 @@ define([
             /**
              * Adjust canvas dimensions to fit the parent
              */
-            adjustSize: function() {
+            adjustSize: function () {
 
                 var width = this.$parent[0].offsetWidth - 10;
                 var height = this.$parent[0].offsetHeight || this.$parent[0].parentNode.offsetHeight;
@@ -1230,7 +1234,7 @@ define([
                 this.canvas.setSize(width, height);
 
                 this.rect.attr({
-                    width : width,
+                    width: width,
                     height: height
                 });
 
@@ -1243,7 +1247,7 @@ define([
              *
              * @returns {*}
              */
-            getJSON: function() {
+            getJSON: function () {
                 var _self = this,
                     json = _.clone(this.model, true);
 
@@ -1252,7 +1256,7 @@ define([
 
                 json.display.nodes = {};
 
-                _.each(json.nodes, function(node) {
+                _.each(json.nodes, function (node) {
                     var nodeId = node.id || node['@id'];
                     var nodeInstance = _self.getNodeById(nodeId);
 
@@ -1279,7 +1283,7 @@ define([
              *
              * @returns {*}
              */
-            getTreeJSON: function() {
+            getTreeJSON: function () {
                 var _self = this, json = [],
 
                     connections = this._getConnections();
@@ -1294,19 +1298,19 @@ define([
                     return this.getJSON();
                 }
 
-                var _createChildren = function(list, parent) {
-                    _.forEach(list, function(nodeId) {
+                var _createChildren = function (list, parent) {
+                    _.forEach(list, function (nodeId) {
                         _createModel(nodeId, parent);
                     });
                 };
 
-                var _createModel = function(nodeId, parent) {
+                var _createModel = function (nodeId, parent) {
                     var node = _self.getNodeById(nodeId), model = {
-                        model   : {},
+                        model: {},
                         children: []
                     }, children = node.model.childrenList; // list of ids
 
-                    _.remove(sorted.sorted, function(i) {
+                    _.remove(sorted.sorted, function (i) {
                         return i === nodeId;
                     });
 
@@ -1325,7 +1329,7 @@ define([
 
                 };
 
-                var _create = function(item) {
+                var _create = function (item) {
                     _createModel(item, json);
                 };
 
@@ -1342,7 +1346,7 @@ define([
              *
              * @returns {*|number}
              */
-            zoomIn: function() {
+            zoomIn: function () {
                 var canvas = this.getEl(), zoomLevel = canvas.getScale(), canvasBox = canvas.node.getBBox(), canvasTransform = canvas.node.getCTM(), canvasRect = canvasBox, scale = 0.05;
 
                 canvasBox.l = canvasBox.x + canvasTransform.e;
@@ -1370,7 +1374,7 @@ define([
 
              * @returns {*|number}
              */
-            zoomOut: function() {
+            zoomOut: function () {
                 var canvas = this.getEl(), zoomLevel = canvas.getScale(), canvasBox = canvas.node.getBBox(), canvasTransform = canvas.node.getCTM(), canvasRect = canvasBox, scale = 0.05;
 
                 canvasBox.l = canvasBox.x + canvasTransform.e;
