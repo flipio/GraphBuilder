@@ -55,10 +55,12 @@ define([
         };
 
         var BUTTONS = {
-            radius: 12, border: 3,
+            radius: 12,
+            border: 3,
+            distance: 8,
 
             // if you want to change buttons distance from node uncomment and change distance
-            //            distance: 5,
+            //nodeDistance: 5,
 
             info: {
                 fill: '#3FC380', disabled: '#ccc',
@@ -714,14 +716,15 @@ define([
                 var bbox;
                 var nodeRadius = this.constraints.radius;
                 var buttonDistance;
+                var distance = this.buttons.distance;
 
                 if (this.model.nodeType === 'square') {
 
                     nodeRadius = this.squareConstraints.height;
 
-                    buttonDistance =  - 0.5 * nodeRadius;
+                    buttonDistance = typeof this.buttons.nodeDistance !== 'undefined' ? -this.buttons.nodeDistance - nodeRadius : - 0.5 * nodeRadius;
                 }  else {
-                    buttonDistance = typeof this.buttons.distance !== 'undefined' ? -this.buttons.distance - nodeRadius - this.buttons.radius: - nodeRadius * 1.5;
+                    buttonDistance = typeof this.buttons.nodeDistance !== 'undefined' ? -this.buttons.nodeDistance - nodeRadius - this.buttons.radius: - nodeRadius * 1.5;
                 }
 
                 if (!this.infoButton && !this.removeNodeButton) {
@@ -730,7 +733,8 @@ define([
 
                     this.infoButton = this.canvas.button({
                         fill  : this.buttons.info.fill,
-                        x     : +16,
+                        //x     : +16,
+                        x     : this.buttons.radius + distance / 2,
                         y     : buttonDistance,
                         radius: this.buttons.radius,
                         border: this.buttons.border,
@@ -746,7 +750,8 @@ define([
 
                     this.removeNodeButton = this.canvas.button({
                         fill  : this.buttons.delete.fill,
-                        x     : -16,
+                        //x     : -16,
+                        x     : -this.buttons.radius - distance / 2,
                         y     : buttonDistance,
                         radius: this.buttons.radius,
                         border: this.buttons.border,

@@ -339,6 +339,11 @@ define([
                     start, move, end, startCoords;
 
                 start = function startDragging(x, y, event) {
+
+                    if (event.which !== 1) {
+                        return;
+                    }
+
                     startCoords = canvas.getTranslation();
 
                     startCoords.x = startCoords.x * currentZoomLevel.x;
@@ -349,7 +354,11 @@ define([
                     _self.Event.trigger('canvas:drag:start', startCoords);
                 };
 
-                move = function onMove(x, y) {
+                move = function onMove(x, y, dx, dy, event) {
+
+                    if (event.which !== 1) {
+                        return;
+                    }
 
                     var translation = startCoords,
                         canvasEmpty = Object.keys(_self.nodes).length === 0;
@@ -371,8 +380,8 @@ define([
 
                 };
 
-                end = function endDragging(/*x, y, event*/) {
-
+                end = function endDragging(event) {
+                    
                     // clone translation object
                     var can, canvasTranslation = _.clone(canvas.getTranslation(), true);
 
@@ -925,7 +934,7 @@ define([
 
                 // return if not tree graph
                 if (!this.treeGraph) {
-                    console.log('[Align Graph] Tree Graph must be enabled for alignment');
+                    console.error('[Align Graph] Tree Graph must be enabled for alignment');
                     return false;
                 }
                 if (typeof gap !== 'undefined' && ( typeof gap !== 'number' || typeof gap !== 'object' )) {
@@ -1284,6 +1293,13 @@ define([
              * @returns {*}
              */
             getTreeJSON: function () {
+
+                // return if not tree graph
+                if (!this.treeGraph) {
+                    console.error('[Get Tree JSON] Tree Graph must be enabled for this action');
+                    return false;
+                }
+
                 var _self = this, json = [],
 
                     connections = this._getConnections();
