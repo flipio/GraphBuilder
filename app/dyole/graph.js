@@ -381,7 +381,7 @@ define([
                 };
 
                 end = function endDragging(event) {
-                    
+
                     // clone translation object
                     var can, canvasTranslation = _.clone(canvas.getTranslation(), true);
 
@@ -937,7 +937,8 @@ define([
                     console.error('[Align Graph] Tree Graph must be enabled for alignment');
                     return false;
                 }
-                if (typeof gap !== 'undefined' && ( typeof gap !== 'number' || typeof gap !== 'object' )) {
+
+                if (typeof gap !== 'undefined' && ( typeof gap !== 'number' && typeof gap !== 'object' )) {
                     console.log('[Align Graph] Gap is provided as ' + typeof gap + ', and required type is number. Defaulting to 250')
                 }
 
