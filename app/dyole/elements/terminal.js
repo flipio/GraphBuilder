@@ -73,6 +73,8 @@ define([
                 }
             }
 
+            Common.setConstraints(this.constraints, options.constraints || {});
+
         };
 
         Terminal.prototype = {

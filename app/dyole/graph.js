@@ -71,6 +71,8 @@ define([
                 this._overrideConstraints(options.constraints);
             }
 
+            this._fixModel();
+
             this._initCanvas();
             this._attachEvents();
             this._generateNodes();
@@ -80,6 +82,20 @@ define([
         };
 
         Graph.prototype = {
+
+            _fixModel: function () {
+
+                var model = this.model;
+
+                if (typeof model.schemas === 'undefined') {
+                    model.schemas = {};
+                }
+
+                if (model.nodes.length !== Object.keys(model.schemas).length) {
+                    model.schemas = _.chain(model.nodes).indexBy('id').value();
+                }
+
+            },
 
             _overrideConstraints: function (constraints) {
 
@@ -1284,6 +1300,9 @@ define([
 
                 json.display.canvas.x = this.getEl().getTranslation().x;
                 json.display.canvas.y = this.getEl().getTranslation().y;
+
+                json.schemas = null;
+                delete json.schemas;
 
                 return json;
             },

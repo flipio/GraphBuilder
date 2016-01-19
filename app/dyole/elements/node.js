@@ -402,7 +402,8 @@ define([
                         parent      : _self,
                         canvas      : canvas,
                         pipeline    : _self.Pipeline,
-                        pipelineWrap: _self.parent
+                        pipelineWrap: _self.parent,
+                        constraints : constraints.terminal || {}
                     }));
 
                 });
@@ -424,7 +425,8 @@ define([
                         parent      : _self,
                         canvas      : canvas,
                         pipeline    : _self.Pipeline,
-                        pipelineWrap: _self.parent
+                        pipelineWrap: _self.parent,
+                        constraints : constraints.terminal || {}
                     }));
 
                 });
@@ -432,7 +434,17 @@ define([
             },
 
             initCircleTerminals: function() {
-                var canvas = this.canvas, inputs = this.inputs, outputs = this.outputs, modelInputs = this.inputRefs, modelOutputs = this.outputRefs, radius = this.constraints.radius, inputStartingAngle = 120, outputStartingAngle = -60, inputsLen = modelInputs.length, outputsLen = modelOutputs.length, i, inputsAngles, data, outputsAngles;
+                var canvas = this.canvas,
+                    inputs = this.inputs,
+                    outputs = this.outputs,
+                    modelInputs = this.inputRefs,
+                    modelOutputs = this.outputRefs,
+                    radius = this.constraints.radius,
+                    inputStartingAngle = 120,
+                    outputStartingAngle = -60,
+                    inputsLen = modelInputs.length,
+                    outputsLen = modelOutputs.length,
+                    i, inputsAngles, data, outputsAngles;
 
                 if (inputsLen > 0) {
                     inputsAngles = this._calculateTerminalAngles(inputsLen, inputStartingAngle, radius, true);
@@ -451,7 +463,8 @@ define([
                         parent      : this,
                         canvas      : canvas,
                         pipeline    : this.Pipeline,
-                        pipelineWrap: this.parent
+                        pipelineWrap: this.parent,
+                        constraints : this.constraints.terminal || {}
                     }));
                 }
 
@@ -472,7 +485,8 @@ define([
                         parent      : this,
                         canvas      : canvas,
                         pipeline    : this.Pipeline,
-                        pipelineWrap: this.parent
+                        pipelineWrap: this.parent,
+                        constraints : this.constraints.terminal || {}
                     }));
                 }
 
@@ -571,13 +585,13 @@ define([
                     stroke: '#9b9b9b'
                 });
             },
-            
+
             removeGlow: function () {
                 if (typeof this._glow !== 'undefined') {
                     this._glow.remove();
                 }
             },
-            
+
             showTerminalNames: function () {
                 var inputs = this.inputs,
                     outputs = this.outputs;
@@ -590,7 +604,7 @@ define([
                     output.showTerminalName();
                 });
             },
-            
+
             hideTerminalNames: function () {
                 var inputs = this.inputs,
                     outputs = this.outputs;

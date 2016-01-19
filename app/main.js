@@ -1,44 +1,50 @@
 require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/constants/GraphModel', 'dyole/constants/NodeModel', 'lodash'], function($, Graph, TreeGraphModel, GraphModel, NodeModel, _) {
-    var tree = [];
+    var tree = [], canvas = {};
     tree.push(TreeGraphModel.get());
 
-    var canvas = new Graph({
-        $parent    : $('.graph-placeholder'),
-        assetsUrl  : '/',
-        editMode   : true,
-        //TreeModel: tree,
-        constraints: {
-            node      : {
+    var init = function (json) {
+        canvas = new Graph({
+            $parent    : $('.graph-placeholder'),
+            assetsUrl  : '/',
+            editMode   : true,
+            //TreeModel: tree,
+            model: json || false,
+            constraints: {
+                node      : {
 
-                //radius     : 90,
-                //borderWidth: 15,
-                labelOffset: 12,
+                    //radius     : 90,
+                    //borderWidth: 15,
+                    labelOffset: 12,
 
-                selected: {
-                    fill: '#ffffff'
+                    selected: {
+                        fill: '#ffffff'
+                    },
+
+                    //defaults
+                    fill  : '#011E37',
+                    stroke: 'none'
                 },
-
-                //defaults
-                fill  : '#011E37',
-                stroke: 'none'
-            },
-            connection: {
-                strokeWidth: 7,
-                disableWire: true
-            },
-            //terminal  : {
-            //  radius     : 9,
-            //  radiusInner: 6
-            //},
-            buttons   : {
-                //radius: 8,
-                //border: 2
-            },
-            icons     : {
-                default: 'preview_assets/images/icon-db.png'
+                connection: {
+                    strokeWidth: 3,
+                    disableWire: true
+                },
+                //terminal  : {
+                //  radius     : 9,
+                //  radiusInner: 6
+                //},
+                buttons   : {
+                    //radius: 8,
+                    //border: 2
+                },
+                icons     : {
+                    default: 'preview_assets/images/icon-db.png'
+                }
             }
-        }
-    });
+        });
+
+    };
+
+    init();
 
 //    var constraints = {
 //        labelOffset : 40,
@@ -51,19 +57,19 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
     var n1, n2, n3, n4, n5, n6, n7, squareNode;
     n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false);
     n2 = canvas.addNode(NodeModel.get(), {x: 450, y: 100}, false);
-    n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
+    //n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
 
     var m = NodeModel.get({type: 'square'});
 
-    m.inputs.push({
-        id  : _.random(100000, 999999) + '',
-        name: ''
-    });
+    //m.inputs.push({
+    //    id  : _.random(100000, 999999) + '',
+    //    name: ''
+    //});
     //m.outputs.push({
     //    id  : _.random(100000, 999999) + '',
     //    name: 'output'
     //});
-    squareNode = canvas.addNode(m, {x: 450, y: 300}, false);
+    //squareNode = canvas.addNode(m, {x: 450, y: 300}, false);
 
 //
 ////    n4 = canvas.addNode(NodeModel.get(), {x: 800, y: 200}, false);
@@ -87,26 +93,30 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
     });
 
     canvas.Event.subscribe('node:select', function(node) {
-        _.forEach(canvas.connections, function (c) {
-            c.glow({opacity: 0.9, color: 'red', width: 25})
-        });
-
         console.log('%cnode:select', 'color:#acacff;background:black;', node);
-
     });
 
     canvas.Event.subscribe('node:deselected', function(node) {
-        _.forEach(canvas.connections, function (c) {
-            c.removeGlow()
-        });
         console.log('%cnode:deselected', 'color:#acacff;background:black;', node);
-
     });
 
     $('.get-json').on('click', function() {
-        var json = canvas.getTreeJSON();
+        var json = canvas.getJSON();
 
         $('#json-area').attr('disabled', false).val(JSON.stringify(json, null, 2));
+    });
+
+    $('.import-json').on('click', function () {
+        canvas.destroy();
+        canvas = null;
+
+        try {
+            var model = JSON.parse($('#json-area').val() || '{}')
+        } catch (e) {
+            console.error('Cannot parse provded json.');
+
+        }
+        init(model);
     });
 
     $('.align-nodes').on('click', function() {
