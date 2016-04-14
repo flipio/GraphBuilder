@@ -3,10 +3,10 @@
  */
 
 'use strict';
-define(['jquery', 'raphael'], function ($, Raphael) {
+define(['jquery', 'raphael', '../../app/dyole/constants/PathTypes'], function ($, Raphael, ConnectionTypes) {
     //@body
     /**
-     * Helper element for drawing Bezier Curves for terminal connections
+     * Helper element for drawing terminal connections
      *
      * @param {object} config
      * @param {number} config.x1
@@ -15,9 +15,12 @@ define(['jquery', 'raphael'], function ($, Raphael) {
      * @param {number} config.y2
      *
      * @param {object} attributes
+     *
+     * @param {string} pathType ('beizer', 'line')
+     *
      * @returns {*}
      */
-    Raphael.fn.curve = function (config, attributes) {
+    Raphael.fn.curve = function (config, attributes, pathType) {
         var r = this,
             defaults = {
                 x1: 0,
@@ -28,6 +31,7 @@ define(['jquery', 'raphael'], function ($, Raphael) {
 
         config = config || defaults;
         attributes = attributes || {};
+        pathType = pathType || ConnectionTypes.BEIZER;
 
         var endCoords = {
             x2: config.x2,
@@ -89,19 +93,26 @@ define(['jquery', 'raphael'], function ($, Raphael) {
 
                 var string, control, beginString, endString, controlString;
 
-
                 coords = switchCoords(coords);
 
-                control = calculateControlPoints(coords);
-
                 beginString = "M" + coords.x1 + "," + coords.y1 + " ";
-                controlString = "C" + control.x1 + "," + control.y1 + " " + control.x2 + "," + control.y2 + " ";
+
                 endString = coords.x2 + "," + coords.y2;
 
-                var c = Math.floor(coords.y1) === Math.floor(coords.y2) ? "L " : controlString;
+                if(pathType === ConnectionTypes.LINE) {
 
-                string = beginString + c + endString;
+                    string = beginString + endString;
 
+                } else /*if(pathType === ConnectionTypes.BEIZER)*/ {
+
+                    control = calculateControlPoints(coords);
+
+                    controlString = "C" + control.x1 + "," + control.y1 + " " + control.x2 + "," + control.y2 + " ";
+
+                    var c = Math.floor(coords.y1) === Math.floor(coords.y2) ? "L " : controlString;
+                    string = beginString + c + endString;
+
+                }
 
                 return string;
             }

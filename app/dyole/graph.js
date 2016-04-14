@@ -79,6 +79,7 @@ define([
             this._generateConnections();
 
             this._drawScrollbars();
+
         };
 
         Graph.prototype = {
@@ -146,6 +147,8 @@ define([
                 });
 
                 this.Event.subscribe('node:add', function (model, constraints) {
+
+                    var constraints = _.extend(_self.constraints, constraints);
 
                     var node = new Node({
                         pipeline: _self,
@@ -461,7 +464,8 @@ define([
                         model: model,
                         canvas: _self.canvas,
                         pipelineWrap: _self.pipelineWrap,
-                        display: _self.model.display.nodes[nodeId]
+                        display: _self.model.display.nodes[nodeId],
+                        constraints: _self.constraints
                     });
                 });
 
@@ -509,7 +513,8 @@ define([
                     pipeline: _self,
                     input: input,
                     output: output,
-                    element: _self.$parent
+                    element: _self.$parent,
+                    constraints: _self.constraints.connection
                 });
 
                 _self.nodes[connection.start_node].addConnection(_self.connections[
@@ -826,7 +831,9 @@ define([
                     pipeline: _self,
                     input: input,
                     output: output,
-                    element: _self.$parent
+                    element: _self.$parent,
+                    constraints: _self.constraints.connection
+
                 });
 
                 _self.nodes[connectionModel.start_node].addConnection(_self.connections[connectionModel.id]);
