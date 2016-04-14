@@ -4,11 +4,14 @@
 
 define(function() {
 
+    //@body
     var PathTypes = {
 
         BEIZER         :    'beizer',
         LINE           :    'line'
 
     };
+    //@body
+
     return PathTypes;
 });
