@@ -5,9 +5,11 @@ define([
 
     'jquery',
     'lodash',
-    'dyole/helpers/common'
+    'dyole/helpers/common',
+    '../constants/PathTypes'
 
-], function($, _, Common) {
+
+], function($, _, Common, PathTypes) {
 
     //@body
 
@@ -37,7 +39,8 @@ define([
 
         var CONNECTION_CONSTRAINTS = {
             width: 7,
-            color: '#dddddd'
+            color: '#dddddd',
+            pathType: PathTypes.BEIZER
         };
 
         var Terminal = function(options) {
@@ -62,6 +65,10 @@ define([
 
             this.constraints = _.clone(CONSTRAINTS, true);
             this.connectionConfig = _.clone(CONNECTION_CONSTRAINTS, true);
+
+            if(!!options.constraints && !!options.constraints.connectionConstraints) {
+                _.extend(this.connectionConfig, options.constraints.connectionConstraints);
+            }
 
             if (Common.checkObjectKeys(this.Pipeline.constraints.terminal)) {
                 Common.setConstraints(this.constraints, this.Pipeline.constraints.terminal)
@@ -434,7 +441,7 @@ define([
                     'stroke-width': this.connectionConfig.width * scale
                 };
 
-                this.tempConnection = this.canvas.curve(coords, attr);
+                this.tempConnection = this.canvas.curve(coords, attr, this.connectionConfig.pathType);
                 this.tempConnection.toBack();
 
                 this.Pipeline.Event.trigger('temp:connection:state', true);

@@ -4,11 +4,30 @@
 define([
         'jquery',
         'lodash',
-        'dyole/helpers/common'
+        'dyole/helpers/common',
+        '../constants/PathTypes'
     ],
-    function($, _, Common) {
+    function($, _, Common, PathTypes) {
         //@body
+
+        var CONSTRAINTS = {
+            baseUrl: '/',
+
+            strokeWidth: 7,
+            strokeColor: '#FBFCFC',
+            labelColor : '#8989FF',
+            disableWire: false,
+
+            images: {
+                wirePath: 'preview_assets/images/wire-cut.png'
+            },
+
+            pathType : PathTypes.BEIZER
+        };
+
         var Connection = function(options) {
+
+            this.constraints = _.clone(CONSTRAINTS);
 
             this.nodeViews = options.nodes;
             this.model = options.model;
@@ -32,25 +51,15 @@ define([
                 Common.setConstraints(this.constraints, this.Pipeline.constraints.connection)
             }
 
+            if (typeof options.constraints === 'object') {
+                this.constraints = _.extend({}, this.constraints, options.constraints);
+            }
+
             this._createConnection(this.input, this.output);
             this._attachEvents();
         };
 
         Connection.prototype = {
-
-            constraints: {
-                baseUrl: '/',
-
-                strokeWidth: 7,
-//            strokeColor: '#dddddd',
-                strokeColor: '#FBFCFC',
-                labelColor : '#8989FF',
-                disableWire: false,
-
-                images: {
-                    wirePath: 'preview_assets/images/wire-cut.png'
-                }
-            },
 
             _attachEvents: function() {
 
@@ -260,7 +269,7 @@ define([
                     'stroke-width': this.constraints.strokeWidth * scale
                 };
 
-                this.connection = this.canvas.curve(coords, attr);
+                this.connection = this.canvas.curve(coords, attr, this.constraints.pathType);
                 this.parent.push(this.connection.getPath());
 //            this.connection.makeBorder({
 //                stroke: '#c8c8c8',

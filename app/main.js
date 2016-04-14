@@ -1,4 +1,4 @@
-require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/constants/GraphModel', 'dyole/constants/NodeModel', 'lodash'], function($, Graph, TreeGraphModel, GraphModel, NodeModel, _) {
+require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/constants/GraphModel', 'dyole/constants/NodeModel', 'dyole/constants/PathTypes', 'lodash'], function($, Graph, TreeGraphModel, GraphModel, NodeModel, PathTypes, _) {
     var tree = [], canvas = {};
     tree.push(TreeGraphModel.get());
 
@@ -26,7 +26,8 @@ require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/const
                 },
                 connection: {
                     strokeWidth: 3,
-                    disableWire: true
+                    disableWire: true,
+                    pathType: PathTypes.BEIZER
                 },
                 //terminal  : {
                 //  radius     : 9,

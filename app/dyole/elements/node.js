@@ -385,6 +385,9 @@ define([
                     outputsLength = modelOutputs.length,
                     dataIn, dataOut;
 
+                var terminalConstraints = constraints.terminal || {};
+                terminalConstraints.connectionConstraints = _self.constraints.connection;
+
                 _.forEach(modelInputs, function (modelInput, index) {
 
                     var y = constraints.height / (inputsLength + 1);
@@ -403,7 +406,7 @@ define([
                         canvas      : canvas,
                         pipeline    : _self.Pipeline,
                         pipelineWrap: _self.parent,
-                        constraints : constraints.terminal || {}
+                        constraints : terminalConstraints
                     }));
 
                 });
@@ -426,7 +429,7 @@ define([
                         canvas      : canvas,
                         pipeline    : _self.Pipeline,
                         pipelineWrap: _self.parent,
-                        constraints : constraints.terminal || {}
+                        constraints : terminalConstraints
                     }));
 
                 });
@@ -450,6 +453,10 @@ define([
                     inputsAngles = this._calculateTerminalAngles(inputsLen, inputStartingAngle, radius, true);
                 }
 
+
+                var terminalConstraints = this.constraints.terminal || {};
+                terminalConstraints.connectionConstraints = this.constraints.connection;
+
                 for (i = 0; i < inputsLen; i++) {
 
                     data = _.extend({
@@ -464,7 +471,7 @@ define([
                         canvas      : canvas,
                         pipeline    : this.Pipeline,
                         pipelineWrap: this.parent,
-                        constraints : this.constraints.terminal || {}
+                        constraints : terminalConstraints
                     }));
                 }
 
@@ -486,7 +493,7 @@ define([
                         canvas      : canvas,
                         pipeline    : this.Pipeline,
                         pipelineWrap: this.parent,
-                        constraints : this.constraints.terminal || {}
+                        constraints : terminalConstraints
                     }));
                 }
 
