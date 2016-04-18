@@ -99,9 +99,37 @@ define(['jquery', 'raphael', '../../app/dyole/constants/PathTypes'], function ($
 
                 endString = coords.x2 + "," + coords.y2;
 
+
+                //TODO: use switch
                 if(pathType === ConnectionTypes.LINE) {
 
                     string = beginString + endString;
+
+                } else if(pathType === ConnectionTypes.BROKEN_LINE) {
+
+                    string = beginString + (coords.x1 + coords.x2)/2 + ',' + coords.y1 + ' ' + (coords.x1 + coords.x2)/2 + ',' + coords.y2  + ' ' + endString;
+
+                } else if(pathType === ConnectionTypes.PAVLOVLJEVA_LINE) {
+
+
+                    //TODO: Check for edge cases and refactor
+                     var x1_gt_x2 = coords.x1 > coords.x2;
+                     var y1_gt_y2 = coords.y1 > coords.y2;
+
+
+                     var firstArc = ' ',
+                     secondArc = ' ';
+
+                     firstArc = ' a 10,10 0 0 ' + (x1_gt_x2 ^ y1_gt_y2 ? 0 : 1) + ' ' + (x1_gt_x2 ? '-' : '') + '10,' + (y1_gt_y2 ? '-' : '')+ '10 L';
+                     secondArc = ' a 10,10 0 0 ' + (x1_gt_x2 ^ y1_gt_y2 ? 1 : 0) + ' ' + (x1_gt_x2 ? '-' : '') + '10,' + (y1_gt_y2 ? '-' : '')+ '10 L';
+
+
+                     string = beginString +
+                     (coords.x1 + coords.x2)/2 + ',' + coords.y1 +
+                     firstArc +
+                     ((coords.x1 + coords.x2)/2 + 10) + ',' + (coords.y2 + (x1_gt_x2 ^ y1_gt_y2 ? 10 : -10)) +
+                     secondArc +
+                     coords.x2 + ',' + coords.y2;
 
                 } else /*if(pathType === ConnectionTypes.BEIZER)*/ {
 
