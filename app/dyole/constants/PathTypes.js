@@ -9,7 +9,7 @@ define(function() {
         BEIZER              :   'beizer',
         LINE                :   'line',
         BROKEN_LINE         :   'broken-line',
-        PAVLOVLJEVA_LINE    :   'pavlovljeva-line'
+        PAVLOVLJEVA         :   'pavlovljeva'
 
     };
     return PathTypes;
