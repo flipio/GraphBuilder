@@ -99,11 +99,19 @@ module.exports = function (grunt) {
                     name: 'dyole/graph',
                     baseUrl: './app',
                     mainConfigFile: 'app/config.js',
-                    out: 'dist/graph.js',
+                    out: 'dist/graph.min.js',
+                    cjsTranslate: true,
+                    include: ['almond', 'dyole/graph'],
                     wrap: {
                         startFile: "app/_header.js",
                         endFile: "app/_footer.js"
-                    }
+                    },
+                    paths: {
+                        almond: '../bower_components/almond/almond'
+                    },
+                    optimize: 'uglify2',
+                    preserveLicenseComments: false,
+                    generateSourceMaps: true
                 }
             }
         },
