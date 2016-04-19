@@ -91,7 +91,7 @@ define(['jquery', 'raphael', '../../app/dyole/constants/PathTypes'], function ($
 
             function generatePathString(coords) {
 
-                var string, control, beginString, endString, controlString;
+                var string, control, beginString, endString, controlString, straightLine;
 
                 coords = switchCoords(coords);
 
@@ -99,11 +99,13 @@ define(['jquery', 'raphael', '../../app/dyole/constants/PathTypes'], function ($
 
                 endString = coords.x2 + "," + coords.y2;
 
+                straightLine = beginString + endString;
+
                 switch(pathType) {
 
                     case ConnectionTypes.LINE:
 
-                        string = beginString + endString;
+                        string = straightLine;
                         break;
 
                     case ConnectionTypes.BROKEN_LINE:
@@ -113,7 +115,11 @@ define(['jquery', 'raphael', '../../app/dyole/constants/PathTypes'], function ($
 
                     case ConnectionTypes.PAVLOVLJEVA:
 
-                        string = generatePavlovljeva(coords);
+                        if (coords.x1 === coords.x2 || coords.y1 === coords.y2){
+                            string = straightLine;
+                        } else {
+                            string = generatePavlovljeva(coords);
+                        }
                         break;
 
                     case ConnectionTypes.BEIZER:
