@@ -9,7 +9,7 @@
         module.exports = factory();
     } else {
         // Browser globals
-        console.log('Registering dyole/Graph to Globals', global);
+        console.log('Registering dyole/Graph to global namespace: ', global);
         global.Graph = factory();
     }
 }(this, function() {
