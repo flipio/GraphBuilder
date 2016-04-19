@@ -6,6 +6,7 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
+    "postInstall": "bower install",
     "test": "grunt qunit"
   },
   "author": {
