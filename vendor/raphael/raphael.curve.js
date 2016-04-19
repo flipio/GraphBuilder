@@ -3,7 +3,7 @@
  */
 
 'use strict';
-define(['jquery', 'raphael', '../../app/dyole/constants/PathTypes'], function ($, Raphael, ConnectionTypes) {
+define(['jquery', 'raphael', 'dyole/constants/PathTypes'], function ($, Raphael, ConnectionTypes) {
     //@body
     /**
      * Helper element for drawing terminal connections
