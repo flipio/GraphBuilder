@@ -156,47 +156,36 @@ define(['jquery', 'raphael', '../../app/dyole/constants/PathTypes'], function ($
              *
              * Find the position of first node (1) relative to second node (2) and use this information for drawing the arcs
              *
-             * --------------------------------------------
+             * --------------------------------------
              *
              * _|__x
              *  |                 |
              *  y          _ 2    |    1 _
              *            |       |       |
              *         1 _|       |       |_ 2
-             *   [2]              |               [1]
-             *   -----------------------------------
-             *                    |
-             *        2 _         |         _ 1
-             *           |        |        |
-             *           |_ 1     |     2 _|
-             *   [3]              |               [4]
-             *
-             * --------------------------------------------
+             *   [1]              |               [2]
              *
              * @param {object} coords
              */
             function generatePavlovljeva(coords) {
 
-                var first_ahead = coords.x1 > coords.x2; // case 3 or 4
-                var first_below = coords.y1 > coords.y2; // case 2 or 3
-                var sweep_flag = first_ahead ^ first_below; // (x1 > x2 && y1 < y2) || (x1 <= x2 && y1 >= y2) // case 2 or 4
-
+                var first_below = coords.y1 > coords.y2; // case 1
 
                 // maximal radius, dx and dy (rdx)
-                var rxy = Math.min(Math.abs(coords.y2 - coords.y1), Math.abs(Math.abs(coords.x2 - coords.x1))) / 2;
+                var rxy = Math.min(Math.abs(coords.y2 - coords.y1), Math.abs(coords.x2 - coords.x1)) / 2;
                 if (rxy >= 10) {
                     rxy = 10;
                 }
 
-                var arc = ' a ' + rxy + ',' + rxy + ' 0 0 {{SWEEP_FLAG}} ' + (first_ahead ? -rxy : rxy) + ',' + (first_below ? -rxy : rxy) + ' L';
+                var arc = ' a ' + rxy + ',' + rxy + ' 0 0 {{SWEEP_FLAG}} ' + rxy + ',' + (first_below ? - rxy : rxy) + ' L';
 
-                var firstArc = arc.replace('{{SWEEP_FLAG}}', (sweep_flag ? 0 : 1));
-                var secondArc = arc.replace('{{SWEEP_FLAG}}', (sweep_flag ? 1 : 0));
+                var firstArc = arc.replace('{{SWEEP_FLAG}}', (first_below ? 0 : 1));
+                var secondArc = arc.replace('{{SWEEP_FLAG}}', (first_below ? 1 : 0));
 
                 return 'M' + coords.x1 + ',' + coords.y1 + ' ' +
-                    (coords.x1 + coords.x2 -rxy)/2 + ',' + coords.y1 +
+                    (coords.x1 + coords.x2 - rxy) / 2 + ',' + coords.y1 +
                     firstArc +
-                    ((coords.x1 + coords.x2 +rxy)/2 ) + ',' + (coords.y2 + (sweep_flag ? rxy : -rxy)) +
+                    (coords.x1 + coords.x2 + rxy) / 2  + ',' + (coords.y2 + (first_below ? rxy : -rxy)) +
                     secondArc +
                     coords.x2 + ',' + coords.y2;
             }
