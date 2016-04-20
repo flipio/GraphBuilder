@@ -29,6 +29,11 @@
             editMode   : true,
             //TreeModel: tree,
             constraints: {
+                connection: {
+                    strokeWidth: 3,
+                    disableWire: true,
+                    pathType: Graph.PathTypes.PAVLOVLJEVA
+                },
                 node      : {
 
                     radius     : 60,
@@ -45,7 +50,8 @@
                 },
                 connection: {
                     strokeWidth: 7,
-                    disableWire: true
+                    disableWire: true,
+                    pathType: Graph.PathTypes.PAVLOVLJEVA
                 },
                 //terminal  : {
                 //  radius     : 9,
@@ -61,25 +67,32 @@
             }
         });
 
-        var model = {
-            id        : _.random(100000, 999999) + '',
-            name      : 'Test node',
-            inputs    : [
-                {
-                    id  : _.random(100000, 999999) + '',
-                    name: 'input'
-                }
-            ],
-            outputs   : [
-                {
-                    id  : _.random(100000, 999999) + '',
-                    name: 'output'
-                }
-            ],
-            properties: {}
-        };
+        console.log('Graph path types', Graph.PathTypes);
 
-        var node = canvas.addNode(model, {x: 450, y: 100}, false);
+        function getModel() {
+            return model = {
+                id        : _.random(100000, 999999) + '',
+                name      : 'Test node' + Date.now(),
+                inputs    : [
+                    {
+                        id  : _.random(100000, 999999) + '',
+                        name: 'input'
+                    }
+                ],
+                outputs   : [
+                    {
+                        id  : _.random(100000, 999999) + '',
+                        name: 'output'
+                    }
+                ],
+                properties: {}
+            };
+        }
+
+        var node = canvas.addNode(getModel(), {x: 150, y: 200}, false);
+        var node1 = canvas.addNode(getModel(), {x: 550, y: 100}, false);
+
+        canvas.connectNodes(node, node1, 'i am cool label');
 
     });
 </script>

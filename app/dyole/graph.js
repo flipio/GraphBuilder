@@ -2,10 +2,20 @@
  * Created by filip on 11.3.15..
  */
 define([
-    'jquery', 'lodash', 'raphael', 'dyole/event/event', 'dyole/constants/GraphModel', 'dyole/elements/node', 'dyole/elements/terminal', 'dyole/elements/connection', 'dyole/helpers/sort', 'dyole/helpers/common',
+    'jquery',
+    'lodash',
+    'raphael',
+    'dyole/event/event',
+    'dyole/constants/GraphModel',
+    'dyole/elements/node',
+    'dyole/elements/terminal',
+    'dyole/elements/connection',
+    'dyole/helpers/sort',
+    'dyole/helpers/common',
+    'dyole/constants/PathTypes',
 
     'raphael-group'
-], function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Common) {
+], function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Common, PathTypes) {
 
     //@body
 
@@ -67,6 +77,7 @@ define([
              */
             this.currentScale = this.model.display.canvas.zoom || 1.0;
 
+            console.log('Graph Constraints: ', options.constraints);
             if (typeof options.constraints === 'object' && Object.keys(options.constraints).length > 0) {
                 this._overrideConstraints(options.constraints);
             }
@@ -1445,6 +1456,9 @@ define([
         return Graph;
 
     })();
+
+
+    Graph.PathTypes = PathTypes;
 
     //@body
     return Graph;

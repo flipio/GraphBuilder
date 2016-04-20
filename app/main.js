@@ -1,4 +1,14 @@
-require(['jquery', 'dyole/graph', 'dyole/constants/TreeGraphModel', 'dyole/constants/GraphModel', 'dyole/constants/NodeModel', 'dyole/constants/PathTypes', 'lodash'], function($, Graph, TreeGraphModel, GraphModel, NodeModel, PathTypes, _) {
+require([
+
+    'jquery',
+    'dyole/graph',
+    'dyole/constants/TreeGraphModel',
+    'dyole/constants/GraphModel',
+    'dyole/constants/NodeModel',
+    'dyole/constants/PathTypes',
+    'lodash'
+
+], function($, Graph, TreeGraphModel, GraphModel, NodeModel, PathTypes, _) {
     var tree = [], canvas = {};
     tree.push(TreeGraphModel.get());
 
