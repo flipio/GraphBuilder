@@ -82,6 +82,11 @@ define([
 
             Common.setConstraints(this.constraints, options.constraints || {});
 
+            // Arc near problem for pavlovljeva fix
+            if (this.connectionConfig.pathType === PathTypes.PAVLOVLJEVA) {
+                this.model.x += this.model.x < 0 ? 5 : -5;
+            }
+
         };
 
         Terminal.prototype = {

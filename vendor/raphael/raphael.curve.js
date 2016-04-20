@@ -91,7 +91,7 @@ define(['jquery', 'raphael', 'dyole/constants/PathTypes'], function ($, Raphael,
 
             function generatePathString(coords) {
 
-                var string, control, beginString, endString, controlString;
+                var string, control, beginString, endString, controlString, straightLine;
 
                 coords = switchCoords(coords);
 
@@ -99,18 +99,40 @@ define(['jquery', 'raphael', 'dyole/constants/PathTypes'], function ($, Raphael,
 
                 endString = coords.x2 + "," + coords.y2;
 
-                if(pathType === ConnectionTypes.LINE) {
+                straightLine = beginString + endString;
 
-                    string = beginString + endString;
+                switch(pathType) {
 
-                } else /*if(pathType === ConnectionTypes.BEIZER)*/ {
+                    case ConnectionTypes.LINE:
 
-                    control = calculateControlPoints(coords);
+                        string = straightLine;
+                        break;
 
-                    controlString = "C" + control.x1 + "," + control.y1 + " " + control.x2 + "," + control.y2 + " ";
+                    case ConnectionTypes.BROKEN_LINE:
 
-                    var c = Math.floor(coords.y1) === Math.floor(coords.y2) ? "L " : controlString;
-                    string = beginString + c + endString;
+                        string = beginString + (coords.x1 + coords.x2)/2 + ',' + coords.y1 + ' ' + (coords.x1 + coords.x2)/2 + ',' + coords.y2  + ' ' + endString;
+                        break;
+
+                    case ConnectionTypes.PAVLOVLJEVA:
+
+                        if (coords.x1 === coords.x2 || coords.y1 === coords.y2){
+                            string = straightLine;
+                        } else {
+                            string = generatePavlovljeva(coords);
+                        }
+                        break;
+
+                    case ConnectionTypes.BEIZER:
+                    default:
+
+                        control = calculateControlPoints(coords);
+
+                        controlString = "C" + control.x1 + "," + control.y1 + " " + control.x2 + "," + control.y2 + " ";
+
+                        var c = Math.floor(coords.y1) === Math.floor(coords.y2) ? "L " : controlString;
+                        string = beginString + c + endString;
+
+                        break;
 
                 }
 
@@ -127,6 +149,45 @@ define(['jquery', 'raphael', 'dyole/constants/PathTypes'], function ($, Raphael,
                 control.y2 = coords.y2;
 
                 return control;
+            }
+
+            /**
+             * Generate Pavlovljeva path - ConnectionTypes.BROKEN_LINE with rounded corners
+             *
+             * Find the position of first node (1) relative to second node (2) and use this information for drawing the arcs
+             *
+             * --------------------------------------
+             *
+             * _|__x
+             *  |                 |
+             *  y          _ 2    |    1 _
+             *            |       |       |
+             *         1 _|       |       |_ 2
+             *   [1]              |               [2]
+             *
+             * @param {object} coords
+             */
+            function generatePavlovljeva(coords) {
+
+                var first_below = coords.y1 > coords.y2; // case 1
+
+                // maximal radius, dx and dy (rdx)
+                var rxy = Math.min(Math.abs(coords.y2 - coords.y1), Math.abs(coords.x2 - coords.x1)) / 2;
+                if (rxy >= 10) {
+                    rxy = 10;
+                }
+
+                var arc = ' a ' + rxy + ',' + rxy + ' 0 0 {{SWEEP_FLAG}} ' + rxy + ',' + (first_below ? - rxy : rxy) + ' L';
+
+                var firstArc = arc.replace('{{SWEEP_FLAG}}', (first_below ? 0 : 1));
+                var secondArc = arc.replace('{{SWEEP_FLAG}}', (first_below ? 1 : 0));
+
+                return 'M' + coords.x1 + ',' + coords.y1 + ' ' +
+                    (coords.x1 + coords.x2 - rxy) / 2 + ',' + coords.y1 +
+                    firstArc +
+                    (coords.x1 + coords.x2 + rxy) / 2  + ',' + (coords.y2 + (first_below ? rxy : -rxy)) +
+                    secondArc +
+                    coords.x2 + ',' + coords.y2;
             }
 
             initialize(conf);
