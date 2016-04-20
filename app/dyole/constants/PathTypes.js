@@ -7,8 +7,10 @@ define(function() {
     //@body
     var PathTypes = {
 
-        BEIZER         :    'beizer',
-        LINE           :    'line'
+        BEIZER              :   'beizer',
+        LINE                :   'line',
+        BROKEN_LINE         :   'broken-line',
+        PAVLOVLJEVA         :   'pavlovljeva'
 
     };
     //@body
