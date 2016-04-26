@@ -4,8 +4,6 @@
 'use strict';
 define(function() {
 
-    //@body
-
     var Sort = {
 
         /**
@@ -76,7 +74,6 @@ define(function() {
         }
     };
 
-    //@body
     return Sort;
 
 });

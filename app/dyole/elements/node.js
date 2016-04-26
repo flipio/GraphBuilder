@@ -8,7 +8,6 @@ define([
     'dyole/helpers/common'
 ], function($, _, Terminal, Common) {
 
-    //@body
     var Node = (function() {
 
         var CONSTRAINTS = {
@@ -918,8 +917,6 @@ define([
 
         return Node;
     })();
-
-//@body
 
     return Node;
 });

@@ -3,8 +3,6 @@
  */
 define(function() {
 
-    //@body
-
     var Event = {
         /**
          * Container object holding the event subscriptions list.
@@ -165,7 +163,6 @@ define(function() {
         }
     };
 
-    //@body
     return Event;
 
 });

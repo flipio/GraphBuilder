@@ -4,8 +4,6 @@
 'use strict';
 define(['lodash'], function(_) {
 
-//@body
-
     var Common = {
         objectPropExists: function(prop) {
             return typeof prop !== 'undefined';
@@ -50,7 +48,6 @@ define(['lodash'], function(_) {
         }
     };
 
-//@body
     return Common;
 
 });

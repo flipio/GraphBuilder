@@ -17,9 +17,6 @@ define([
     'raphael-group'
 ], function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Common, PathTypes) {
 
-    //@body
-
-
     var Graph = (function () {
         var SCROLLBAR_COLOR = '#B6B6B6';
 
@@ -1460,6 +1457,5 @@ define([
 
     Graph.PathTypes = PathTypes;
 
-    //@body
     return Graph;
 });

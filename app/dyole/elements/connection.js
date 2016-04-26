@@ -8,7 +8,6 @@ define([
         '../constants/PathTypes'
     ],
     function($, _, Common, PathTypes) {
-        //@body
 
         var CONSTRAINTS = {
             baseUrl: '/',
@@ -344,6 +343,6 @@ define([
                 });
             }
         };
-        //@body
+
         return Connection;
     });
