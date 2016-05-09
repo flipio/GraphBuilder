@@ -22,9 +22,20 @@ require([
             constraints: {
                 node      : {
 
+                    icon: false,
+                    // showTerminalNames: false,
                     //radius     : 90,
-                    //borderWidth: 15,
-                    labelOffset: 12,
+                    borderWidth: 0,
+                    borderRadius: 2,
+                    width: 140,
+                    height: 40,
+                    labelOffset: function (label) {
+                        label.attr({
+                            x: 10,
+                            y: 100
+                        });
+                    },
+
 
                     selected: {
                         fill: '#ffffff'
@@ -32,8 +43,15 @@ require([
 
                     //defaults
                     fill  : '#011E37',
+                    // fill  : '#ffffff',
                     stroke: 'none'
                 },
+
+                terminal: {
+                    radius: 0,
+                    radiusInner: 0
+                },
+
                 connection: {
                     strokeWidth: 3,
                     disableWire: true,
@@ -66,8 +84,8 @@ require([
 //    };
 //
     var n1, n2, n3, n4, n5, n6, n7, squareNode;
-    n1 = canvas.addNode(NodeModel.get(), {x: 200, y: 200}, false);
-    n2 = canvas.addNode(NodeModel.get(), {x: 450, y: 100}, false);
+    n1 = canvas.addNode(NodeModel.get({type: 'circle'}), {x: 200, y: 200}, false);
+    n2 = canvas.addNode(NodeModel.get({type: 'square'}), {x: 450, y: 100}, false);
     //n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
 
     var m = NodeModel.get({type: 'square'});
@@ -83,16 +101,16 @@ require([
     //squareNode = canvas.addNode(m, {x: 450, y: 300}, false);
 
 //
-////    n4 = canvas.addNode(NodeModel.get(), {x: 800, y: 200}, false);
-////    n5 = canvas.addNode(NodeModel.get(), {x: 300, y: 300}, false);
-////    n6 = canvas.addNode(NodeModel.get(), {x: 500, y: 300}, false);
-////    n7 = canvas.addNode(NodeModel.get(), {x: 700, y: 300}, false);
-////
+   n4 = canvas.addNode(NodeModel.get({type: 'square'}), {x: 800, y: 200}, false);
+   n5 = canvas.addNode(NodeModel.get({type: 'square'}), {x: 300, y: 300}, false);
+//    n6 = canvas.addNode(NodeModel.get(), {x: 500, y: 300}, false);
+//    n7 = canvas.addNode(NodeModel.get(), {x: 700, y: 300}, false);
+//
     canvas.connectNodes(n1, n2, 'labelName');
 //    canvas.connectNodes(n1, squareNode, 'labelName');
 //    canvas.connectNodes(n2, n3);
 //    canvas.connectNodes(squareNode, n3);
-////    canvas.connectNodes(n3, n4);
+   canvas.connectNodes(n4, n5, 'testiram');
 ////    canvas.connectNodes(n5, n2);
 ////    canvas.connectNodes(n6, n3);
 ////    canvas.connectNodes(n7, n4);

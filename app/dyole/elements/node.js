@@ -12,9 +12,13 @@ define([
 
         var CONSTRAINTS = {
 
+            showTerminalNames: true,
+
             radius     : 38,
             borderWidth: 7,
             labelOffset: 12,
+
+            icon: true,
 
             outdated: {
                 fill    : '#F5AB35',
@@ -226,12 +230,18 @@ define([
 
                 var name = model.label ? model.label: model.name || model['id'];
 
-                label = canvas.text(0, height + labelOffset, name);
-
+                label = canvas.text(0, 0, name);
                 label.attr({
                     'font-size': 14
                 });
 
+                if (typeof labelOffset === 'function') {
+                    labelOffset(label, width, height);
+                } else {
+                    label.attr({
+                        'y': height + labelOffset
+                    });
+                }
 
                 // add all elements to the group container
                 node.push(borders).push(label);
@@ -256,10 +266,9 @@ define([
 
                 this.circle = borders;
 
-                if(this.icons.default === false) {
+                if(this.constraints.icon === false) {
                     self._attachEvents();
                 } else{
-
 
                     imgUrl = this.icons.default;
 
@@ -312,11 +321,19 @@ define([
                 borders.push(outerBorder).push(innerBorder);
 
                 var name = model.label ? model.label: model.name || model['id'];
-                label = canvas.text(0, radius + labelOffset, ((model.softwareDescription && model.softwareDescription.name) ? model.softwareDescription.name: name));
 
+                label = canvas.text(0, 0, name);
                 label.attr({
                     'font-size': 14
                 });
+
+                if (typeof labelOffset === 'function') {
+                    labelOffset(label, radius)
+                } else {
+                    label.attr({
+                        y: radius + labelOffset
+                    });
+                }
 
                 // add all elements to the group container
                 node.push(borders).push(label);
@@ -341,7 +358,7 @@ define([
 
                 this.circle = borders;
 
-                if(this.icons.default === false) {
+                if(this.constraints.icon === false) {
                     self._attachEvents();
                 } else{
 
@@ -599,6 +616,11 @@ define([
             },
 
             showTerminalNames: function () {
+
+                if (this.constraints.showTerminalNames === false) {
+                    return;
+                }
+
                 var inputs = this.inputs,
                     outputs = this.outputs;
 
@@ -609,6 +631,7 @@ define([
                 _.each(outputs, function(output) {
                     output.showTerminalName();
                 });
+
             },
 
             hideTerminalNames: function () {

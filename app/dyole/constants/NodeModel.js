@@ -28,6 +28,7 @@ define([
         };
 
         return {
+            
             get: function(options) {
                 var m = _.clone(model, true);
 
@@ -50,6 +51,7 @@ define([
 
                 return m;
             },
+
             set: function(setupNode) {
                 var n = _.clone(model, true);
 
