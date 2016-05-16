@@ -31,7 +31,7 @@ require([
                     height: 40,
                     labelOffset: function (label) {
                         label.attr({
-                            x: 10,
+                            x: -50,
                             y: 100
                         });
                     },
@@ -63,8 +63,27 @@ require([
                 //},
                 buttons   : {
                     //radius: 8,
-                    //border: 2
+                    border: 0,
+                    fillOpacity: 0.1,
+
+                    delete: {
+                        fill: "#dddddd",
+
+                        position: function (el) {
+
+                        }
+                    },
+
+                    info: {
+                        fill: "#ffffff",
+
+                        position: function (el) {
+                            console.log(el);
+                        }
+                    }
+
                 },
+
                 icons     : {
                     default: 'preview_assets/images/icon-db.png'
                 }

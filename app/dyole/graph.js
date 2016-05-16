@@ -1104,16 +1104,19 @@ define([
              */
             removeNode: function (nodeId, isChild) {
                 isChild = isChild || false;
-                var _self = this;
+                var _self = this,
+                    parent;
 
                 if (typeof nodeId === 'undefined') {
                     throw Error('Node ID must be supplied to remove node');
                 }
 
-                var node = this.getNodeById(nodeId), parent = this.getNodeById(node.model.parent);
+                var node = this.getNodeById(nodeId);
 
-                if (typeof parent !== "undefined" && !isChild) {
+                if (typeof node.model.parent !== "undefined" && !isChild) {
 
+                    parent = this.getNodeById(node.model.parent);
+                
                     _.remove(parent.model.childrenList, function (n) {
                         return n === nodeId;
                     });

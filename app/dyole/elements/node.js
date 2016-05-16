@@ -59,7 +59,12 @@ define([
 
         var BUTTONS = {
             radius: 12,
-            border: 3,
+
+            border: 0,
+            borderStroke: 1,
+            borderFill: '#C8C8C8',
+            fillOpacity: 0.4,
+
             distance: 8,
 
             // if you want to change buttons distance from node uncomment and change distance
@@ -69,8 +74,12 @@ define([
                 fill: '#3FC380', disabled: '#ccc',
 
                 image: {
-                    name: 'preview_assets/images/icon-info.png', width: 6, height: 11
-                }
+                    name: 'preview_assets/images/icon-info.png',
+                    width: 6,
+                    height: 11
+                },
+
+                position: null
 
             },
 
@@ -78,8 +87,12 @@ define([
                 fill: '#EF4836',
 
                 image: {
-                    name: 'preview_assets/images/icon-delete.png', width: 10, height: 10
-                }
+                    name: 'preview_assets/images/icon-delete.png',
+                    width: 10,
+                    height: 10
+                },
+
+                position: null
 
             },
 
@@ -88,8 +101,11 @@ define([
 
                 image: {
                     name: 'preview_assets/images/icon-pencil.png', width: 12, height: 12
-                }
+                },
+
+                position: null
             }
+
         };
 
         var Node = function(options) {
@@ -559,6 +575,25 @@ define([
                     borders = this.circle,
                     outerBorder = this._outerBorder;
 
+                var _nodeClick = function() {
+
+                    var dragged = this.dragged;
+
+                    if (typeof dragged !== 'undefined' && !dragged) {
+
+                        this.Pipeline.Event.trigger('node:deselect');
+
+                        if (this.Pipeline.editMode) {
+                            this._select();
+                        } else {
+                            this._showInfo();
+                        }
+
+                    }
+
+                    this.dragged = false;
+                };
+
                 borders.mouseover(function() {
 
                     node.toFront();
@@ -576,26 +611,11 @@ define([
 
                 });
 
-                borders.click(function() {
-
-                    var dragged = this.dragged;
-
-                    if (typeof dragged !== 'undefined' && !dragged) {
-
-                        this.Pipeline.Event.trigger('node:deselect');
-
-                        if (this.Pipeline.editMode) {
-                            this._select();
-                        } else {
-                            this._showInfo();
-                        }
-
-                    }
-
-                    this.dragged = false;
-                }, this);
+                borders.click(_nodeClick, this);
+                this.label.click(_nodeClick, this)
 
                 borders.drag(this.onMove, this.onMoveStart, this.onMoveEnd, this, this, this);
+
 
             },
 
@@ -781,6 +801,7 @@ define([
                         y     : buttonDistance,
                         radius: this.buttons.radius,
                         border: this.buttons.border,
+                        fillOpacity: this.buttons.fillOpacity,
                         image : {
                             url   : this.baseUrl + this.buttons.info.image.name,
                             width : this.buttons.radius,
@@ -791,6 +812,10 @@ define([
                         scope  : this
                     });
 
+                    if (typeof this.buttons.info.position === 'function') {
+                        this.buttons.info.position.call(this, this.infoButton);
+                    }
+
                     this.removeNodeButton = this.canvas.button({
                         fill  : this.buttons.delete.fill,
                         //x     : -16,
@@ -798,6 +823,7 @@ define([
                         y     : buttonDistance,
                         radius: this.buttons.radius,
                         border: this.buttons.border,
+                        fillOpacity: this.buttons.fillOpacity,
                         image : {
                             url   : this.baseUrl + this.buttons.delete.image.name,
                             width : this.buttons.radius,
@@ -807,6 +833,10 @@ define([
                         onClick: this._removeNodeButtonClick,
                         scope  : this
                     });
+
+                    if (typeof this.buttons.delete.position === 'function') {
+                        this.buttons.info.position.call(this, this.removeNodeButton);
+                    }
 
                     _self.el.push(_self.infoButton.getEl()).push(_self.removeNodeButton.getEl());
 

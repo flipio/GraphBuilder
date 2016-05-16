@@ -11,7 +11,8 @@ define(['jquery', 'raphael'], function ($, Raphael) {
         var r = this,
             callbacks = {};
 
-        config.border = config.border || 4;
+        config.border = typeof config.border === 'number' ? config.border : 4;
+        config.fillOpacity = typeof config.fillOpacity === 'number' ? config.fillOpacity : 1;
 
         callbacks.onClick = (cb && typeof cb.onClick === 'function') ? cb.onClick : null;
         callbacks.scope = (typeof cb.scope !== 'undefined') ? cb.scope : this;
@@ -27,13 +28,15 @@ define(['jquery', 'raphael'], function ($, Raphael) {
                 outer = r.circle(0, 0, conf.radius);
                 outer.attr({
                     fill: conf.borderFill || '#EBEBEB',
-                    stroke: conf.borderStroke || '#C8C8C8'
+                    stroke: conf.borderStroke || '#C8C8C8',
+                    "fill-opacity": conf.fillOpacity
                 });
 
                 inner = r.circle(0, 0, conf.radius - conf.border);
                 inner.attr({
                     fill: conf.fill,
-                    stroke: 'none'
+                    stroke: 'none',
+                    "fill-opacity": conf.fillOpacity
                 });
 
                 if (typeof conf.image !== 'undefined') {
