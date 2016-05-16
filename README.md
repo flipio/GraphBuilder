@@ -586,3 +586,8 @@ Overriding elements add element name as key in constraints object passed in conf
         output : 'preview_assets/images/icon-output-2.png',
         default: 'preview_assets/images/cloud.png'
     }
+
+
+## Known issues
+
+- Conflicting lodash will make stuff broke ( try to keep updated lodash on page ). Lib comes with lodash bundled now.
