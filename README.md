@@ -51,20 +51,20 @@ If you'd like to run the compiled version, run
         treeGraph: true                     // optional: Sets flag if you want to create new tree graph
         constraints: {}                     // optional: Override global constraitns for elements
     }
-    
-    
+
+
     *** NOTE:
         treeGraph: boolean
         - set this flag if you are creating empty treeGraph and you are ensuring that every node that you create via API
-          has 'parent' property on model set ( if node has parent ) and 'childrenList' property which is array and it's 
+          has 'parent' property on model set ( if node has parent ) and 'childrenList' property which is array and it's
           required ( it represents list of node id's who are direct descendants of that node )
           'parent' : string - represents id of parent
           'childrenList': [{string}]
-          
+
 ### Element Models
-    
+
 ##### Node:
-    
+
     var NodeModel = {
         id        : _.random(100000, 999999) + '',
         name      : 'Test node',
@@ -85,7 +85,7 @@ If you'd like to run the compiled version, run
         // additional properties stored in node instance model
         properties: {}
     };
-    
+
 ##### Connection:
 
     var ConnectionModel = {
@@ -94,10 +94,10 @@ If you'd like to run the compiled version, run
         end_node: n2_id,
         input_name: n2t.id,
         output_name: n1t.id,
-        connection_name: connectionName || false, // optional 
+        connection_name: connectionName || false, // optional
         connection_class_name: connectionClass || false // optional
     };
-     
+
 
 ### TreeModel structure
 
@@ -169,8 +169,8 @@ If you'd like to run the compiled version, run
             }
         ]
     };
-    
-    
+
+
 ##### Multiple tree graphs on canvas
 Just pass array of TreeGraph models to TreeGraph option like this:
     ```
@@ -178,12 +178,12 @@ Just pass array of TreeGraph models to TreeGraph option like this:
         TreeGraph
     ]
     ```
-    
-    
+
+
 ### Graph API
 ###### See docs for full spec of Public api calls
 
-    
+
     canvasInstance.zoomIn();                                                        // returns current canvas scale; Canvas zoom in
     canvasInstance.zoomOut();                                                       // returns current canvas scale; Canvas zoom out
     canvasInstance.adjustSize();                                                    // returns null; Adjust canvas dimensions to fit the parent
@@ -192,10 +192,10 @@ Just pass array of TreeGraph models to TreeGraph option like this:
     canvasInstance.addNode(nodeModel, coords, rawCoords, constraints, onCreate);    // returns node id; Add node to the canvas
     canvasInstance.connectNodes(n1, n2, connectionName);                            // returns null; Connect two nodes
     canvasInstance.destroy();                                                       // returns null; Destroys graph and its references
-    canvasInstance.getJSON();                                                       // returns graph model    
-    canvasInstance.getTreeJSON();                                                   // returns tree graph model    
-    canvasInstance.alignNodes(gap, rootCoords);                                     // returns boolean: Align nodes from rootCoords, only available in treeGraph mode (both params are optional)    
-    
+    canvasInstance.getJSON();                                                       // returns graph model
+    canvasInstance.getTreeJSON();                                                   // returns tree graph model
+    canvasInstance.alignNodes(gap, rootCoords);                                     // returns boolean: Align nodes from rootCoords, only available in treeGraph mode (both params are optional)
+
 
 ##### Default Node Constraints
     ```
@@ -203,7 +203,13 @@ Just pass array of TreeGraph models to TreeGraph option like this:
 
         radius     : 48,
         borderWidth: 10,
+
+        // labelOffset can be number of function for tweeking position
         labelOffset: 15,
+        //labelOffset: function (el) {} // get native svg el ref and change position of label
+
+
+        icon: true, // false to disable node icon
 
         outdated: {
             fill    : '#F5AB35',
@@ -227,58 +233,58 @@ Just pass array of TreeGraph models to TreeGraph option like this:
 
 ### Events
 
-####`node:select` 
+####`node:select`
 
 Triggered when you select a node.
 
 arguments:
 
 * `node` : node model
-    
-example:    
-    
+
+example:
+
     canvasInstance.Event.subscribe('node:select', function (node) {
-    
-    
+
+
     });
 
-####`node:deselected` 
+####`node:deselected`
 
 Triggered when you select a node.
 
 arguments:
 
 * `node` : node model
-    
-example:    
-    
+
+example:
+
     canvasInstance.Event.subscribe('node:deselected', function (node) {
-    
-    
+
+
     });
 
-####`node:showInfo` 
+####`node:showInfo`
 
 Triggered when you click node show info button.
 arguments:
 
 * `node` : node model
-    
-example:  
+
+example:
 
     canvasInstance.Event.subscribe('node:showInfo', function (node) {
 
     });
 
 
-####`node:deselected` 
+####`node:deselected`
 
 Triggered when you deselect node by clicking outside.
 arguments:
 
 * `node` : node model
-    
-example:  
+
+example:
 
     canvasInstance.Event.subscribe('node:deselected', function (node) {
 
@@ -433,15 +439,15 @@ Example:
             TreeModel: tree,
             constraints: {
                 node: {
-    
+
                     radius     : 46,
                     borderWidth: 8,
                     labelOffset: 12,
-    
+
                     selected: {
                         fill: '#ffffff'
                     },
-    
+
                     //defaults
                     fill    : '#011E37',
                     stroke  : 'none'
@@ -454,7 +460,13 @@ Example:
                     radiusInner: 6
                 },
                 buttons: {
-                    radius: 15
+                    radius: 15,
+
+                    border: 3, // buttons border width,
+                    borderStroke: 1,
+                    borderFill: '#C8C8C8',
+                    fillOpacity: 0.4,
+
                 },
                 icons: {
                     default: 'preview_assets/images/icon-db.png'
@@ -462,13 +474,13 @@ Example:
             }
         });
 
-Overriding elements add element name as key in constraints object passed in configuration and override propreties. 
+Overriding elements add element name as key in constraints object passed in configuration and override propreties.
 
 ##### Default constraints for every element
 
     // Node
     {
-    
+
         radius     : 38,
         borderWidth: 7,
         labelOffset: 12,
@@ -481,49 +493,52 @@ Overriding elements add element name as key in constraints object passed in conf
         fill    : '#011E37',
         stroke  : 'none'
     }
-    
+
     // Terminal
     {
         radius: 8,
         radiusInner: 4.4,
-    
+
         available: {
             gradiant: '',
             fill: '#3eb157',
             stroke: ''
         },
-    
+
         connected: {
             gradiant: '',
             fill: '#1E8BC3',
             stroke: ''
         },
-    
+
         // defaults
         gradiant: '',
         fill: '#888888',
         stroke: ''
     }
-    
+
     // Connection
     {
         strokeWidth: 7,
         strokeColor: '#FBFCFC',
         labelColor : '#8989FF',
         disableWire: false,
-        
+
         images: {
             wirePath: 'preview_assets/images/wire-cut.png'
         }
     }
-    
+
     // Buttons
     {
         radius: 12,
         border: 3,
-    
+        borderStroke: 1,
+        borderFill: '#C8C8C8',
+        fillOpacity: 0.4,
+
         distance: -nodeRadius * 1.5,
-    
+
         info: {
             fill    : '#3FC380',
             disabled: '#ccc',
@@ -532,10 +547,12 @@ Overriding elements add element name as key in constraints object passed in conf
                 name  : 'preview_assets/images/icon-info.png',
                 width : 6,
                 height: 11
-            }
-    
+            },
+
+            position: function (el) {} // get native svg el ref and change position of button
+
         },
-    
+
         delete: {
             fill: '#EF4836',
             // must supply whole image object if you want to override it
@@ -543,10 +560,13 @@ Overriding elements add element name as key in constraints object passed in conf
                 name  : 'preview_assets/images/icon-delete.png',
                 width : 10,
                 height: 10
-            }
-    
+            },
+
+            position: function (el) {} // get native svg el ref and change position of button
+
+
         },
-    
+
         rename: {
             fill: 'transparent',
             // must supply whole image object if you want to override it
@@ -554,7 +574,10 @@ Overriding elements add element name as key in constraints object passed in conf
                 name  : 'preview_assets/images/icon-pencil.png',
                 width : 12,
                 height: 12
-            }
+            },
+
+            position: function (el) {} // get native svg el ref and change position of button
+
         }
     }
     // Icons

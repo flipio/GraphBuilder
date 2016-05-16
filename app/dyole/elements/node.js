@@ -71,8 +71,9 @@ define([
             //nodeDistance: 5,
 
             info: {
-                fill: '#3FC380', disabled: '#ccc',
-
+                fill: '#3FC380',
+                disabled: '#ccc',
+                
                 image: {
                     name: 'preview_assets/images/icon-info.png',
                     width: 6,
