@@ -817,7 +817,7 @@ define([
                     });
 
                     if (typeof this.buttons.info.position === 'function') {
-                        this.buttons.info.position.call(this, this.infoButton);
+                        this.buttons.info.position.call(this, this.infoButton.getEl());
                     }
 
                     this.removeNodeButton = this.canvas.button({
@@ -839,7 +839,7 @@ define([
                     });
 
                     if (typeof this.buttons.delete.position === 'function') {
-                        this.buttons.info.position.call(this, this.removeNodeButton);
+                        this.buttons.info.position.call(this, this.removeNodeButton.getEl());
                     }
 
                     _self.el.push(_self.infoButton.getEl()).push(_self.removeNodeButton.getEl());
