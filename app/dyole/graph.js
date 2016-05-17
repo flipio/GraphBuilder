@@ -1113,10 +1113,10 @@ define([
 
                 var node = this.getNodeById(nodeId);
 
-                if (typeof node.model.parent !== "undefined" && !isChild) {
+                if (node.model.parent && !isChild) {
 
                     parent = this.getNodeById(node.model.parent);
-                
+
                     _.remove(parent.model.childrenList, function (n) {
                         return n === nodeId;
                     });
