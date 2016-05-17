@@ -839,7 +839,7 @@ define([
                     });
 
                     if (typeof this.buttons.delete.position === 'function') {
-                        this.buttons.info.position.call(this, this.removeNodeButton.getEl());
+                        this.buttons.delete.position.call(this, this.removeNodeButton.getEl());
                     }
 
                     _self.el.push(_self.infoButton.getEl()).push(_self.removeNodeButton.getEl());
