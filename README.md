@@ -276,6 +276,33 @@ example:
 
     });
 
+#### `node:mouseover`
+
+Triggered when you hover over node.
+arguments:
+
+* `node` : node model
+
+example:
+
+    canvasInstance.Event.subscribe('node:mouseover', function (node) {
+
+    });
+
+
+#### `node:mouseout`
+
+Triggered when you leave node boundaries with mouse.
+arguments:
+
+* `node` : node model
+
+example:
+
+    canvasInstance.Event.subscribe('node:mouseout', function (node) {
+
+    });
+
 
 ####`node:deselected`
 

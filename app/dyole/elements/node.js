@@ -73,7 +73,7 @@ define([
             info: {
                 fill: '#3FC380',
                 disabled: '#ccc',
-                
+
                 image: {
                     name: 'preview_assets/images/icon-info.png',
                     width: 6,
@@ -602,6 +602,8 @@ define([
                     _self.glow();
                     _self.showTerminalNames();
 
+
+                    _self.Pipeline.Event.trigger('node:mouseover', _self.model);
                 });
 
                 node.mouseout(function() {
@@ -610,6 +612,7 @@ define([
 
                     _self.hideTerminalNames();
 
+                    _self.Pipeline.Event.trigger('node:mouseout', _self.model);
                 });
 
                 borders.click(_nodeClick, this);
