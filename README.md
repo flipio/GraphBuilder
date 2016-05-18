@@ -227,7 +227,8 @@ Just pass array of TreeGraph models to TreeGraph option like this:
 
         //defaults
         fill    : '#424E4F',
-        stroke  : 'none'
+        stroke  : 'none',
+        strokeWidth: 0
     }
     ```
 
@@ -490,7 +491,10 @@ Example:
                     radius: 15,
 
                     border: 3, // buttons border width,
-                    borderStroke: 1,
+
+                    stroke  : 'none',
+                    strokeWidth: 0
+
                     borderFill: '#C8C8C8',
                     fillOpacity: 0.4,
 
@@ -560,7 +564,9 @@ Overriding elements add element name as key in constraints object passed in conf
     {
         radius: 12,
         border: 3,
-        borderStroke: 1,
+        stroke  : 'none',
+        strokeWidth: 0,
+        
         borderFill: '#C8C8C8',
         fillOpacity: 0.4,
 

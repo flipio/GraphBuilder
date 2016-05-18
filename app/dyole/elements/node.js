@@ -805,6 +805,8 @@ define([
                         y     : buttonDistance,
                         radius: this.buttons.radius,
                         border: this.buttons.border,
+                        stroke: this.buttons.stroke,
+                        strokeWidth: this.buttons.strokeWidth,
                         fillOpacity: this.buttons.fillOpacity,
                         image : {
                             url   : this.baseUrl + this.buttons.info.image.name,
@@ -827,6 +829,8 @@ define([
                         y     : buttonDistance,
                         radius: this.buttons.radius,
                         border: this.buttons.border,
+                        stroke: this.buttons.stroke,
+                        strokeWidth: this.buttons.strokeWidth,
                         fillOpacity: this.buttons.fillOpacity,
                         image : {
                             url   : this.baseUrl + this.buttons.delete.image.name,

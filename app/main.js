@@ -66,6 +66,9 @@ require([
                     border: 0,
                     fillOpacity: 0.1,
 
+                    stroke  : 'none',
+                    strokeWidth: 0,
+
                     delete: {
                         fill: "#dddddd",
 

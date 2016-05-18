@@ -28,7 +28,8 @@ define(['jquery', 'raphael'], function ($, Raphael) {
                 outer = r.circle(0, 0, conf.radius);
                 outer.attr({
                     fill: conf.borderFill || '#EBEBEB',
-                    stroke: conf.borderStroke || '#C8C8C8',
+                    stroke: conf.stroke || '#C8C8C8',
+                    "stroke-width": conf.strokeWidth || 1,
                     "fill-opacity": conf.fillOpacity
                 });
 
