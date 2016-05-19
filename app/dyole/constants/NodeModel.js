@@ -28,7 +28,7 @@ define([
         };
 
         return {
-            
+
             get: function(options) {
                 var m = _.clone(model, true);
 
@@ -107,8 +107,8 @@ define([
                 }
 
 
-                if (!n.childrenList) {
-                    n.childrenList = [];
+                if (!n.children) {
+                    n.children = [];
                 }
                 return n;
             }

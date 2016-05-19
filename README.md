@@ -56,10 +56,10 @@ If you'd like to run the compiled version, run
     *** NOTE:
         treeGraph: boolean
         - set this flag if you are creating empty treeGraph and you are ensuring that every node that you create via API
-          has 'parent' property on model set ( if node has parent ) and 'childrenList' property which is array and it's
+          has 'parent' property on model set ( if node has parent ) and 'children' property which is array and it's
           required ( it represents list of node id's who are direct descendants of that node )
           'parent' : string - represents id of parent
-          'childrenList': [{string}]
+          'children': [{string}]
 
 ### Element Models
 
@@ -566,7 +566,7 @@ Overriding elements add element name as key in constraints object passed in conf
         border: 3,
         stroke  : 'none',
         strokeWidth: 0,
-        
+
         borderFill: '#C8C8C8',
         fillOpacity: 0.4,
 

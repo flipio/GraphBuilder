@@ -921,7 +921,7 @@ define([
                             list.push(c.model.id);
                         });
 
-                        node.model.childrenList = list;
+                        node.model.children = list;
 
                         _.forEach(node.children, function (n, index) {
                             _parseTree(n, level, node, index);
@@ -1035,7 +1035,7 @@ define([
                         var node = _self.getNodeById(nodeId);
 
                         _fixNode(nodeId, lvl);
-                        alignChildren(lvl + 1, node.model.childrenList);
+                        alignChildren(lvl + 1, node.model.children);
                     });
 
                 };
@@ -1046,7 +1046,7 @@ define([
 
                     if (!node.model.parent) {
                         _fixNode(nodeId, 0);
-                        alignChildren(1, node.model.childrenList);
+                        alignChildren(1, node.model.children);
                     }
 
                 });
@@ -1117,14 +1117,14 @@ define([
 
                     parent = this.getNodeById(node.model.parent);
 
-                    _.remove(parent.model.childrenList, function (n) {
+                    _.remove(parent.model.children, function (n) {
                         return n === nodeId;
                     });
 
                 }
 
-                if (node.model.childrenList && node.model.childrenList.length > 0) {
-                    _.forEach(node.model.childrenList, function (child) {
+                if (node.model.children && node.model.children.length > 0) {
+                    _.forEach(node.model.children, function (child) {
                         if (typeof child !== 'undefined' && typeof _self.getNodeById(child) !== 'undefined') {
 
                             _self.removeNode(child, true);
@@ -1362,7 +1362,7 @@ define([
                     var node = _self.getNodeById(nodeId), model = {
                         model: {},
                         children: []
-                    }, children = node.model.childrenList; // list of ids
+                    }, children = node.model.children; // list of ids
 
                     _.remove(sorted.sorted, function (i) {
                         return i === nodeId;
