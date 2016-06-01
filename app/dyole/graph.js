@@ -346,11 +346,34 @@ define([
             /**
              * Move canvas
              *
-             * @param position
+             * @param coords
+             * @param coords.x
+             * @param coords.y
+             *
              * @private
              */
-            _move: function (position) {
-                this.getEl().translate(position.x, position.y);
+            _move: function (coords) {
+                this.getEl().translate(coords.x, coords.y);
+            },
+
+            /**
+             *
+             * @param coords
+             * @param coords.x
+             * @param coords.y
+             * @returns {*}
+             */
+            translate: function (coords) {
+
+                if (typeof coords !== 'object' || !coords.x || !coords.y) {
+                    console.error('Translate accepts object with "x" and "y"');
+                    return false;
+                }
+
+                this.model.display.canvas.x = coords.x;
+                this.model.display.canvas.y = coords.y;
+
+                return this._move(coords);
             },
 
             /**

@@ -190,6 +190,21 @@ define([
 
         Node.prototype = {
 
+            getEl: function () {
+                return this.el;
+            },
+
+            /**
+             * Translate node
+             *
+             * @param coords
+             * @param coords.x
+             * @param coords.y
+             */
+            translate: function (coords) {
+                return this.el.translate(coords.x, coords.y);
+            },
+
             getFirstTerminal: function(type) {
                 return this[type + 's'][0];
             },
