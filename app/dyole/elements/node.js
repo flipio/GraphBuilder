@@ -202,6 +202,15 @@ define([
              * @param coords.y
              */
             translate: function (coords) {
+
+                if (typeof coords !== 'object' || typeof coords.x === 'undefined' || typeof coords.y === 'undefined') {
+                    console.error('Translate accepts object with "x" and "y"');
+                    return false;
+                }
+
+                this.model.x = coords.x;
+                this.model.y = coords.y;
+
                 return this.el.translate(coords.x, coords.y);
             },
 

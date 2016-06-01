@@ -365,7 +365,7 @@ define([
              */
             translate: function (coords) {
 
-                if (typeof coords !== 'object' || !coords.x || !coords.y) {
+                if (typeof coords !== 'object' || typeof coords.x === 'undefined' || typeof coords.y === 'undefined') {
                     console.error('Translate accepts object with "x" and "y"');
                     return false;
                 }

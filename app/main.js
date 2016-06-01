@@ -17,7 +17,7 @@ require([
             $parent    : $('.graph-placeholder'),
             assetsUrl  : '/',
             editMode   : true,
-            TreeModel: tree,
+            // TreeModel: tree,
             model: json || false,
             constraints: {
                 node      : {
@@ -105,8 +105,11 @@ require([
 //        borderRadius: 4
 //    };
 //
-//     var n1, n2, n3, n4, n5, n6, n7, squareNode;
-//     n1 = canvas.addNode(NodeModel.get({type: 'circle'}), {x: 200, y: 200}, false);
+    var n1, n2, n3, n4, n5, n6, n7, squareNode;
+    n1 = canvas.addNode(NodeModel.get({type: 'circle'}), {x: 200, y: 200}, false);
+    n1 = canvas.getNodeById(n1);
+    n1.translate({x: 100, y: 100});
+    canvas.translate({x: 0, y: 0});
 //     n2 = canvas.addNode(NodeModel.get({type: 'square'}), {x: 450, y: 100}, false);
 //     //n3 = canvas.addNode(NodeModel.get(), {x: 600, y: 200}, false);
 //
