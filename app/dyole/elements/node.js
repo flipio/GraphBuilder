@@ -621,18 +621,13 @@ define([
 
                 borders.mouseover(function() {
 
-                    node.toFront();
-
-                    _self.glow();
                     _self.showTerminalNames();
 
 
                     _self.Pipeline.Event.trigger('node:mouseover', _self.model);
                 });
 
-                node.mouseout(function() {
-
-                    _self.removeGlow();
+                borders.mouseout(function() {
 
                     _self.hideTerminalNames();
 
@@ -640,12 +635,16 @@ define([
                 });
 
                 borders.click(_nodeClick, this);
-                this.label.click(_nodeClick, this)
+                this.label.click(_nodeClick, this);
 
                 borders.drag(this.onMove, this.onMoveStart, this.onMoveEnd, this, this, this);
 
+                borders.hover(this.glow.bind(this),
+                    this.removeGlow.bind(this)
+                );
 
             },
+
 
             glow: function (options) {
                 this._glow = this._outerBorder.glow({
@@ -658,7 +657,7 @@ define([
             },
 
             removeGlow: function () {
-                if (typeof this._glow !== 'undefined') {
+                if (this._glow && typeof this._glow.remove === 'function') {
                     this._glow.remove();
                 }
             },
