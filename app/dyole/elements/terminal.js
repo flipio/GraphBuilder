@@ -78,8 +78,8 @@ define([
 
         Common.setConstraints(this.constraints, options.constraints || {});
 
-        // Arc near problem for pavlovljeva fix
-        if (this.connectionConfig.pathType === PathTypes.PAVLOVLJEVA) {
+        // Arc near problem for vis-path fix
+        if (this.connectionConfig.pathType === PathTypes.VIS_PATH) {
             this.model.x += this.model.x < 0 ? 5 : -5;
         }
 

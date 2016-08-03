@@ -113,12 +113,12 @@ define(['jquery', 'raphael', 'dyole/constants/PathTypes'], function ($, Raphael,
                         string = beginString + (coords.x1 + coords.x2)/2 + ',' + coords.y1 + ' ' + (coords.x1 + coords.x2)/2 + ',' + coords.y2  + ' ' + endString;
                         break;
 
-                    case ConnectionTypes.PAVLOVLJEVA:
+                    case ConnectionTypes.VIS_PATH:
 
                         if (coords.x1 === coords.x2 || coords.y1 === coords.y2){
                             string = straightLine;
                         } else {
-                            string = generatePavlovljeva(coords);
+                            string = generateVisPath(coords);
                         }
                         break;
 
@@ -152,7 +152,7 @@ define(['jquery', 'raphael', 'dyole/constants/PathTypes'], function ($, Raphael,
             }
 
             /**
-             * Generate Pavlovljeva path - ConnectionTypes.BROKEN_LINE with rounded corners
+             * Generate Vis Path - ConnectionTypes.BROKEN_LINE with rounded corners
              *
              * Find the position of first node (1) relative to second node (2) and use this information for drawing the arcs
              *
@@ -167,7 +167,7 @@ define(['jquery', 'raphael', 'dyole/constants/PathTypes'], function ($, Raphael,
              *
              * @param {object} coords
              */
-            function generatePavlovljeva(coords) {
+            function generateVisPath(coords) {
 
                 var first_below = coords.y1 > coords.y2; // case 1
 

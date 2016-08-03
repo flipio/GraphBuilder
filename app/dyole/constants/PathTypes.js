@@ -10,7 +10,7 @@ define(function() {
         BEIZER              :   'beizer',
         LINE                :   'line',
         BROKEN_LINE         :   'broken-line',
-        PAVLOVLJEVA         :   'pavlovljeva'
+        VIS_PATH            :   'vis-path'
 
     };
     //@body
