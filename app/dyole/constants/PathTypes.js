@@ -10,7 +10,7 @@ define(function() {
         BEIZER              :   'beizer',
         LINE                :   'line',
         BROKEN_LINE         :   'broken-line',
-        VIS_PATH            :   'vis-path'
+        BROKEN_CURVED_LINE   :   'broken-curved-line'
 
     };
     //@body

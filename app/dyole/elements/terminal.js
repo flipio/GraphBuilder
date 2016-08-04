@@ -79,7 +79,7 @@ define([
         Common.setConstraints(this.constraints, options.constraints || {});
 
         // Arc near problem for vis-path fix
-        if (this.connectionConfig.pathType === PathTypes.VIS_PATH) {
+        if (this.connectionConfig.pathType === PathTypes.BROKEN_CURVED_LINE) {
             this.model.x += this.model.x < 0 ? 5 : -5;
         }
 

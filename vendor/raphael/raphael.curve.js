@@ -113,7 +113,7 @@ define(['jquery', 'raphael', 'dyole/constants/PathTypes'], function ($, Raphael,
                         string = beginString + (coords.x1 + coords.x2)/2 + ',' + coords.y1 + ' ' + (coords.x1 + coords.x2)/2 + ',' + coords.y2  + ' ' + endString;
                         break;
 
-                    case ConnectionTypes.VIS_PATH:
+                    case ConnectionTypes.BROKEN_CURVED_LINE:
 
                         if (coords.x1 === coords.x2 || coords.y1 === coords.y2){
                             string = straightLine;
