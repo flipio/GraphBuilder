@@ -308,6 +308,11 @@ define([
                 remove: function () {
                     $(this.node).unbind();
                     set.remove();
+                    this.node.parentNode.removeChild(this.node);
+                    set.splice(0, set.length-1);
+                    this.node = null;
+                    set = null;
+                    delete this.node;
                 },
 
                 set: set,

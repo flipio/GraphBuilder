@@ -608,7 +608,7 @@ define([
 
                         this.Pipeline.Event.trigger('node:deselect');
 
-                        if (this.Pipeline.editMode) {
+                        if (this.Pipeline.editMode && !this.selected) {
                             this._select();
                         } else {
                             this._showInfo();
@@ -911,16 +911,18 @@ define([
                     return;
                 }
 
-                this.Pipeline.selectedNodes.push(this);
+                if (!this.selected) {
+                    this.Pipeline.selectedNodes.push(this);
 
-                this._showButtons();
+                    this._showButtons();
 
-                // Show selected state
-                this._outerBorder.attr({
-                    fill: this.constraints.selected.fill
-                });
+                    // Show selected state
+                    this._outerBorder.attr({
+                        fill: this.constraints.selected.fill
+                    });
+                    this.selected = true;
 
-                this.selected = true;
+                }
 
                 this.Pipeline.Event.trigger('node:select', this.model);
 

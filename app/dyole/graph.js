@@ -172,9 +172,9 @@ define([
 
                 });
 
-                this.Event.subscribe('node:deselect', function () {
+                this.Event.subscribe('node:deselect', function (clickedNode) {
                     _.each(_self.selectedNodes, function (node) {
-                        if (node.selected) {
+                        if (node.selected && (!clickedNode || clickedNode.id !== node.id)) {
                             node._deselect();
                         }
                     });
