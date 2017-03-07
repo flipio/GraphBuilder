@@ -597,23 +597,17 @@ define([
 
                 var _self = this,
                     node = this.el,
-                    borders = this.circle,
-                    outerBorder = this._outerBorder;
+                    borders = this.circle;
 
                 var _nodeClick = function() {
 
-                    var dragged = this.dragged;
+                    if (!this.dragged) {
 
-                    if (typeof dragged !== 'undefined' && !dragged) {
-
-                        this.Pipeline.Event.trigger('node:deselect');
-
-                        if (this.Pipeline.editMode && !this.selected) {
+                        if (this.Pipeline.editMode) {
                             this._select();
                         } else {
                             this._showInfo();
                         }
-
                     }
 
                     this.dragged = false;

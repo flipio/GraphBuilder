@@ -1318,6 +1318,10 @@ define([
                 var _self = this,
                     json = _.clone(this.model, true);
 
+                if (!json) {
+                    return {};
+                }
+
                 json.relations = this._getConnections();
                 json.nodes = this._getNodes();
 
