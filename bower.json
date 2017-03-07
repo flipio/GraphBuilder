@@ -2,7 +2,7 @@
   "name": "graph-editor",
   "dependencies": {
     "requirejs": "~2.1.5",
-    "jquery": ">= 1.8.0",
+    "jquery": "^2.2.4",
     "qunit": "~1.11.0",
     "lodash": "~3.10.1",
     "almond": "^0.3.2"
