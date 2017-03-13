@@ -103,7 +103,7 @@ define([
                             set.push(it.set);
                         } else {
                             group.appendChild(it.node);
-                            set && set.push(it);
+                            set.push(it);
                         }
                     }
 
