@@ -884,8 +884,17 @@ define([
             },
 
             _removeNodeButtonClick: function() {
+                var nodeForRemoval = this.model;
+
                 this._destroyButtons();
-                this.Pipeline.removeNode(this.model.id);
+                this.Pipeline.removeNodeRecursively(nodeForRemoval.id);
+
+                if (nodeForRemoval.parent) {
+                    var parentNode = this.Pipeline.getNodeById(nodeForRemoval.parent);
+
+                    parentNode._showButtons();
+                    this.Pipeline.Event.trigger('node:select', parentNode.model);
+                }
             },
 
             /**
@@ -970,12 +979,6 @@ define([
 
                 this.connections = {};
                 this.removeGlow();
-                var parentId = null, parentModel = null;
-
-                if (this.model.parent) {
-                    parentId = this.model.parent;
-                    parentModel = this.Pipeline.nodes[parentId].model;
-                }
 
                 this.destroy();
 
