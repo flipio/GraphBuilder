@@ -1120,15 +1120,12 @@ define([
             },
 
             /**
-             * Removes node from canvas
+             * Removes node and all of its children from canvas
              *
              * @param nodeId
-             * @param isChild
              */
-            removeNode: function (nodeId, isChild) {
-                isChild = isChild || false;
-                var _self = this,
-                    parent;
+            removeNodeRecursively: function (nodeId) {
+                var _self = this;
 
                 if (typeof nodeId === 'undefined') {
                     throw Error('Node ID must be supplied to remove node');
@@ -1136,21 +1133,11 @@ define([
 
                 var node = this.getNodeById(nodeId);
 
-                if (node.model.parent && !isChild) {
-
-                    parent = this.getNodeById(node.model.parent);
-
-                    _.remove(parent.model.children, function (n) {
-                        return n === nodeId;
-                    });
-
-                }
-
                 if (node.model.children && node.model.children.length > 0) {
                     _.forEach(node.model.children, function (child) {
                         if (typeof child !== 'undefined' && typeof _self.getNodeById(child) !== 'undefined') {
 
-                            _self.removeNode(child, true);
+                            _self.removeNodeRecursively(child);
 
                         }
                     });
