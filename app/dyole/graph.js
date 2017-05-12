@@ -1,21 +1,21 @@
 /**
  * Created by filip on 11.3.15..
  */
-define([
-    'jquery',
-    'lodash',
-    'raphael',
-    'dyole/event/event',
-    'dyole/constants/GraphModel',
-    'dyole/elements/node',
-    'dyole/elements/terminal',
-    'dyole/elements/connection',
-    'dyole/helpers/sort',
-    'dyole/helpers/common',
-    'dyole/constants/PathTypes',
 
-    'raphael-group'
-], function ($, _, Raphael, Event, GraphModel, Node, Terminal, Connection, Sort, Common, PathTypes) {
+import $ from 'jquery'
+import _ from 'lodash'
+import Raphael from 'raphael'
+import {Event} from './event/event'
+import {GraphModel} from './constants/GraphModel'
+import {Node} from './elements/node'
+import {Terminal} from './elements/terminal'
+import {Connection} from './elements/connection'
+import {Sort} from './helpers/sort'
+import {Common} from './helpers/common'
+import {PathTypes} from './constants/PathTypes'
+import {} from './../../vendor/raphael/raphael.button'
+import {} from './../../vendor/raphael/raphael.curve'
+import {} from './../../vendor/raphael/raphael.group'
 
     var Graph = (function () {
         var SCROLLBAR_COLOR = '#B6B6B6';
@@ -1474,5 +1474,4 @@ define([
 
     Graph.PathTypes = PathTypes;
 
-    return Graph;
-});
+export default Graph

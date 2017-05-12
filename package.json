@@ -7,6 +7,10 @@
   },
   "scripts": {
     "postInstall": "bower install",
+    "clean": "rimraf dist/*",
+    "production": "./node_modules/.bin/webpack --config webpack.config.prod.js",
+    "development": "./node_modules/.bin/webpack --config webpack.config.js",
+    "development-server": "./node_modules/.bin/webpack-dev-server",
     "test": "grunt qunit"
   },
   "author": {
@@ -21,15 +25,23 @@
     }
   ],
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.24.1",
     "grunt": "~0.4.1",
-    "grunt-contrib-qunit": "*",
-    "grunt-contrib-jshint": "*",
+    "grunt-contrib-clean": "*",
     "grunt-contrib-concat": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-qunit": "*",
+    "grunt-contrib-requirejs": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
-    "grunt-contrib-clean": "*",
-    "grunt-contrib-requirejs": "*",
-    "grunt-contrib-connect": "*"
+    "rimraf": "^2.6.1",
+    "webpack": "^2.5.1",
+    "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
     "grunt-concat-sourcemap": "^0.4.3"

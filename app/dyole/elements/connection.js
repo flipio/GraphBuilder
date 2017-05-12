@@ -1,348 +1,345 @@
 /**
  * Created by filip on 11.3.15..
  */
-define([
-        'jquery',
-        'lodash',
-        'dyole/helpers/common',
-        '../constants/PathTypes'
-    ],
-    function($, _, Common, PathTypes) {
 
-        var CONSTRAINTS = {
-            baseUrl: '/',
+import $ from 'jquery'
+import _ from 'lodash'
+import {Common} from './../helpers/common'
+import {PathTypes} from './../constants/PathTypes'
 
-            strokeWidth: 7,
-            strokeColor: '#FBFCFC',
-            labelColor : '#8989FF',
-            disableWire: false,
+var CONSTRAINTS = {
+    baseUrl: '/',
 
-            images: {
-                wirePath: 'preview_assets/images/wire-cut.png'
-            },
+    strokeWidth: 7,
+    strokeColor: '#FBFCFC',
+    labelColor : '#8989FF',
+    disableWire: false,
 
-            pathType : PathTypes.BEIZER
-        };
+    images: {
+        wirePath: 'preview_assets/images/wire-cut.png'
+    },
 
-        var Connection = function(options) {
+    pathType : PathTypes.BEIZER
+};
 
-            this.constraints = _.clone(CONSTRAINTS);
+var Connection = function(options) {
 
-            this.nodeViews = options.nodes;
-            this.model = options.model;
-            this.canvas = options.canvas;
-            this.parent = options.parent;
-            this.element = options.element;
-            this.Pipeline = options.pipeline;
+    this.constraints = _.clone(CONSTRAINTS);
 
-            this.input = options.input;
-            this.output = options.output;
+    this.nodeViews = options.nodes;
+    this.model = options.model;
+    this.canvas = options.canvas;
+    this.parent = options.parent;
+    this.element = options.element;
+    this.Pipeline = options.pipeline;
 
-            this.baseUrl = this.Pipeline.assetsUrl;
+    this.input = options.input;
+    this.output = options.output;
 
-            this.id = this.model.id;
+    this.baseUrl = this.Pipeline.assetsUrl;
 
-            this._glowOptions = {};
+    this.id = this.model.id;
+
+    this._glowOptions = {};
 
 //            this.tempConnectionActive = false;
 
-            if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
-                Common.setConstraints(this.constraints, this.Pipeline.constraints.connection)
-            }
+    if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
+        Common.setConstraints(this.constraints, this.Pipeline.constraints.connection)
+    }
 
-            if (typeof options.constraints === 'object') {
-                this.constraints = _.extend({}, this.constraints, options.constraints);
-            }
+    if (typeof options.constraints === 'object') {
+        this.constraints = _.extend({}, this.constraints, options.constraints);
+    }
 
-            this._createConnection(this.input, this.output);
-            this._attachEvents();
+    this._createConnection(this.input, this.output);
+    this._attachEvents();
+};
+
+Connection.prototype = {
+
+    _attachEvents: function() {
+
+        var _self = this,
+            events = [], calcStroke, rmWire, conState;
+
+        calcStroke = function() {
+            _self.draw();
         };
 
-        Connection.prototype = {
+        rmWire = function() {
+            _self.removeWire();
+        };
 
-            _attachEvents: function() {
+        conState = function(state) {
+            _self.tempConnectionActive = state;
+        };
 
-                var _self = this,
-                    events = [], calcStroke, rmWire, conState;
+        if (this.Pipeline.editMode) {
+            this.connection.mouseover(this.onMouseOver, this);
+        }
 
-                calcStroke = function() {
-                    _self.draw();
-                };
+        this.Pipeline.Event.subscribe('connection:stroke:calculate', calcStroke);
 
-                rmWire = function() {
-                    _self.removeWire();
-                };
+        events.push({
+            event  : 'connection:stroke:calculate',
+            handler: calcStroke
+        });
 
-                conState = function(state) {
-                    _self.tempConnectionActive = state;
-                };
+        this.Pipeline.Event.subscribe('remove:wire', rmWire);
 
-                if (this.Pipeline.editMode) {
-                    this.connection.mouseover(this.onMouseOver, this);
-                }
+        events.push({
+            event  : 'remove:wire',
+            handler: rmWire
+        });
 
-                this.Pipeline.Event.subscribe('connection:stroke:calculate', calcStroke);
+        this.Pipeline.Event.subscribe('temp:connection:state', conState);
 
-                events.push({
-                    event  : 'connection:stroke:calculate',
-                    handler: calcStroke
-                });
+        events.push({
+            event  : 'temp:connection:state',
+            handler: conState
+        });
 
-                this.Pipeline.Event.subscribe('remove:wire', rmWire);
+        // create pool of events to unsubscribe on destroy
+        this.events = events;
 
-                events.push({
-                    event  : 'remove:wire',
-                    handler: rmWire
-                });
+    },
 
-                this.Pipeline.Event.subscribe('temp:connection:state', conState);
+    _getOffset: function(element) {
 
-                events.push({
-                    event  : 'temp:connection:state',
-                    handler: conState
-                });
+        var bodyRect = document.body.getBoundingClientRect();
+        var elemRect = element.getBoundingClientRect();
+        var top = elemRect.top - bodyRect.top;
+        var left = elemRect.left - bodyRect.left;
 
-                // create pool of events to unsubscribe on destroy
-                this.events = events;
+        return {top: top, left: left};
+    },
 
-            },
+    onMouseOver: function(e, x, y) {
 
-            _getOffset: function(element) {
+        if (!this.Pipeline.tempConnectionActive && !this.constraints.disableWire) {
 
-                var bodyRect = document.body.getBoundingClientRect();
-                var elemRect = element.getBoundingClientRect();
-                var top = elemRect.top - bodyRect.top;
-                var left = elemRect.left - bodyRect.left;
+            var self = this,
+                src = this.constraints.images.wirePath,
+                canvasOffset = this._getOffset(this.element[0]);
 
-                return {top: top, left: left};
-            },
+            this.removeWire();
 
-            onMouseOver: function(e, x, y) {
+            this.wire = this.canvas.image(this.constraints.baseUrl + src, x - canvasOffset.left - 15, y - canvasOffset.top - 15, 25, 25);
 
-                if (!this.Pipeline.tempConnectionActive && !this.constraints.disableWire) {
+            this.wire.click(function() {
+                self.removeWire();
+                self.destroyConnection();
+            });
 
-                    var self = this,
-                        src = this.constraints.images.wirePath,
-                        canvasOffset = this._getOffset(this.element[0]);
+            this.wire.mouseout(this.onMouseOut, this);
 
-                    this.removeWire();
+            this.startTime = Date.now();
 
-                    this.wire = this.canvas.image(this.constraints.baseUrl + src, x - canvasOffset.left - 15, y - canvasOffset.top - 15, 25, 25);
+        }
 
-                    this.wire.click(function() {
-                        self.removeWire();
-                        self.destroyConnection();
-                    });
+    },
 
-                    this.wire.mouseout(this.onMouseOut, this);
+    onMouseOut: function() {
+        var diff = this.startTime - Date.now();
 
-                    this.startTime = Date.now();
+        if (this.wire && diff > 1000) {
+            this.wire.remove();
+        } else {
+            this.removeWire();
+        }
+    },
 
-                }
+    removeWire: function() {
+        if (this.wire) {
+            this.wire.unclick();
+            this.wire.remove();
+        }
 
-            },
+        return this;
+    },
 
-            onMouseOut: function() {
-                var diff = this.startTime - Date.now();
+    draw: function() {
 
-                if (this.wire && diff > 1000) {
-                    this.wire.remove();
-                } else {
-                    this.removeWire();
-                }
-            },
+        var coords, strokeWidth,
+            scale = this.parent.getScale().x;
 
-            removeWire: function() {
-                if (this.wire) {
-                    this.wire.unclick();
-                    this.wire.remove();
-                }
+        coords = this._getCoords(this.input, this.output);
 
-                return this;
-            },
+        strokeWidth = this.constraints.strokeWidth * scale;
 
-            draw: function() {
 
-                var coords, strokeWidth,
-                    scale = this.parent.getScale().x;
+        this.connection.redraw(coords, strokeWidth);
 
-                coords = this._getCoords(this.input, this.output);
 
-                strokeWidth = this.constraints.strokeWidth * scale;
+        var totalLen = this.connection.getPathInner().getTotalLength();
+        var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen / 2);
 
 
-                this.connection.redraw(coords, strokeWidth);
+        //console.log(labelCoords);
 
+        if (this.connectionLabel) {
+            this.connectionLabel.attr({x: labelCoords.x, y: labelCoords.y});
+        }
 
-                var totalLen = this.connection.getPathInner().getTotalLength();
-                var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen / 2);
+        this.removeWire();
 
+        if (this._glow) {
+            this.reDrawGlow();
+        } else {
+            this.removeGlow()
+        }
 
-                //console.log(labelCoords);
+        return this;
+    },
 
-                if (this.connectionLabel) {
-                    this.connectionLabel.attr({x: labelCoords.x, y: labelCoords.y});
-                }
+    glow: function(options) {
 
-                this.removeWire();
+        if (typeof options === 'object') {
+            this._glowOptions = options || this._glowOptions;
+        } else {
+            console.error('[glow()] ', 'expected object, got : ', typeof options);
+        }
 
-                if (this._glow) {
-                    this.reDrawGlow();
-                } else {
-                    this.removeGlow()
-                }
+        this._glow = this.connection.getPathOuter().glow(this._glowOptions);
+        this.connection.push(this._glow);
 
-                return this;
-            },
+        this._glow.toBack();
 
-            glow: function(options) {
+        return this;
+    },
 
-                if (typeof options === 'object') {
-                    this._glowOptions = options || this._glowOptions;
-                } else {
-                    console.error('[glow()] ', 'expected object, got : ', typeof options);
-                }
+    removeGlow: function() {
 
-                this._glow = this.connection.getPathOuter().glow(this._glowOptions);
-                this.connection.push(this._glow);
+        if (this._glow) {
+            this._glowOptions = {};
+            this._glow.remove();
+            this._glow = null;
+        }
 
-                this._glow.toBack();
+        return this;
+    },
 
-                return this;
-            },
+    reDrawGlow: function () {
 
-            removeGlow: function() {
+        var opts = _.clone(this._glowOptions, true);
+        this.removeGlow();
+        this.glow(opts);
 
-                if (this._glow) {
-                    this._glowOptions = {};
-                    this._glow.remove();
-                    this._glow = null;
-                }
+        return this;
+    },
 
-                return this;
-            },
+    _getCoords: function(input, output) {
 
-            reDrawGlow: function () {
+        var inputCoords = input.el.node.getCTM(),
+            outputCoords = output.el.node.getCTM(),
+            parentTrans = this.parent.getTranslation(),
+            scale = this.parent.getScale().x;
 
-                var opts = _.clone(this._glowOptions, true);
-                this.removeGlow();
-                this.glow(opts);
+        inputCoords.e = inputCoords.e / scale;
+        inputCoords.f = inputCoords.f / scale;
+        outputCoords.e = outputCoords.e / scale;
+        outputCoords.f = outputCoords.f / scale;
 
-                return this;
-            },
+        inputCoords.e -= parentTrans.x / scale;
+        inputCoords.f -= parentTrans.y / scale;
+        outputCoords.e -= parentTrans.x / scale;
+        outputCoords.f -= parentTrans.y / scale;
 
-            _getCoords: function(input, output) {
+        return {
+            x1: inputCoords.e,
+            x2: outputCoords.e,
+            y1: inputCoords.f,
+            y2: outputCoords.f
+        };
+    },
 
-                var inputCoords = input.el.node.getCTM(),
-                    outputCoords = output.el.node.getCTM(),
-                    parentTrans = this.parent.getTranslation(),
-                    scale = this.parent.getScale().x;
+    _createConnection: function(input, output) {
 
-                inputCoords.e = inputCoords.e / scale;
-                inputCoords.f = inputCoords.f / scale;
-                outputCoords.e = outputCoords.e / scale;
-                outputCoords.f = outputCoords.f / scale;
+        var attr, coords,
+            scale = this.parent.getScale().x;
 
-                inputCoords.e -= parentTrans.x / scale;
-                inputCoords.f -= parentTrans.y / scale;
-                outputCoords.e -= parentTrans.x / scale;
-                outputCoords.f -= parentTrans.y / scale;
+        coords = this._getCoords(input, output);
 
-                return {
-                    x1: inputCoords.e,
-                    x2: outputCoords.e,
-                    y1: inputCoords.f,
-                    y2: outputCoords.f
-                };
-            },
+        attr = {
+            stroke        : this.constraints.strokeColor,
+            'stroke-width': this.constraints.strokeWidth * scale
+        };
 
-            _createConnection: function(input, output) {
-
-                var attr, coords,
-                    scale = this.parent.getScale().x;
-
-                coords = this._getCoords(input, output);
-
-                attr = {
-                    stroke        : this.constraints.strokeColor,
-                    'stroke-width': this.constraints.strokeWidth * scale
-                };
-
-                this.connection = this.canvas.curve(coords, attr, this.constraints.pathType);
-                this.parent.push(this.connection.getPath());
+        this.connection = this.canvas.curve(coords, attr, this.constraints.pathType);
+        this.parent.push(this.connection.getPath());
 //            this.connection.makeBorder({
 //                stroke: '#c8c8c8',
 //                'stroke-width': 4
 //            });
 
-                var totalLen = this.connection.getPathInner().getTotalLength();
-                var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen / 2);
+        var totalLen = this.connection.getPathInner().getTotalLength();
+        var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen / 2);
 
-                if (this.model.connection_name && this.model.connection_name !== '') {
-                    this.connectionLabel = this.canvas.text(labelCoords.x, labelCoords.y, this.model.connection_name).attr({fill: this.constraints.labelColor});
-                    this.connection.push(this.connectionLabel);
-                }
+        if (this.model.connection_name && this.model.connection_name !== '') {
+            this.connectionLabel = this.canvas.text(labelCoords.x, labelCoords.y, this.model.connection_name).attr({fill: this.constraints.labelColor});
+            this.connection.push(this.connectionLabel);
+        }
 
-                this.connection.toBack();
+        this.connection.toBack();
 
-                input.addConnection(this.model.id);
-                output.addConnection(this.model.id);
+        input.addConnection(this.model.id);
+        output.addConnection(this.model.id);
 
-                input.setConnectedState();
-                output.setConnectedState();
+        input.setConnectedState();
+        output.setConnectedState();
 
-                input.terminals[output.model.id] = this.model.id;
-                output.terminals[input.model.id] = this.model.id;
-            },
+        input.terminals[output.model.id] = this.model.id;
+        output.terminals[input.model.id] = this.model.id;
+    },
 
-            destroyConnection: function() {
+    destroyConnection: function() {
 
-                var inputCheck, outputCheck;
+        var inputCheck, outputCheck;
 
-                this.connection.remove();
+        this.connection.remove();
 
-                this.Pipeline.nodes[this.model.start_node].removeConnection(this.model);
-                this.Pipeline.nodes[this.model.end_node].removeConnection(this.model);
+        this.Pipeline.nodes[this.model.start_node].removeConnection(this.model);
+        this.Pipeline.nodes[this.model.end_node].removeConnection(this.model);
 
-                inputCheck = this.input.removeConnection(this.model.id);
-                outputCheck = this.output.removeConnection(this.model.id);
+        inputCheck = this.input.removeConnection(this.model.id);
+        outputCheck = this.output.removeConnection(this.model.id);
 
-                this.input.terminals[this.output.model.id] = null;
-                delete this.input.terminals[this.output.model.id];
+        this.input.terminals[this.output.model.id] = null;
+        delete this.input.terminals[this.output.model.id];
 
-                this.output.terminals[this.input.model.id] = null;
-                delete this.output.terminals[this.input.model.id];
+        this.output.terminals[this.input.model.id] = null;
+        delete this.output.terminals[this.input.model.id];
 
-                if (this.connectionLabel) {
-                    this.connectionLabel.remove();
-                }
+        if (this.connectionLabel) {
+            this.connectionLabel.remove();
+        }
 
-                if (!inputCheck) {
-                    this.input.terminalConnected = false;
-                    this.input.setDefaultState();
-                }
+        if (!inputCheck) {
+            this.input.terminalConnected = false;
+            this.input.setDefaultState();
+        }
 
-                if (!outputCheck) {
-                    this.output.terminalConnected = false;
-                    this.output.setDefaultState();
-                }
+        if (!outputCheck) {
+            this.output.terminalConnected = false;
+            this.output.setDefaultState();
+        }
 
 
-                this.Pipeline.Event.trigger('connection:remove');
-                this.Pipeline.Event.trigger('connection:destroy');
-                this.Pipeline.Event.trigger('pipeline:change');
-            },
+        this.Pipeline.Event.trigger('connection:remove');
+        this.Pipeline.Event.trigger('connection:destroy');
+        this.Pipeline.Event.trigger('pipeline:change');
+    },
 
-            destroy: function() {
-                var _self = this;
+    destroy: function() {
+        var _self = this;
 
-                this.destroyConnection();
+        this.destroyConnection();
 
-                _.each(this.events, function(ev) {
-                    _self.Pipeline.Event.unsubscribe(ev.event, ev.handler);
-                });
-            }
-        };
+        _.each(this.events, function(ev) {
+            _self.Pipeline.Event.unsubscribe(ev.event, ev.handler);
+        });
+    }
+};
 
-        return Connection;
-    });
+export { Connection }
