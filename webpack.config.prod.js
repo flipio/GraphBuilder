@@ -30,17 +30,17 @@ const config = {
             commonjs2: 'jquery',
             amd: 'jquery'
         },
-        lodash : {
-            root: "_",
-            commonjs: "lodash",
-            commonjs2: "lodash",
-            amd: "lodash",
+        lodash: {
+            root: '_',
+            commonjs: 'lodash',
+            commonjs2: 'lodash',
+            amd: 'lodash',
         },
         raphael: {
-            root: "Raphael",
-            commonjs: "raphael",
-            commonjs2: "raphael",
-            amd: "raphael",
+            root: 'Raphael',
+            commonjs: 'raphael',
+            commonjs2: 'raphael',
+            amd: 'raphael',
         }
     },
     resolve: {
@@ -55,8 +55,3 @@ const config = {
 };
 
 module.exports = config;
-
-
-
-
-
