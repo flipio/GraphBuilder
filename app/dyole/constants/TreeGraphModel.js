@@ -2,8 +2,8 @@
  * Created by filip on 11.3.15..
  */
 
-import _ from 'lodash'
-import {NodeModel} from './NodeModel'
+import _ from 'lodash';
+import {NodeModel} from './NodeModel';
 
 var TreeGraphModel = (function() {
 
@@ -97,7 +97,7 @@ var TreeGraphModel = (function() {
 
             return model;
         }
-    }
+    };
 })();
 
-export { TreeGraphModel }
+export { TreeGraphModel };

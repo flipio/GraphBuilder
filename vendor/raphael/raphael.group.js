@@ -1,5 +1,5 @@
-import $ from 'jquery'
-import Raphael from 'raphael'
+import $ from 'jquery';
+import Raphael from 'raphael';
 
 Raphael.fn.group = function () {
 

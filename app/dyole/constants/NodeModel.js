@@ -2,7 +2,7 @@
  * Created by filip on 11.3.15..
  */
 
-import _ from 'lodash'
+import _ from 'lodash';
 
 var model = {
     id        : _.random(100000, 999999) + '',
@@ -107,6 +107,6 @@ var NodeModel = {
         }
         return n;
     }
-}
+};
 
-export { NodeModel }
+export { NodeModel };

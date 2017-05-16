@@ -16,4 +16,4 @@ var GraphModel = {
     relations: []
 };
 
-export { GraphModel }
+export { GraphModel };

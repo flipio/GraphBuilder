@@ -2,8 +2,8 @@
  * Created by filip on 3.6.14..
  */
 
-import Raphael from 'raphael'
-import {PathTypes} from './../../app/dyole/constants/PathTypes'
+import Raphael from 'raphael';
+import {PathTypes} from './../../app/dyole/constants/PathTypes';
 
 /**
  * Helper element for drawing terminal connections

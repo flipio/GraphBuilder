@@ -2,8 +2,8 @@
  * Created by filip on 4.6.14..
  */
 
-import $ from 'jquery'
-import Raphael from 'raphael'
+import $ from 'jquery';
+import Raphael from 'raphael';
 
 Raphael.fn.button = function (config, cb) {
     var r = this,

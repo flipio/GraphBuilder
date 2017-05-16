@@ -2,10 +2,10 @@
  * Created by filip on 11.3.15..
  */
 
-import $ from 'jquery'
-import _ from 'lodash'
-import {Common} from './../helpers/common'
-import {PathTypes} from './../constants/PathTypes'
+import $ from 'jquery';
+import _ from 'lodash';
+import {Common} from './../helpers/common';
+import {PathTypes} from './../constants/PathTypes';
 
 var CONSTRAINTS = {
     radius: 8,
@@ -63,7 +63,7 @@ var Terminal = function (options) {
     }
 
     if (Common.checkObjectKeys(this.Pipeline.constraints.terminal)) {
-        Common.setConstraints(this.constraints, this.Pipeline.constraints.terminal)
+        Common.setConstraints(this.constraints, this.Pipeline.constraints.terminal);
     }
 
     if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
@@ -521,4 +521,4 @@ Terminal.prototype = {
 
 };
 
-export { Terminal }
+export { Terminal };

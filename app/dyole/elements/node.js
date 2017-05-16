@@ -2,10 +2,10 @@
  * Created by filip on 11.3.15..
  */
 
-import $ from 'jquery'
-import _ from 'lodash'
-import {Terminal} from './terminal'
-import {Common} from './../helpers/common'
+import $ from 'jquery';
+import _ from 'lodash';
+import {Terminal} from './terminal';
+import {Common} from './../helpers/common';
 
 var Node = (function() {
 
@@ -156,11 +156,11 @@ var Node = (function() {
         }
 
         if (Common.checkObjectKeys(this.Pipeline.constraints.buttons)) {
-            Common.setConstraints(this.buttons, this.Pipeline.constraints.buttons)
+            Common.setConstraints(this.buttons, this.Pipeline.constraints.buttons);
         }
 
         if (Common.checkObjectKeys(this.Pipeline.constraints.icons)) {
-            Common.setConstraints(this.icons, this.Pipeline.constraints.icons)
+            Common.setConstraints(this.icons, this.Pipeline.constraints.icons);
         }
 
         if (typeof options.constraints === 'object') {
@@ -368,7 +368,7 @@ var Node = (function() {
             });
 
             if (typeof labelOffset === 'function') {
-                labelOffset(label, radius)
+                labelOffset(label, radius);
             } else {
                 label.attr({
                     y: radius + labelOffset
@@ -1000,4 +1000,4 @@ var Node = (function() {
     return Node;
 })();
 
-export { Node }
+export { Node };

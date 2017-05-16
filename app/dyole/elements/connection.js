@@ -2,10 +2,10 @@
  * Created by filip on 11.3.15..
  */
 
-import $ from 'jquery'
-import _ from 'lodash'
-import {Common} from './../helpers/common'
-import {PathTypes} from './../constants/PathTypes'
+import $ from 'jquery';
+import _ from 'lodash';
+import {Common} from './../helpers/common';
+import {PathTypes} from './../constants/PathTypes';
 
 var CONSTRAINTS = {
     baseUrl: '/',
@@ -45,7 +45,7 @@ var Connection = function(options) {
 //            this.tempConnectionActive = false;
 
     if (Common.checkObjectKeys(this.Pipeline.constraints.connection)) {
-        Common.setConstraints(this.constraints, this.Pipeline.constraints.connection)
+        Common.setConstraints(this.constraints, this.Pipeline.constraints.connection);
     }
 
     if (typeof options.constraints === 'object') {
@@ -187,7 +187,7 @@ Connection.prototype = {
         if (this._glow) {
             this.reDrawGlow();
         } else {
-            this.removeGlow()
+            this.removeGlow();
         }
 
         return this;
@@ -342,4 +342,4 @@ Connection.prototype = {
     }
 };
 
-export { Connection }
+export { Connection };

@@ -2,7 +2,7 @@
  * Created by filip on 3.6.15..
  */
 
-import _ from 'lodash'
+import _ from 'lodash';
 
 var Common = {
     objectPropExists: function(prop) {
@@ -48,4 +48,4 @@ var Common = {
     }
 };
 
-export { Common }
+export { Common };

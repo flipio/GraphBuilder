@@ -2,7 +2,7 @@
  * Created by filip on 11.3.15..
  */
 
-import _ from 'lodash'
+import _ from 'lodash';
 
 var ConnectionModel = {
     id             : _.random(100000, 999999) + '', // it has to be a string
@@ -13,4 +13,4 @@ var ConnectionModel = {
     connection_name: ''
 };
 
-export { ConnectionModel }
+export { ConnectionModel };

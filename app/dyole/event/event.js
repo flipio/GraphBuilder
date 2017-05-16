@@ -162,4 +162,4 @@ var Event = {
     }
 };
 
-export { Event }
+export { Event };

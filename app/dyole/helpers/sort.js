@@ -72,4 +72,4 @@ var Sort = {
     }
 };
 
-export { Sort }
+export { Sort };

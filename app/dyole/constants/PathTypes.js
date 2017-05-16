@@ -11,4 +11,4 @@ var PathTypes = {
 
 };
 
-export { PathTypes }
+export { PathTypes };
