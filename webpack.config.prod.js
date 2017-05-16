@@ -1,8 +1,7 @@
-const webpack = require('webpack')
+const webpack = require('webpack');
 
 const config = {
     entry: __dirname + '/app/dyole/graph.js',
-    devtool: 'source-map',
     output: {
         path: __dirname + '/dist',
         filename: 'graph.min.js',
@@ -10,6 +9,7 @@ const config = {
         libraryTarget: 'umd',
         umdNamedDefine: true
     },
+    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -17,7 +17,6 @@ const config = {
                 loader: 'babel-loader',
                 exclude: /(node_modules|bower_components)/,
                 query: {
-                    cacheDirectory: true,
                     plugins: ['add-module-exports'],
                     presets: ['es2015']
                 }
@@ -43,6 +42,9 @@ const config = {
             commonjs2: "raphael",
             amd: "raphael",
         }
+    },
+    resolve: {
+        extensions: ['.js']
     },
     plugins: [
         new webpack.optimize.UglifyJsPlugin({
