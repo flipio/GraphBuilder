@@ -1,0 +1,13 @@
+{
+  "plugins": ["add-module-exports"],
+  "presets": [
+    ["es2015", { "modules": false }]
+  ],
+
+  "env": {
+    "test": {
+      "plugins": [],
+      "presets": ["es2015"]
+    }
+  }
+}

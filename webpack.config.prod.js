@@ -15,11 +15,7 @@ const config = {
             {
                 test: /(\.js)$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules|bower_components)/,
-                query: {
-                    plugins: ['add-module-exports'],
-                    presets: ['es2015']
-                }
+                exclude: /(node_modules|bower_components)/
             }
         ]
     },
@@ -34,13 +30,13 @@ const config = {
             root: '_',
             commonjs: 'lodash',
             commonjs2: 'lodash',
-            amd: 'lodash',
+            amd: 'lodash'
         },
         raphael: {
             root: 'Raphael',
             commonjs: 'raphael',
             commonjs2: 'raphael',
-            amd: 'raphael',
+            amd: 'raphael'
         }
     },
     resolve: {

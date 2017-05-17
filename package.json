@@ -11,7 +11,9 @@
     "production": "./node_modules/.bin/webpack --config webpack.config.prod.js",
     "development": "./node_modules/.bin/webpack --config webpack.config.js --watch",
     "browser-sync": "./node_modules/.bin/browser-sync start --serveStatic '.' --port 5000 --files 'dist' ",
-    "test": "grunt qunit"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "author": {
     "name": "Filip Jelic",
@@ -27,6 +29,7 @@
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
+    "babel-jest": "^20.0.1",
     "babel-loader": "^7.0.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-es2015": "^6.24.1",
@@ -42,10 +45,24 @@
     "grunt-contrib-requirejs": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
+    "jest": "^20.0.1",
     "rimraf": "^2.6.1",
     "webpack": "^2.5.1"
   },
   "dependencies": {
     "grunt-concat-sourcemap": "^0.4.3"
+  },
+  "jest": {
+    "verbose": true,
+    "modulePaths": [
+      "<rootDir>/app"
+    ],
+    "testMatch": [
+      "**/?(*.)(spec|test).js?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "node_modules",
+      "bower_components"
+    ]
   }
 }
