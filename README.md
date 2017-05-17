@@ -6,29 +6,37 @@ Make sure you have the latest packages installed
 
 ```
 npm install
-bower install
 ```
 
 Note: If you don't have `npm` installed, make sure you have
-[node](http://nodejs.com) installed. If you don't have bower,
-`npm install -g bower`.
+[node](http://nodejs.com) installed.
 
 The above steps will download all the required software to
-build and run this app, such as [grunt](http://gruntjs.com),
-[requirejs](http://requirejs.org), and [jquery](http://jquery.com).
+build and run this app, such as [webpack](https://webpack.js.org/),
+[babel](https://babeljs.io/), [eslint](http://eslint.org/) and [jest](https://facebook.github.io/jest/).
 
-## Running the server
+## Development / Production
 
-You can run your app using `grunt serve`. This will start a
-server on `localhost:8000`.
-
-Alternatively you can use `grunt serve --port xxxx` for custom port
+- Building a lib is done by webpack. 
 
 
+- If you'd like to buld lib for development, run: `npm run development`
+- If you'd like to buld lib for production, run: `npm run production`
 
-If you'd like to run the compiled version, run
-`grunt serve`.
 
+- Both development and production versions are located in dist folder.
+
+## Running demo app
+
+You can run your demo app using `browser-sync`. This will start a
+static web server on `localhost:5000`.
+
+Alternatively you can just open `index.html` to see demo app.
+
+
+## Dependencies
+
+- Library expect jquery, lodash and raphael as external dependencies. 
 
 ## API
 
@@ -621,6 +629,3 @@ Overriding elements add element name as key in constraints object passed in conf
     }
 
 
-## Known issues
-
-- Conflicting lodash will make stuff broke ( try to keep updated lodash on page ). Lib comes with lodash bundled now.
