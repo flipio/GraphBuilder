@@ -1,0 +1,26 @@
+{
+//    "extends": ["eslint:recommended", "google"],
+    "extends": "eslint:recommended",
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "rules": {
+      "curly": "warn",
+      "eqeqeq": "warn",
+      "wrap-iife": ["warn", "inside"],
+      "indent": ["warn", 4, {"SwitchCase": 1}],
+      "no-eq-null": "warn",
+      "linebreak-style": ["warn", "unix"],
+      "semi": ["warn", "always"],
+      "no-unused-vars": "warn",
+      "comma-dangle": "off",
+      "no-console": "off",
+      "max-len": "off"
+    }
+}

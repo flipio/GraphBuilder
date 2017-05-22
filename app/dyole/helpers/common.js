@@ -1,53 +1,51 @@
 /**
  * Created by filip on 3.6.15..
  */
-'use strict';
-define(['lodash'], function(_) {
 
-    var Common = {
-        objectPropExists: function(prop) {
-            return typeof prop !== 'undefined';
-        },
+import _ from 'lodash';
 
-        checkObjectKeys: function(obj) {
-            return this.objectPropExists(obj) && _.size(obj) > 0;
-        },
+var Common = {
+    objectPropExists: function(prop) {
+        return typeof prop !== 'undefined';
+    },
 
-        getPropType: function(prop) {
-            var type = typeof prop,
-                result;
+    checkObjectKeys: function(obj) {
+        return this.objectPropExists(obj) && _.size(obj) > 0;
+    },
 
-            result = type;
+    getPropType: function(prop) {
+        var type = typeof prop,
+            result;
 
-            if (type === 'object') {
-                if (_.isArray(prop)) {
-                    result = 'array';
+        result = type;
+
+        if (type === 'object') {
+            if (_.isArray(prop)) {
+                result = 'array';
+            }
+        }
+
+        return result;
+    },
+
+    setConstraints: function(instance, constraints) {
+
+        _.forEach(constraints, function(constraint, prop) {
+
+            if (Common.objectPropExists(constraint)) {
+                if (Common.getPropType(constraint) === 'object') {
+                    _.forEach(constraint, function(value, key) {
+                        if (typeof instance[prop] === 'object' && typeof instance[prop][key] !== 'undefined') {
+                            instance[prop][key] = value;
+                        }
+                    });
+                } else {
+                    instance[prop] = constraint;
                 }
             }
 
-            return result;
-        },
+        });
+    }
+};
 
-        setConstraints: function(instance, constraints) {
-
-            _.forEach(constraints, function(constraint, prop) {
-
-                if (Common.objectPropExists(constraint)) {
-                    if (Common.getPropType(constraint) === 'object') {
-                        _.forEach(constraint, function(value, key) {
-                            if (typeof instance[prop] === 'object' && typeof instance[prop][key] !== 'undefined') {
-                                instance[prop][key] = value;
-                            }
-                        });
-                    } else {
-                        instance[prop] = constraint;
-                    }
-                }
-
-            });
-        }
-    };
-
-    return Common;
-
-});
+export { Common };
