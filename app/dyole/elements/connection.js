@@ -168,15 +168,10 @@ Connection.prototype = {
 
         strokeWidth = this.constraints.strokeWidth * scale;
 
-
         this.connection.redraw(coords, strokeWidth);
-
 
         var totalLen = this.connection.getPathInner().getTotalLength();
         var labelCoords = this.connection.getPathInner().getPointAtLength(totalLen / 2);
-
-
-        //console.log(labelCoords);
 
         if (this.connectionLabel) {
             this.connectionLabel.attr({x: labelCoords.x, y: labelCoords.y});
@@ -184,47 +179,19 @@ Connection.prototype = {
 
         this.removeWire();
 
-        if (this._glow) {
-            this.reDrawGlow();
-        } else {
-            this.removeGlow();
-        }
-
         return this;
     },
 
-    glow: function(options) {
+    glow: function() {
 
-        if (typeof options === 'object') {
-            this._glowOptions = options || this._glowOptions;
-        } else {
-            console.error('[glow()] ', 'expected object, got : ', typeof options);
-        }
-
-        this._glow = this.connection.getPathOuter().glow(this._glowOptions);
-        this.connection.push(this._glow);
-
-        this._glow.toBack();
+        this.connection.getPathOuter().node.setAttribute('filter', 'url(#path-glow)');
 
         return this;
     },
 
     removeGlow: function() {
 
-        if (this._glow) {
-            this._glowOptions = {};
-            this._glow.remove();
-            this._glow = null;
-        }
-
-        return this;
-    },
-
-    reDrawGlow: function () {
-
-        var opts = _.clone(this._glowOptions, true);
-        this.removeGlow();
-        this.glow(opts);
+        this.connection.getPathOuter().node.removeAttribute('filter');
 
         return this;
     },
