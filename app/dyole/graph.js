@@ -88,6 +88,14 @@ var Graph = (function () {
 
         this._drawScrollbars();
 
+        var PathGlowFilter =
+            '<filter id="path-glow" width="800%" height="600%" x="-200%" y="-100%" filterUnits="userSpaceOnUse">' +
+                '<feOffset result="offOut" in="SourceAlpha" dx="0" dy="0"></feOffset>' +
+                '<feGaussianBlur result="blurOut" in="offOut" stdDeviation="3"></feGaussianBlur>' +
+                '<feBlend in="SourceGraphic" in2="blurOut" mode="normal"></feBlend>' +
+            '</filter>';
+
+        this.canvas.defs.innerHTML += PathGlowFilter;
     };
 
     Graph.prototype = {
